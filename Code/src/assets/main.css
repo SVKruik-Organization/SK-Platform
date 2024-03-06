@@ -1,0 +1,13 @@
+:root {
+  --color-background: #FFFFFF
+}
+
+body {
+  background: var(--color-background);
+  transition: 0.3s;
+  line-height: 1.6;
+  font-size: 15px;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
