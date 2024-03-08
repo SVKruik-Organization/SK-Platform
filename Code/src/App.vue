@@ -10,9 +10,20 @@ export default {
 </script>
 
 <template>
-    <NavbarComponent></NavbarComponent>
-    <RouterView></RouterView>
-    <FooterComponent></FooterComponent>
+    <div class="content-container">
+        <div>
+            <NavbarComponent></NavbarComponent>
+            <RouterView></RouterView>
+        </div>
+        <FooterComponent></FooterComponent>
+    </div>
 </template>
 
-<style scoped></style>
+<style scoped>
+.content-container {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    height: 100vh;
+}
+</style>
