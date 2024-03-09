@@ -11,16 +11,16 @@ export default {
                 <img src="/favicon.ico" alt="Logo">
             </section>
             <section>
-                <menu>
-                    <RouterLink to="/product" class="nav-link">Product</RouterLink>
-                    <RouterLink to="/about" class="nav-link">About</RouterLink>
-                    <RouterLink to="/docs" class="nav-link">Docs</RouterLink>
-                    <RouterLink to="/developer" class="nav-link">API</RouterLink>
+                <menu class="nav-links">
+                    <RouterLink to="/product" class="nav-link">product</RouterLink>
+                    <RouterLink to="/about" class="nav-link">about</RouterLink>
+                    <RouterLink to="/docs" class="nav-link">docs</RouterLink>
+                    <RouterLink to="/developer" class="nav-link">api</RouterLink>
                 </menu>
             </section>
-            <section>
-                <RouterLink to="/register">Sign-up</RouterLink>
-            </section>
+            <RouterLink to="/register" class="sign-up-button gradient-button">
+                <p>sign up</p>
+            </RouterLink>
         </nav>
     </header>
 </template>
@@ -36,13 +36,25 @@ header {
 nav {
     display: flex;
     align-items: center;
-    gap: 30px;
-    margin-top: 10px;
+    gap: 100px;
     margin: 0 auto;
+    margin-top: 50px;
 }
 
 .nav-links {
     display: flex;
     align-items: center;
+    gap: 30px;
+}
+
+.sign-up-button {
+    display: block;
+    background-color: var(--font);
+    height: 30px;
+    width: 100px;
+    border-radius: 25px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
 }
 </style>

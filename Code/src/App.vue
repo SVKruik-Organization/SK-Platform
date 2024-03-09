@@ -11,11 +11,9 @@ export default {
 
 <template>
     <div class="content-container">
-        <div>
-            <NavbarComponent></NavbarComponent>
-            <RouterView></RouterView>
-        </div>
-        <FooterComponent></FooterComponent>
+        <NavbarComponent class="nav"></NavbarComponent>
+        <RouterView class="content"></RouterView>
+        <FooterComponent class="footer"></FooterComponent>
     </div>
 </template>
 
@@ -25,5 +23,13 @@ export default {
     flex-direction: column;
     justify-content: space-between;
     height: 100vh;
+}
+
+/* .footer {
+    margin-top: auto;
+} */
+
+.content {
+    height: 100%;
 }
 </style>
