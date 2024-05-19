@@ -1,0 +1,11 @@
+name: Deploy Application
+on:
+  push
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - run: |
+          cd frontend
+          ls

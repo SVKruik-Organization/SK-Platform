@@ -48,7 +48,6 @@ nav {
 }
 
 .sign-up-button {
-    display: block;
     background-color: var(--font);
     height: 30px;
     width: 100px;
