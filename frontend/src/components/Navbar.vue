@@ -1,26 +1,43 @@
 <script lang="ts">
-export default {
-    name: "NavbarComponent"
-};
+import { useUserStore } from '@/stores/UserStore';
+import { defineComponent } from 'vue';
+
+export default defineComponent({
+    name: "NavbarComponent",
+    setup() {
+        return {
+            userStore: useUserStore()
+        }
+    },
+    methods: {
+        navigateLogin() {
+            if (this.userStore.user.token) {
+                this.$router.push("/account/overview")
+            } else this.$router.push("/login");
+        }
+    }
+});
 </script>
 
 <template>
     <header>
         <nav>
             <section>
-                <img src="/favicon.ico" alt="Logo">
+                <RouterLink to="/home/landing">
+                    <img alt="Logo">
+                </RouterLink>
             </section>
             <section>
                 <menu class="nav-links">
-                    <RouterLink to="/product" class="nav-link">product</RouterLink>
-                    <RouterLink to="/about" class="nav-link">about</RouterLink>
-                    <RouterLink to="/docs" class="nav-link">docs</RouterLink>
-                    <RouterLink to="/developer" class="nav-link">api</RouterLink>
+                    <RouterLink to="/home/product" class="nav-link">product</RouterLink>
+                    <RouterLink to="/home/pricing" class="nav-link">pricing</RouterLink>
+                    <RouterLink to="/home/documentation" class="nav-link">docs</RouterLink>
+                    <RouterLink to="/home/developer" class="nav-link">api</RouterLink>
                 </menu>
             </section>
-            <RouterLink to="/register" class="sign-up-button gradient-button">
-                <p>sign up</p>
-            </RouterLink>
+            <button type="button" title="Login" @click="navigateLogin()" class="sign-up-button gradient-button">
+                <p>account</p>
+            </button>
         </nav>
     </header>
 </template>

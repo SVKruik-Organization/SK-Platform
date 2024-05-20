@@ -2,12 +2,14 @@
 import { defineComponent } from 'vue';
 
 export default defineComponent({
-    name: "App"
+    name: "TemporaryView",
 });
 </script>
 
 <template>
-    <RouterView></RouterView>
+    <div class="content-container flex-col">
+        <h1>Temporary View</h1>
+    </div>
 </template>
 
 <style scoped></style>
