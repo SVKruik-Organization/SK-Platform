@@ -12,6 +12,11 @@ app.get("/status", (req, res) => {
 // Serve Vue Build
 app.use(express.static(path.join(__dirname, 'dist')));
 
+// Catch All
+app.get('*', (req, res) => {
+    res.sendFile(path.resolve(__dirname, 'dist', 'index.html'));
+});
+
 // Start
 app.listen(port, () => {
     console.log(`Serving Bot Website on port ${port}.`);

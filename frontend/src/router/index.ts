@@ -25,6 +25,7 @@ const router = createRouter({
     linkExactActiveClass: "active-exact-router-link",
     routes: [
         { path: "/login", component: LoginView, props: true },
+        { path: "/", redirect: "/home/landing" },
         {
             path: "/home", component: HomeView, props: true, children: [
                 { path: "", redirect: "/home/landing" },
