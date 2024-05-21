@@ -13,7 +13,7 @@ export default defineComponent({
     <div class="content-parent flex">
         <section class="card-container left">
             <RouterLink class="card full-card" to="/home/product">
-                <p>About DEPLOYMENT TEST STRING 1</p>
+                <p>About DEPLOYMENT TEST STRING 2</p>
             </RouterLink>
             <RouterLink class="card half-card small-card" to="/home/pricing">
                 <p>Plans</p>
