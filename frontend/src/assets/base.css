@@ -1,14 +1,12 @@
 :root {
     --main: #141414;
     --font: #e3e3e3;
-    height: 100%;
 }
 
 body {
     background: var(--main);
     transition: 0.3s;
     font-size: 15px;
-    height: 100%;
     font-family: "Inter Tight", sans-serif;
     font-optical-sizing: auto;
     font-style: normal;

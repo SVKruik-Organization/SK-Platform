@@ -54,6 +54,8 @@ export default defineComponent({
 .card-container {
     display: flex;
     flex-wrap: wrap;
+    box-sizing: border-box;
+    padding: 10px;
     gap: 16px;
 }
 

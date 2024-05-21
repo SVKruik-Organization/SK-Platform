@@ -11,19 +11,17 @@ export default defineComponent({
 </script>
 
 <template>
-    <div class="parent">
-        <Navbar></Navbar>
-        <main>
-            <RouterView></RouterView>
-        </main>
-    </div>
+    <Navbar></Navbar>
+    <main>
+        <RouterView></RouterView>
+    </main>
 </template>
 
-<style scoped>
-.parent {
+<style>
+body div:first-child {
     display: flex;
     flex-direction: column;
-    height: 100%;
     gap: 100px;
+    height: 100vh;
 }
 </style>
