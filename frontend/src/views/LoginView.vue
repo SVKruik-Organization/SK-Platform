@@ -37,8 +37,8 @@ export default defineComponent({
     <div class="content-parent flex-col">
         <h1>Operator Login Page</h1>
         <form class="flex-col">
-            <input type="text" minlength="4" placeholder="Username" ref="usernameInput">
-            <input type="password" minlength="8" placeholder="Password" ref="passwordInput">
+            <input ref="usernameInput" minlength="4" placeholder="Username" type="text">
+            <input ref="passwordInput" minlength="8" placeholder="Password" type="password">
             <button type="submit" @click="login($event)">Submit</button>
         </form>
     </div>

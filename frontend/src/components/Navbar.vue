@@ -29,13 +29,13 @@ export default defineComponent({
             </section>
             <section>
                 <menu class="nav-links">
-                    <RouterLink to="/home/product" class="nav-link">product</RouterLink>
-                    <RouterLink to="/home/pricing" class="nav-link">pricing</RouterLink>
-                    <RouterLink to="/home/documentation" class="nav-link">docs</RouterLink>
-                    <RouterLink to="/home/developer" class="nav-link">api</RouterLink>
+                    <RouterLink class="nav-link" to="/home/product">product</RouterLink>
+                    <RouterLink class="nav-link" to="/home/pricing">pricing</RouterLink>
+                    <RouterLink class="nav-link" to="/home/documentation">docs</RouterLink>
+                    <RouterLink class="nav-link" to="/home/developer">api</RouterLink>
                 </menu>
             </section>
-            <button type="button" title="Login" @click="navigateLogin()" class="sign-up-button gradient-button">
+            <button class="sign-up-button gradient-button" title="Login" type="button" @click="navigateLogin()">
                 <p>account</p>
             </button>
         </nav>
