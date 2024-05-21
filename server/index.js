@@ -13,7 +13,8 @@ app.get("/api/status", deploymentAuthentication, (req, res) => {
 
 // Deployment
 app.post("/api/deploy", deploymentAuthentication, (req, res) => {
-    deployApplication(res);
+    res.json({ "status": "Received" });
+    deployApplication();
 });
 
 // Serve Vue Build

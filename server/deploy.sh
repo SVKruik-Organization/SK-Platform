@@ -1,15 +1,16 @@
 #!/bin/sh
 cd ..
+git config --global --add safe.directory /home/SVKruik/Documents/GitHub/Bot-Website
 git reset --hard
 git pull
 
 cd frontend
-npm install
-npm run build
+/root/.nvm/versions/node/v20.11.1/bin/npm install
+/root/.nvm/versions/node/v20.11.1/bin/npm run build
 echo "Build complete"
 
 cd ../server
-npm install
+/root/.nvm/versions/node/v20.11.1/bin/npm install
 rm -rf dist
 mkdir -p dist
 mv ../frontend/dist/* dist/
