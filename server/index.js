@@ -1,4 +1,5 @@
 const express = require('express');
+const fs = require('fs');
 const path = require('path');
 const { deploymentAuthentication } = require('./middleware');
 const { deployApplication } = require('./deploy');
@@ -20,9 +21,18 @@ app.post("/api/deploy", deploymentAuthentication, (req, res) => {
 // Serve Vue Build
 app.use(express.static(path.join(__dirname, 'dist')));
 
+// Files
+const distDir = path.join(__dirname, 'dist');
+const vueIndexFile = path.join(distDir, 'index.html');
+const fallbackFile = path.join(__dirname, 'fallback.html');
+
 // Catch All
 app.get('*', (req, res) => {
-    res.sendFile(path.resolve(__dirname, 'dist', 'index.html'));
+    const distExists = fs.existsSync(distDir);
+    const indexExists = fs.existsSync(vueIndexFile);
+    if (distExists && indexExists) {
+        res.sendFile(path.resolve(__dirname, 'dist', 'index.html'));
+    } else res.sendFile(fallbackFile);
 });
 
 // Start
