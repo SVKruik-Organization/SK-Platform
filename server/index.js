@@ -12,6 +12,11 @@ app.get("/api/status", deploymentAuthentication, (req, res) => {
     res.json({ "status": "Online" });
 });
 
+// Status Shield
+app.get("/api/status/badge", (req, res) => {
+    res.json({ "schemaVersion": 1, "label": "status", "message": "nline", "color": "green" });
+});
+
 // Deployment
 app.post("/api/deploy", deploymentAuthentication, (req, res) => {
     res.json({ "status": "Received" });
