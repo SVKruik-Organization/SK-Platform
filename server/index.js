@@ -1,12 +1,18 @@
 const express = require('express');
 const path = require('path');
+const { deploymentAuthentication } = require('./middleware');
 const app = express();
 require('dotenv').config()
 const port = process.env.PORT;
 
 // Status
-app.get("/status", (req, res) => {
+app.get("/api/status", deploymentAuthentication, (req, res) => {
     res.json({ "status": "Online" });
+});
+
+// Deployment
+app.post("/api/deploy", deploymentAuthentication, (req, res) => {
+    res.json({ "status": "Received" });
 });
 
 // Serve Vue Build

@@ -12,7 +12,6 @@
         "@types/crypto-js": "^4.2.2",
         "@vueuse/core": "^10.9.0",
         "crypto-js": "^4.2.0",
-        "express": "^4.19.2",
         "pinia": "^2.1.7",
         "vue": "^3.4.21",
         "vue-router": "^4.3.0"
