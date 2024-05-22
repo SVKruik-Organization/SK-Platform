@@ -1,15 +1,18 @@
 import type { UserDataResponse } from "@/assets/customTypes";
 
 /**
- * Temp
- * @returns Data or false on error.
+ * Validates user session.
+ * @returns True if still valid, false if not.
  */
-export async function fetchTemp(): Promise<boolean> {
+export async function fetchBase(token: string): Promise<boolean> {
     try {
-        const response = await fetch(`${import.meta.env.VITE_API_BASE}`);
-        if (response.ok) {
-            return true;
-        } else return false;
+        const response = await fetch(import.meta.env.VITE_API_BASE, {
+            method: "GET",
+            headers: {
+                "Authorization": `Bearer ${token}`
+            }
+        });
+        return response.ok;
     } catch (error) {
         console.log(error);
         return false;

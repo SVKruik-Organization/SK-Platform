@@ -2,10 +2,7 @@
 import { defineComponent } from 'vue';
 
 export default defineComponent({
-    name: "LandingPage",
-    mounted() {
-        console.log(import.meta.env.VITE_API_BASE)
-    }
+    name: "LandingPage"
 });
 </script>
 

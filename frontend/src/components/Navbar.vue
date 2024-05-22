@@ -1,5 +1,6 @@
 <script lang="ts">
 import { useUserStore } from '@/stores/UserStore';
+import { fetchBase } from '@/utils/fetch';
 import { defineComponent } from 'vue';
 
 export default defineComponent({
@@ -10,9 +11,12 @@ export default defineComponent({
         }
     },
     methods: {
-        navigateLogin() {
+        async navigateLogin() {
             if (this.userStore.user.token) {
-                this.$router.push("/account/overview")
+                const response = await fetchBase(this.userStore.user.token);
+                if (response) {
+                    this.$router.push("/account/overview");
+                } else this.$router.push("/login");
             } else this.$router.push("/login");
         }
     }
@@ -24,7 +28,7 @@ export default defineComponent({
         <nav>
             <section>
                 <RouterLink to="/home/landing">
-                    <img alt="Logo">
+                    <img alt="Logo" src="/Bot.png" title="Home">
                 </RouterLink>
             </section>
             <section>
@@ -56,6 +60,13 @@ nav {
     gap: 100px;
     margin: 0 auto;
     margin-top: 50px;
+}
+
+img {
+    border-radius: 50%;
+    object-fit: cover;
+    height: 40px;
+    aspect-ratio: 1 / 1;
 }
 
 .nav-links {
