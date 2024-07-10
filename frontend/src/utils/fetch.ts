@@ -1,4 +1,4 @@
-import type { UserDataResponse } from "@/assets/customTypes";
+import type { DocumentationFile, UserDataResponse } from "@/assets/customTypes";
 
 /**
  * Validates user session.
@@ -41,5 +41,23 @@ export async function fetchLogin(username: string, password: string): Promise<Us
     } catch (error) {
         console.log(error);
         return false;
+    }
+}
+
+/**
+ * Fetch a specific Documentation page.
+ * @returns Data or false on error.
+ */
+export async function fetchDocs(folder: string, name: string): Promise<DocumentationFile | string> {
+    try {
+        const response = await fetch(`${import.meta.env.VITE_DOCS_API_BASE}/getFile?folder=${folder}&name=${name}`, {
+            method: "GET"
+        });
+        if (response.ok) {
+            return await response.json();
+        } else return response.statusText;
+    } catch (error) {
+        console.log(error);
+        return "Error";
     }
 }

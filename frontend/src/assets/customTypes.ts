@@ -35,3 +35,8 @@ export enum PromptTypes {
     warning = "warning",
     danger = "danger"
 }
+
+// Documentation File
+export type DocumentationFile = {
+    "file": string
+}

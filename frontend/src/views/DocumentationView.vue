@@ -1,14 +1,26 @@
 <script lang="ts">
+import { fetchDocs } from '@/utils/fetch';
 import { defineComponent } from 'vue';
 
 export default defineComponent({
-    name: "DocumentationView"
+    name: "DocumentationView",
+    data() {
+        return {
+            "html": ""
+        }
+    },
+    async mounted() {
+        const data = await fetchDocs("get_started", "introduction");
+        if (typeof data === "string") return;
+        this.html = data.file;
+    }
 });
 </script>
 
 <template>
     <main>
         <h1>Documentation View</h1>
+        <div v-html="html"></div>
     </main>
 </template>
 
