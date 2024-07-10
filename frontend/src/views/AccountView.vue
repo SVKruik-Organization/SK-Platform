@@ -8,21 +8,17 @@ export default defineComponent({
         return {
             userStore: useUserStore()
         }
-    },
-    mounted() {
-        if (!this.userStore.user.token) return this.$router.push("/unauthorized");
     }
 });
 </script>
 
 <template>
-    <div class="parent">
-        <main>
-            <h1>Account View</h1>
-            <RouterLink to="/home/landing">Home Page</RouterLink>
-            <RouterView></RouterView>
-        </main>
-    </div>
+    <main class="flex-col">
+        <h1>Account View</h1>
+        <RouterLink to="/">Home Page</RouterLink>
+        <button type="button" title="Logout" @click="userStore.signOut()">Logout</button>
+        <RouterView></RouterView>
+    </main>
 </template>
 
 <style scoped></style>

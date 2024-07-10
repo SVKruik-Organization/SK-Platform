@@ -1,6 +1,5 @@
 <script lang="ts">
 import { useUserStore } from '@/stores/UserStore';
-import { fetchBase } from '@/utils/fetch';
 import { defineComponent } from 'vue';
 
 export default defineComponent({
@@ -8,16 +7,6 @@ export default defineComponent({
     setup() {
         return {
             userStore: useUserStore()
-        }
-    },
-    methods: {
-        async navigateLogin() {
-            if (this.userStore.user.token) {
-                const response = await fetchBase(this.userStore.user.token);
-                if (response) {
-                    this.$router.push("/account/overview");
-                } else this.$router.push("/login");
-            } else this.$router.push("/login");
         }
     }
 });
@@ -27,21 +16,20 @@ export default defineComponent({
     <header>
         <nav>
             <section>
-                <RouterLink to="/home/landing">
+                <RouterLink to="/">
                     <img alt="Logo" src="/Bot.png" title="Home">
                 </RouterLink>
             </section>
             <section>
                 <menu class="nav-links">
-                    <RouterLink class="nav-link" to="/home/product">product</RouterLink>
-                    <RouterLink class="nav-link" to="/home/pricing">pricing</RouterLink>
-                    <RouterLink class="nav-link" to="/home/documentation">docs</RouterLink>
-                    <RouterLink class="nav-link" to="/home/developer">api</RouterLink>
+                    <RouterLink class="nav-link" to="/product">product</RouterLink>
+                    <RouterLink class="nav-link" to="/pricing">pricing</RouterLink>
+                    <RouterLink class="nav-link" to="/documentation">docs</RouterLink>
+                    <RouterLink class="nav-link" to="/developer">api</RouterLink>
                 </menu>
             </section>
-            <button class="sign-up-button gradient-button" title="Login" type="button" @click="navigateLogin()">
-                <p>account</p>
-            </button>
+            <RouterLink class="sign-up-button gradient-button" :title="userStore.user.username ? 'account' : 'login'"
+                to="/account/overview">{{ userStore.user.username ? "account" : "login" }}</RouterLink>
         </nav>
     </header>
 </template>

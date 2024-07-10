@@ -9,7 +9,7 @@ export default defineComponent({
 <template>
     <div class="content-parent flex-col">
         <p>404 Not Found Page</p>
-        <RouterLink to="/home/landing">Go back Home</RouterLink>
+        <RouterLink to="/">Go back Home</RouterLink>
     </div>
 </template>
 

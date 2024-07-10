@@ -14,6 +14,7 @@ export const useUserStore = defineStore("UserStore", {
         },
         signOut(): void {
             this.setUser({} as UserData);
+            this.$router.push("/");
         }
     }
 });

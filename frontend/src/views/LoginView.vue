@@ -27,21 +27,21 @@ export default defineComponent({
                 "username": usernameInput.value,
                 "token": data.access_token
             });
-            this.$router.push("/home/landing");
+            this.$router.push("/");
         }
     }
 });
 </script>
 
 <template>
-    <div class="content-parent flex-col">
+    <main class="flex-col">
         <h1>Operator Login Page</h1>
         <form class="flex-col">
             <input ref="usernameInput" minlength="4" placeholder="Username" type="text">
             <input ref="passwordInput" minlength="8" placeholder="Password" type="password">
             <button type="submit" @click="login($event)">Submit</button>
         </form>
-    </div>
+    </main>
 </template>
 
 <style scoped></style>

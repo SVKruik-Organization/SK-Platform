@@ -2,14 +2,14 @@
 import { defineComponent } from 'vue';
 
 export default defineComponent({
-    name: "DeveloperPage"
+    name: "DocumentationView"
 });
 </script>
 
 <template>
-    <div class="content-parent flex">
-        <h1>Developer Page</h1>
-    </div>
+    <main>
+        <h1>Documentation View</h1>
+    </main>
 </template>
 
 <style scoped></style>

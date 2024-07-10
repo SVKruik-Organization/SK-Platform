@@ -6,7 +6,6 @@
 body {
     background: var(--main);
     transition: 0.3s;
-    font-size: 15px;
     font-family: "Inter Tight", sans-serif;
     font-optical-sizing: auto;
     font-style: normal;
@@ -79,8 +78,9 @@ a {
 }
 
 a,
-p {
-    font-size: medium;
+p,
+button {
+    font-size: 16px;
 }
 
 ul,

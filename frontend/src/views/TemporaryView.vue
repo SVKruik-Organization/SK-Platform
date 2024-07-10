@@ -7,9 +7,9 @@ export default defineComponent({
 </script>
 
 <template>
-    <div class="content-container flex-col">
+    <main>
         <h1>Temporary View</h1>
-    </div>
+    </main>
 </template>
 
 <style scoped></style>
