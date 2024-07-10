@@ -26,9 +26,7 @@ if [ -d "dist" ]; then
     cd ../frontend
     rm -rf dist
     echo "Cleanup complete"
-
-    sudo systemctl restart bot-website.service
-    echo "Hosting deployment complete. Reloaded server."
+    echo "Hosting deployment complete. Reloading server soon."
 else
     echo "Hosting deployment failed. Dist directory missing."
     exit 1
@@ -41,9 +39,11 @@ npm run build
 echo "Documentation build complete"
 
 if [ -d "dist" ]; then
-    sudo systemctl restart docs-website.service
-    echo "Documentation deployment complete. Reloaded server."
+    echo "Documentation deployment complete. Reloading server soon."
 else
     echo "Documentation deployment failed. Dist directory missing."
     exit 1
 fi
+
+sudo systemctl restart docs-website.service
+sudo systemctl restart bot-website.service
