@@ -42,5 +42,5 @@ app.get('*', (req, res) => {
 
 // Start
 app.listen(port, () => {
-    console.log(`Serving Bot Website on port ${port}.`);
+    console.log(`Hosting server listening on port ${port}.`);
 });

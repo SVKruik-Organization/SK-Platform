@@ -18,7 +18,7 @@ export default defineComponent({
                 <RouterLink class="card full-card" to="/product">
                     <p>About</p>
                 </RouterLink>
-                <RouterLink class="card half-card small-card" to="/pricing">
+                <RouterLink class="card half-card small-card" to="/plans">
                     <p>Plans</p>
                 </RouterLink>
                 <RouterLink class="card half-card" to="/product">

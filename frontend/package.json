@@ -1,7 +1,7 @@
 {
-    "name": "bot-website",
+    "name": "frontend-bot-website",
     "version": "1.0.0",
-    "description": "Bot Frontend Website",
+    "description": "Bot Website Frontend",
     "private": true,
     "type": "module",
     "scripts": {

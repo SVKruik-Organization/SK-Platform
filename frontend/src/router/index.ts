@@ -12,7 +12,7 @@ const DeveloperView = () => import('@/views/DeveloperView.vue');
 const DocumentationView = () => import('@/views/DocumentationView.vue');
 const LandingView = () => import('@/views/LandingView.vue');
 const LoginView = () => import('@/views/LoginView.vue');
-const PricingView = () => import('@/views/PricingView.vue');
+const PlansView = () => import('@/views/PlansView.vue');
 const ProductView = () => import('@/views/ProductView.vue');
 const TemporaryView = () => import('@/views/TemporaryView.vue');
 
@@ -30,7 +30,7 @@ const router = createRouter({
         { path: "/login", component: LoginView, props: true },
         { path: "/", component: LandingView, props: true },
         { path: "/product", component: ProductView, props: true },
-        { path: "/pricing", component: PricingView, props: true },
+        { path: "/plans", component: PlansView, props: true },
         { path: "/developer", component: DeveloperView, props: true },
         { path: "/documentation", component: DocumentationView, props: true },
         {

@@ -2,13 +2,13 @@
 import { defineComponent } from 'vue';
 
 export default defineComponent({
-    name: "PricingView"
+    name: "PlansView"
 });
 </script>
 
 <template>
     <main>
-        <h1>Pricing View</h1>
+        <h1>Plans View</h1>
     </main>
 </template>
 

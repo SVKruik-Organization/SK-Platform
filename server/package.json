@@ -1,7 +1,7 @@
 {
     "name": "static-bot-website",
     "version": "1.0.0",
-    "description": "Static Bot Frontend Website",
+    "description": "Static Bot Website",
     "main": "index.js",
     "scripts": {
         "start": "nodemon index.js"

@@ -23,14 +23,14 @@ export default defineComponent({
             <section>
                 <menu class="nav-links">
                     <RouterLink class="nav-link" to="/product">product</RouterLink>
-                    <RouterLink class="nav-link" to="/pricing">pricing</RouterLink>
+                    <RouterLink class="nav-link" to="/plans">plans</RouterLink>
                     <RouterLink class="nav-link" to="/documentation">docs</RouterLink>
                     <RouterLink class="nav-link" to="/developer">api</RouterLink>
                 </menu>
             </section>
             <RouterLink class="sign-up-button gradient-button" :title="userStore.user.username ? 'account' : 'login'"
                 :to="userStore.user.username ? '/account/overview' : '/login'">{{ userStore.user.username ? "account" :
-                "login" }}</RouterLink>
+                    "login" }}</RouterLink>
         </nav>
     </header>
 </template>
