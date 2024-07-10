@@ -50,7 +50,7 @@ main {
     align-items: stretch;
     grid-template-columns: 1fr 1fr;
     margin: auto;
-    gap: 16px;
+    gap: 0;
     width: 75%;
     height: 42vw;
     max-width: 1560px;
@@ -63,7 +63,7 @@ main {
     display: flex;
     flex-wrap: wrap;
     box-sizing: border-box;
-    padding: 10px;
+    padding: 8px;
     gap: 16px;
 }
 

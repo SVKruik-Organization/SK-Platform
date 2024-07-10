@@ -1,5 +1,5 @@
 import { fetchBase } from '@/utils/fetch';
-import { createRouter, createWebHistory, type RouteLocation } from 'vue-router';
+import { createRouter, createWebHistory } from 'vue-router';
 import { useUserStore } from "@/stores/UserStore";
 
 // Views - Misc
@@ -32,8 +32,9 @@ const router = createRouter({
         { path: "/product", component: ProductView, props: true },
         { path: "/pricing", component: PricingView, props: true },
         { path: "/developer", component: DeveloperView, props: true },
-        { path: "/documentation", component: DocumentationView, props: true }, {
-            path: "/account", component: AccountView, props: true, children: [
+        { path: "/documentation", component: DocumentationView, props: true },
+        {
+            path: "/account", component: AccountView, props: true, beforeEnter: [authValidation], children: [
                 { path: "", redirect: "/account/overview" },
                 { path: "overview", component: TemporaryPage, props: true },
                 { path: "billing", component: TemporaryPage, props: true },
@@ -47,19 +48,17 @@ const router = createRouter({
 });
 
 // Authorization Check
-router.beforeEach(async (to: RouteLocation, from: RouteLocation) => {
+async function authValidation() {
     // Initial Validation
     const userStore = useUserStore();
-    console.log(userStore.user);
-    if (!to.fullPath.includes("/account")) return;
 
     // Token Presence
     const token = userStore.user.token;
-    if (!token) return "/login";
+    if (!token) return "/unauthorized";
 
     // Token Validation
     const access: boolean = await fetchBase(token);
-    if (!access) return "/login";
-});
+    if (!access) return "/unauthorized";
+}
 
 export default router;
