@@ -40,3 +40,9 @@ export enum PromptTypes {
 export type DocumentationFile = {
     "file": string
 }
+
+// File Index/TOC Item
+export type DocumentationIndexItem = {
+    "category": string,
+    "children": Array<string>
+}

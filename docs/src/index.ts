@@ -3,7 +3,7 @@ import dotenv from "dotenv";
 import fs from "fs";
 import path from "path";
 import cors from "cors";
-
+import { FileRequest, IndexItem } from "./customTypes";
 dotenv.config();
 const app: Express = express();
 app.use(express.json());
@@ -24,7 +24,6 @@ app.use(cors(corsOptions));
 import { SearchRoutes } from "./routes/searchRoutes";
 app.use(`${PREFIX}/search`, SearchRoutes);
 import { APIRoutes } from "./routes/apiRoutes";
-import { FileRequest } from "./customTypes";
 app.use(`${PREFIX}/api`, APIRoutes);
 
 // Base Route
@@ -35,10 +34,58 @@ app.get(PREFIX, (req: Request, res: Response) => {
 // Get File
 app.get(`${PREFIX}/getFile`, async (req: Request, res: Response) => {
     try {
+        // Process Search
         const searchParams = req.query as FileRequest;
         const filePath = path.join(path.resolve(__dirname, '../html'), `/${searchParams.folder}/${searchParams.name}.html`);
+
+        // Retrieve & Send File
         const file = fs.readFileSync(filePath, "utf8");
         res.json({ "file": file });
+    } catch (error: any) {
+        if (error.code === "ENOENT") {
+            res.sendStatus(404);
+        } else res.sendStatus(500);
+    }
+});
+
+// Get Index
+app.get(`${PREFIX}/getIndex`, async (req: Request, res: Response) => {
+    try {
+        // Retrieve Folder Names
+        const rawFolders: Array<string> = fs.readdirSync(path.resolve(__dirname, '../html'), { withFileTypes: true })
+            .filter(entity => entity.isDirectory())
+            .map(directory => directory.name);
+
+        // Retrieve & Format Files
+        const index: Array<IndexItem> = [];
+        for (const rawFolderName of rawFolders) {
+            const folderPath = path.join(__dirname, `../html/${rawFolderName}`);
+            const indexItem: IndexItem = {
+                "category": rawFolderName.split("_").join(" "),
+                "children": fs.readdirSync(folderPath).filter(file => file.endsWith(".html")).map(htmlFile => htmlFile.slice(0, -5))
+            }
+            index.push(indexItem);
+        }
+
+        // Send Result
+        res.json({ "index": index });
+    } catch (error: any) {
+        if (error.code === "ENOENT") {
+            res.sendStatus(404);
+        } else res.sendStatus(500);
+    }
+});
+
+// Get Categories
+app.get(`${PREFIX}/getCategories`, async (req: Request, res: Response) => {
+    try {
+        // Retrieve & Format Folder Names
+        const categories: Array<string> = fs.readdirSync(path.resolve(__dirname, '../html'), { withFileTypes: true })
+            .filter(entity => entity.isDirectory())
+            .map(directory => directory.name.split("_").join(" "));
+
+        // Send Result
+        res.json({ "categories": categories });
     } catch (error: any) {
         if (error.code === "ENOENT") {
             res.sendStatus(404);
