@@ -17,7 +17,7 @@ app.use(`${PREFIX}/api`, APIRoutes);
 
 // Base Route
 app.get(PREFIX, (req: Request, res: Response) => {
-    res.json({ "message": "Default Documentation Endpoint" });
+    res.json({ "message": "Default Documentation Endpoint Test" });
 });
 
 // Start
