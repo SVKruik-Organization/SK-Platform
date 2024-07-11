@@ -3,7 +3,11 @@ import dotenv from "dotenv";
 import fs from "fs";
 import path from "path";
 import cors from "cors";
-import { FileRequest, IndexItem } from "./customTypes";
+import { FileRequest, FilesRequest, FolderItem, IndexItem } from "./customTypes";
+import { getFile, getFiles, getFolderIcon } from "./utils/file";
+import { SearchRoutes } from "./routes/searchRoutes";
+import { APIRoutes } from "./routes/apiRoutes";
+import { apiMiddleware, log, logError } from "./utils/logger";
 dotenv.config();
 const app: Express = express();
 app.use(express.json());
@@ -20,10 +24,14 @@ const corsOptions = {
 }
 app.use(cors(corsOptions));
 
+// Logging
+app.get("*", apiMiddleware);
+app.post("*", apiMiddleware);
+app.put("*", apiMiddleware);
+app.delete("*", apiMiddleware);
+
 // Other Routes
-import { SearchRoutes } from "./routes/searchRoutes";
 app.use(`${PREFIX}/search`, SearchRoutes);
-import { APIRoutes } from "./routes/apiRoutes";
 app.use(`${PREFIX}/api`, APIRoutes);
 
 // Base Route
@@ -33,22 +41,18 @@ app.get("/", (req: Request, res: Response) => {
 
 // Get File
 app.get("/getFile/:version/:language", async (req: Request, res: Response) => {
-    try {
-        // Process Search
+    const searchQuery: FileRequest = req.query as FileRequest;
+    const file: string | number = getFile(searchQuery.folder, searchQuery.name, req.params.version, req.params.language);
+    if (typeof file === "number") return res.sendStatus(file);
+    return res.json({ "file": file });
+});
 
-        // TODO: Add metadata (GitHub/Git API?)
-
-        const searchParams = req.query as FileRequest;
-        const filePath = path.join(path.resolve(__dirname, '../html'), `${req.params.version}/${req.params.language}/${searchParams.folder}/${searchParams.name}.html`);
-
-        // Retrieve & Send File
-        const file = fs.readFileSync(filePath, "utf8");
-        res.json({ "file": file });
-    } catch (error: any) {
-        if (error.code === "ENOENT") {
-            res.sendStatus(404);
-        } else res.sendStatus(500);
-    }
+// Get Files
+app.get("/getFiles/:version/:language", async (req: Request, res: Response) => {
+    const searchQuery: FilesRequest = req.query as FilesRequest;
+    const files: Array<string> | number = getFiles(searchQuery.folder, req.params.version, req.params.language);
+    if (typeof files === "number") return res.sendStatus(files);
+    return res.json({ "files": files });
 });
 
 // Get Index
@@ -64,8 +68,9 @@ app.get("/getIndex/:version/:language", async (req: Request, res: Response) => {
         for (const rawFolderName of rawFolders) {
             const folderPath = path.join(__dirname, `../html/${req.params.version}/${req.params.language}/${rawFolderName}`);
             const indexItem: IndexItem = {
-                "category": rawFolderName.split("_").join(" "),
-                "children": fs.readdirSync(folderPath).filter(file => file.endsWith(".html")).map(htmlFile => htmlFile.slice(0, -5))
+                "category_icon": getFolderIcon(rawFolderName.slice(2)),
+                "category": rawFolderName.replace("_", " ").slice(2),
+                "children": fs.readdirSync(folderPath).filter(file => file.endsWith(".html")).map(htmlFile => htmlFile.slice(2, -5))
             }
             index.push(indexItem);
         }
@@ -75,7 +80,10 @@ app.get("/getIndex/:version/:language", async (req: Request, res: Response) => {
     } catch (error: any) {
         if (error.code === "ENOENT") {
             res.sendStatus(404);
-        } else res.sendStatus(500);
+        } else {
+            logError(error);
+            res.sendStatus(500);
+        }
     }
 });
 
@@ -83,20 +91,29 @@ app.get("/getIndex/:version/:language", async (req: Request, res: Response) => {
 app.get("/getCategories/:version/:language", async (req: Request, res: Response) => {
     try {
         // Retrieve & Format Folder Names
-        const categories: Array<string> = fs.readdirSync(path.resolve(__dirname, `../html/${req.params.version}/${req.params.language}`), { withFileTypes: true })
+        const categories: Array<FolderItem> = fs.readdirSync(path.resolve(__dirname, `../html/${req.params.version}/${req.params.language}`), { withFileTypes: true })
             .filter(entity => entity.isDirectory())
-            .map(directory => directory.name.split("_").join(" "));
+            .map(directory => {
+                return {
+                    "category_icon": getFolderIcon(directory.name.slice(2)),
+                    "category": directory.name.replace("_", " ").slice(2)
+                }
+            });
 
         // Send Result
         res.json({ "categories": categories });
     } catch (error: any) {
         if (error.code === "ENOENT") {
             res.sendStatus(404);
-        } else res.sendStatus(500);
+        } else {
+            logError(error);
+            res.sendStatus(500);
+        }
     }
 });
 
 // Start
 app.listen(PORT, () => {
+    log(`Documentation server listening on port ${PORT}`, "info");
     console.log(`Documentation server listening on port ${PORT}`);
 });

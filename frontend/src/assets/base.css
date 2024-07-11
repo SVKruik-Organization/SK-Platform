@@ -1,9 +1,10 @@
 :root {
-    --main: #18191a;
+    --main: #0d1116;
     --font: #ededed;
     --font-light: #b1b1b1;
     --fill: #161b22;
     --border: #30363d;
+    --link: #2f81f7;
 
     --border-radius-low: 5px
 }
@@ -123,7 +124,6 @@ button {
 ::-webkit-scrollbar {
     width: 7px;
 }
-
 
 ::-webkit-scrollbar-track {
     box-shadow: inset 0 0 5px #ACACAC;

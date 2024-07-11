@@ -38,11 +38,17 @@ export enum PromptTypes {
 
 // Documentation File
 export type DocumentationFile = {
-    "file": string
+    "file": string | undefined
+}
+
+// Raw File Index/TOC Item Response
+export type DocumentationIndexResponse = {
+    "index": Array<DocumentationIndexItem>
 }
 
 // File Index/TOC Item
 export type DocumentationIndexItem = {
+    "category_icon": string
     "category": string,
     "children": Array<string>
 }

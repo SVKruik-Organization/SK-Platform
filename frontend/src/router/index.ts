@@ -17,6 +17,9 @@ const ProductView = () => import('@/views/ProductView.vue');
 const TemporaryView = () => import('@/views/TemporaryView.vue');
 
 // Pages
+const DocumentationHomePage = () => import('@/pages/Documentation/HomePage.vue');
+const DocumentationNotFound = () => import('@/pages/Documentation/NotFoundPage.vue');
+const DocumentationReadPage = () => import('@/pages/Documentation/ReadPage.vue');
 const TemporaryPage = () => import('@/pages/TemporaryPage.vue');
 
 // Tabs (sub-pages)
@@ -32,14 +35,21 @@ const router = createRouter({
         { path: "/product", component: ProductView, props: true },
         { path: "/plans", component: PlansView, props: true },
         { path: "/developer", component: DeveloperView, props: true },
-        { path: "/documentation", component: DocumentationView, props: true },
+        {
+            path: "/documentation", component: DocumentationView, props: true, children: [
+                { path: "", component: DocumentationHomePage, props: true },
+                { path: "edit", component: TemporaryPage, props: true },
+                { path: "read/:category/:page?", component: DocumentationReadPage, props: true },
+                { path: "notfound", component: DocumentationNotFound, props: true },
+                { path: ":pathMatch(.*)", redirect: "/documentation" },
+            ]
+        },
         {
             path: "/account", component: AccountView, props: true, beforeEnter: [authValidation], children: [
-                { path: "", redirect: "/account/overview" },
-                { path: "overview", component: TemporaryPage, props: true },
+                { path: "", component: TemporaryPage, props: true },
                 { path: "billing", component: TemporaryPage, props: true },
                 { path: "settings", component: TemporaryPage, props: true },
-                { path: ":pathMatch(.*)", redirect: "/account/overview" },
+                { path: ":pathMatch(.*)", redirect: "/account" },
             ]
         },
         { path: "/unauthorized", component: UnauthorizedView, props: true },

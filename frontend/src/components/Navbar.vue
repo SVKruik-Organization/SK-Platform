@@ -29,7 +29,7 @@ export default defineComponent({
                 </menu>
             </section>
             <RouterLink class="sign-up-button gradient-button" :title="userStore.user.username ? 'account' : 'login'"
-                :to="userStore.user.username ? '/account/overview' : '/login'">{{ userStore.user.username ? "account" :
+                :to="userStore.user.username ? '/account' : '/login'">{{ userStore.user.username ? "account" :
                     "login" }}</RouterLink>
         </nav>
     </header>
