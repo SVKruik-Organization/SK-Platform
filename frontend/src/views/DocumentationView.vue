@@ -10,7 +10,7 @@ export default defineComponent({
         }
     },
     async mounted() {
-        const data = await fetchDocs("get_started", "introduction", "v1");
+        const data = await fetchDocs("Get_Started", "Introduction", "v1");
         if (typeof data === "string") return;
         this.html = data.file;
     }
