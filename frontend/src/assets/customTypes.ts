@@ -38,7 +38,7 @@ export enum PromptTypes {
 
 // Documentation File
 export type DocumentationFile = {
-    "file": string | undefined
+    "file": string
 }
 
 // Raw File Index/TOC Item Response
@@ -51,4 +51,14 @@ export type DocumentationIndexItem = {
     "category_icon": string
     "category": string,
     "children": Array<string>
+}
+
+export type DocumentationCategoriesRepsponse = {
+    "categories": Array<FolderItem>
+}
+
+// Folder-Only
+export type FolderItem = {
+    "category_icon": string,
+    "category": string
 }

@@ -2,6 +2,7 @@
 import type { DocumentationIndexItem } from '@/assets/customTypes';
 import { useDocumentationStore } from '@/stores/DocumentationStore';
 import { defineComponent } from 'vue';
+import { mapStores } from 'pinia';
 
 export default defineComponent({
     name: "DocumentationHomePage",
@@ -15,8 +16,17 @@ export default defineComponent({
             "indexItems": [] as Array<DocumentationIndexItem>
         }
     },
+    computed: {
+        ...mapStores(useDocumentationStore)
+    },
+    watch: {
+        // WIP - Does not yet work.
+        documentationStore(newIndex, oldIndex) {
+            console.log(newIndex, oldIndex);
+        }
+    },
     async mounted() {
-        this.indexItems = await this.documentationStore.getIndex("v1", "en-US");
+        this.indexItems = this.documentationStore.index;
     }
 });
 </script>
@@ -39,10 +49,10 @@ export default defineComponent({
             <div class="banner-content">
                 <div class="banner-content flex category-container" v-if="indexItems.length">
                     <menu class="category-item flex-col" v-for="indexItem of indexItems" :key="indexItem.category">
-                        <div class="flex category-header">
-                            <i class="fa-regular" :class="indexItem.category_icon"></i>
+                        <RouterLink class="flex category-header" :to="`/documentation/read/${indexItem.category}`">
+                            <i class=" fa-regular" :class="indexItem.category_icon"></i>
                             <h3>{{ indexItem.category.replace("_", " ") }}</h3>
-                        </div>
+                        </RouterLink>
                         <RouterLink v-for="child of indexItem.children"
                             :to="`/documentation/read/${indexItem.category}/${child}`">{{
                                 child.replace("_", " ") }}</RouterLink>

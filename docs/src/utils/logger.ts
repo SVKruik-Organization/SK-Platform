@@ -55,7 +55,7 @@ function write(data: string): void {
  * @param next Send downstream.
  */
 function apiMiddleware(req: any, res: Response, next: NextFunction): void {
-    log(`API Request || Agent: ${req.headers["user-agent"]} || ${req.method} ${req.url} || IP: ${req.ip} || Body: ${!!req._body} || Content Type: ${req.headers["content-type"]}`, "info");
+    log(`API Request || Agent: ${req.headers["user-agent"]} || ${req.method} ${req.url} || Body: ${!!req._body} || Content Type: ${req.headers["content-type"]}`, "info");
     next();
 }
 

@@ -1,13 +1,12 @@
 import express, { Express, Request, Response } from "express";
 import dotenv from "dotenv";
-import fs from "fs";
-import path from "path";
 import cors from "cors";
 import { FileRequest, FilesRequest, FolderItem, IndexItem } from "./customTypes";
-import { getFile, getFiles, getFolderIcon } from "./utils/file";
+import { getCategories, getDefaultFile, getFile, getFiles, getIndex } from "./utils/file";
 import { SearchRoutes } from "./routes/searchRoutes";
 import { APIRoutes } from "./routes/apiRoutes";
-import { apiMiddleware, log, logError } from "./utils/logger";
+import { apiMiddleware, log } from "./utils/logger";
+import { rateLimit } from 'express-rate-limit'
 dotenv.config();
 const app: Express = express();
 app.use(express.json());
@@ -55,65 +54,35 @@ app.get("/getFiles/:version/:language", async (req: Request, res: Response) => {
     return res.json({ "files": files });
 });
 
+// Get Category Default
+app.get("/getDefault/:version/:language", async (req: Request, res: Response) => {
+    const searchQuery: FileRequest = req.query as FileRequest;
+    const file: string | number = getDefaultFile(searchQuery.folder, req.params.version, req.params.language);
+    if (typeof file === "number") return res.sendStatus(file);
+    return res.json({ "file": file });
+});
+
 // Get Index
-app.get("/getIndex/:version/:language", async (req: Request, res: Response) => {
-    try {
-        // Retrieve Folder Names
-        const rawFolders: Array<string> = fs.readdirSync(path.resolve(__dirname, `../html/${req.params.version}/${req.params.language}`), { withFileTypes: true })
-            .filter(entity => entity.isDirectory())
-            .map(directory => directory.name);
-
-        // Retrieve & Format Files
-        const index: Array<IndexItem> = [];
-        for (const rawFolderName of rawFolders) {
-            const folderPath = path.join(__dirname, `../html/${req.params.version}/${req.params.language}/${rawFolderName}`);
-            const indexItem: IndexItem = {
-                "category_icon": getFolderIcon(rawFolderName.slice(2)),
-                "category": rawFolderName.replace("_", " ").slice(2),
-                "children": fs.readdirSync(folderPath).filter(file => file.endsWith(".html")).map(htmlFile => htmlFile.slice(2, -5))
-            }
-            index.push(indexItem);
-        }
-
-        // Send Result
-        res.json({ "index": index });
-    } catch (error: any) {
-        if (error.code === "ENOENT") {
-            res.sendStatus(404);
-        } else {
-            logError(error);
-            res.sendStatus(500);
-        }
-    }
+const indexRateLimit = rateLimit({
+    windowMs: 0 * 60 * 1000,
+    limit: 1,
+    standardHeaders: true,
+    legacyHeaders: false
+});
+app.get("/getIndex/:version/:language", indexRateLimit, async (req: Request, res: Response) => {
+    const index: Array<IndexItem> | number = getIndex(req.params.version, req.params.language);
+    if (typeof index === "number") return res.sendStatus(index);
+    return res.json({ "index": index });
 });
 
 // Get Categories
 app.get("/getCategories/:version/:language", async (req: Request, res: Response) => {
-    try {
-        // Retrieve & Format Folder Names
-        const categories: Array<FolderItem> = fs.readdirSync(path.resolve(__dirname, `../html/${req.params.version}/${req.params.language}`), { withFileTypes: true })
-            .filter(entity => entity.isDirectory())
-            .map(directory => {
-                return {
-                    "category_icon": getFolderIcon(directory.name.slice(2)),
-                    "category": directory.name.replace("_", " ").slice(2)
-                }
-            });
-
-        // Send Result
-        res.json({ "categories": categories });
-    } catch (error: any) {
-        if (error.code === "ENOENT") {
-            res.sendStatus(404);
-        } else {
-            logError(error);
-            res.sendStatus(500);
-        }
-    }
+    const categories: Array<FolderItem> | number = getCategories(req.params.version, req.params.language);
+    if (typeof categories === "number") return res.sendStatus(categories);
+    return res.json({ "categories": categories });
 });
 
 // Start
 app.listen(PORT, () => {
     log(`Documentation server listening on port ${PORT}`, "info");
-    console.log(`Documentation server listening on port ${PORT}`);
 });

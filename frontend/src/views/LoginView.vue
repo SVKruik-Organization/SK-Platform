@@ -13,6 +13,7 @@ export default defineComponent({
     methods: {
         /**
          * Logs the user in and creates a session.
+         * @param event The click event.
          */
         async login(event: MouseEvent): Promise<void> {
             // Fetch

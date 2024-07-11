@@ -1,14 +1,22 @@
 <script lang="ts">
+import { useDocumentationStore } from '@/stores/DocumentationStore';
 import { defineComponent } from 'vue';
 
 export default defineComponent({
     name: "DocumentationNavbar",
+    setup() {
+        return {
+            documentationStore: useDocumentationStore()
+        }
+    },
     data() {
         return {
             "languageDropdownVisible": false,
             "homeHover": false,
             "newsHover": false,
-            "languageHover": false
+            "refreshHover": false,
+            "languageHover": false,
+            "refreshDisabled": false
         }
     },
     async mounted() {
@@ -18,6 +26,23 @@ export default defineComponent({
             if (target.classList.contains("disable-close")) return;
             this.languageDropdownVisible = false;
         });
+    },
+    methods: {
+        /**
+         * Cosmetically disable the refresh button.
+         * Enforced by backend rate limit.
+         */
+        reloadDocumentation(): void {
+            const refreshButton: HTMLButtonElement = this.$refs["refreshButton"] as HTMLButtonElement;
+            if (refreshButton.disabled) return;
+            refreshButton.disabled = true;
+            this.refreshDisabled = true;
+            this.documentationStore.getIndex(true);
+            setTimeout(() => {
+                refreshButton.disabled = false;
+                this.refreshDisabled = false;
+            }, 2 * 60 * 1000);
+        }
     }
 });
 </script>
@@ -26,7 +51,9 @@ export default defineComponent({
     <header>
         <nav class="flex">
             <section class="left-nav flex">
-                <h2>SK Docs</h2>
+                <RouterLink to="/documentation">
+                    <h2>SK Docs</h2>
+                </RouterLink>
             </section>
             <section class="right-nav flex">
                 <button title="Search through the documentation." class="input-container flex navbar-pill"
@@ -36,20 +63,31 @@ export default defineComponent({
                 </button>
                 <div class="right-nav-buttons flex">
                     <RouterLink title="Go back to the homepage." class="flex justify-center navbar-pill gradient-button"
-                        to="/" @mouseenter="homeHover = true" :class="homeHover ? 'navbar-pill-expand' : ''"
+                        to="/" @mouseenter="homeHover = true" :class="{ 'navbar-pill-expand': homeHover }"
                         @mouseleave="homeHover = false">
                         <p :class="homeHover ? 'navbar-pill-text-expand' : 'navbar-pill-text-closed'">Home</p>
                         <i class="fa-regular fa-house"></i>
                     </RouterLink>
                     <a title="Read the release notes." class="flex justify-center navbar-pill" href="#"
-                        @mouseenter="newsHover = true" :class="newsHover ? 'navbar-pill-expand' : ''"
+                        @mouseenter="newsHover = true" :class="{ 'navbar-pill-expand': newsHover }"
                         @mouseleave="newsHover = false">
                         <p :class="newsHover ? 'navbar-pill-text-expand' : 'navbar-pill-text-closed'">News</p>
                         <i class="fa-regular fa-newspaper"></i>
                     </a>
+                    <button
+                        :title="refreshDisabled ? 'Re-fetch is rate-limited for less than 2 minutes to prevent spam.' : 'Re-fetch the documentation.'"
+                        class="flex justify-center navbar-pill" type="button" @click="reloadDocumentation()"
+                        @mouseenter="refreshHover = true" ref="refreshButton"
+                        :class="{ 'navbar-pill-expand': refreshHover && !refreshDisabled, 'disabled': refreshDisabled }"
+                        @mouseleave="refreshHover = false">
+                        <p
+                            :class="refreshHover && !refreshDisabled ? 'navbar-pill-text-expand' : 'navbar-pill-text-closed'">
+                            Refresh</p>
+                        <i class="fa-regular fa-rotate"></i>
+                    </button>
                     <button title="Change the language of the documentation." type="button"
                         class="flex language-container justify-center navbar-pill disable-close"
-                        :class="languageHover || languageDropdownVisible ? 'navbar-pill-expand' : ''"
+                        :class="{ 'navbar-pill-expand': languageHover || languageDropdownVisible }"
                         @mouseenter="languageHover = true" @mouseleave="languageHover = false"
                         @click="languageDropdownVisible = !languageDropdownVisible">
                         <p class="disable-close"
@@ -58,8 +96,18 @@ export default defineComponent({
                         <i class="fa-regular fa-globe disable-close"></i>
                         <menu v-if="languageDropdownVisible" class="dropdown-menu flex-col disable-close"
                             ref="language-dropdown">
-                            <p class="disable-close">English</p>
-                            <p class="disable-close">Nederlands</p>
+                            <button type="button" class="menu-item flex"
+                                @click="documentationStore.setLanguage('en-US')">
+                                <i class="fa-regular fa-check"
+                                    :class="{ 'visible': documentationStore.language === 'en-US' }"></i>
+                                <p class="disable-close">English</p>
+                            </button>
+                            <button type="button" class="menu-item flex"
+                                @click="documentationStore.setLanguage('nl-NL')">
+                                <i class="fa-regular fa-check"
+                                    :class="{ 'visible': documentationStore.language === 'nl-NL' }"></i>
+                                <p class="disable-close">Nederlands</p>
+                            </button>
                         </menu>
                     </button>
                 </div>
@@ -115,6 +163,11 @@ nav {
 
 .navbar-pill p {
     overflow: hidden;
+    text-align: left;
+}
+
+.disabled {
+    opacity: 0.3;
 }
 
 .gradient-button i {
@@ -147,9 +200,9 @@ input::placeholder {
 .dropdown-menu {
     position: absolute;
     box-sizing: border-box;
-    padding: 5px;
+    padding: 5px 5px 5px 10px;
     top: 40px;
-    width: 140px;
+    width: 170px;
     height: fit-content;
     right: 0;
     border-radius: var(--border-radius-low);
@@ -157,12 +210,25 @@ input::placeholder {
     border: 1px solid var(--border);
 }
 
+.menu-item {
+    gap: 10px;
+}
+
+.menu-item i {
+    opacity: 0;
+}
+
+.visible {
+    opacity: 1 !important;
+}
+
 .fa-house {
     margin-right: 3px;
 }
 
 .fa-newspaper,
-.fa-globe {
+.fa-globe,
+.fa-rotate {
     margin-right: 4px;
 }
 
