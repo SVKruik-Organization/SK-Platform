@@ -32,11 +32,14 @@ app.get("/", (req: Request, res: Response) => {
 });
 
 // Get File
-app.get("/getFile/:version", async (req: Request, res: Response) => {
+app.get("/getFile/:version/:language", async (req: Request, res: Response) => {
     try {
         // Process Search
+
+        // TODO: Add metadata (GitHub/Git API?)
+
         const searchParams = req.query as FileRequest;
-        const filePath = path.join(path.resolve(__dirname, '../html'), `${req.params.version}/${searchParams.folder}/${searchParams.name}.html`);
+        const filePath = path.join(path.resolve(__dirname, '../html'), `${req.params.version}/${req.params.language}/${searchParams.folder}/${searchParams.name}.html`);
 
         // Retrieve & Send File
         const file = fs.readFileSync(filePath, "utf8");
@@ -49,17 +52,17 @@ app.get("/getFile/:version", async (req: Request, res: Response) => {
 });
 
 // Get Index
-app.get("/getIndex/:version", async (req: Request, res: Response) => {
+app.get("/getIndex/:version/:language", async (req: Request, res: Response) => {
     try {
         // Retrieve Folder Names
-        const rawFolders: Array<string> = fs.readdirSync(path.resolve(__dirname, `../html/${req.params.version}`), { withFileTypes: true })
+        const rawFolders: Array<string> = fs.readdirSync(path.resolve(__dirname, `../html/${req.params.version}/${req.params.language}`), { withFileTypes: true })
             .filter(entity => entity.isDirectory())
             .map(directory => directory.name);
 
         // Retrieve & Format Files
         const index: Array<IndexItem> = [];
         for (const rawFolderName of rawFolders) {
-            const folderPath = path.join(__dirname, `../html/${req.params.version}/${rawFolderName}`);
+            const folderPath = path.join(__dirname, `../html/${req.params.version}/${req.params.language}/${rawFolderName}`);
             const indexItem: IndexItem = {
                 "category": rawFolderName.split("_").join(" "),
                 "children": fs.readdirSync(folderPath).filter(file => file.endsWith(".html")).map(htmlFile => htmlFile.slice(0, -5))
@@ -77,10 +80,10 @@ app.get("/getIndex/:version", async (req: Request, res: Response) => {
 });
 
 // Get Categories
-app.get("/getCategories/:version", async (req: Request, res: Response) => {
+app.get("/getCategories/:version/:language", async (req: Request, res: Response) => {
     try {
         // Retrieve & Format Folder Names
-        const categories: Array<string> = fs.readdirSync(path.resolve(__dirname, `../html/${req.params.version}`), { withFileTypes: true })
+        const categories: Array<string> = fs.readdirSync(path.resolve(__dirname, `../html/${req.params.version}/${req.params.language}`), { withFileTypes: true })
             .filter(entity => entity.isDirectory())
             .map(directory => directory.name.split("_").join(" "));
 

@@ -1,6 +1,11 @@
 :root {
-    --main: #141414;
-    --font: #e3e3e3;
+    --main: #18191a;
+    --font: #ededed;
+    --font-light: #b1b1b1;
+    --fill: #161b22;
+    --border: #30363d;
+
+    --border-radius-low: 5px
 }
 
 body {
@@ -9,12 +14,6 @@ body {
     font-family: "Inter Tight", sans-serif;
     font-optical-sizing: auto;
     font-style: normal;
-}
-
-* {
-    color: var(--font);
-    margin: 0;
-    padding: 0;
 }
 
 /* Custom Classes */
@@ -71,6 +70,13 @@ input,
 a *,
 button * {
     cursor: pointer;
+}
+
+*,
+i {
+    color: var(--font);
+    margin: 0;
+    padding: 0;
 }
 
 a {

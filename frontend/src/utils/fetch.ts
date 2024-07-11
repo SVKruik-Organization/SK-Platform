@@ -48,9 +48,9 @@ export async function fetchLogin(username: string, password: string): Promise<Us
  * Fetch a specific Documentation page.
  * @returns Data or false on error.
  */
-export async function fetchDocs(folder: string, name: string, version: string): Promise<DocumentationFile | string> {
+export async function fetchDocs(folder: string, name: string, version: string, language: string): Promise<DocumentationFile | string> {
     try {
-        const response = await fetch(`${import.meta.env.VITE_DOCS_API_BASE}/getFile/${version}?folder=${folder}&name=${name}`, {
+        const response = await fetch(`${import.meta.env.VITE_DOCS_API_BASE}/getFile/${version}/${language}?folder=${folder}&name=${name}`, {
             method: "GET"
         });
         if (response.ok) {

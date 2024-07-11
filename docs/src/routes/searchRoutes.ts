@@ -7,14 +7,14 @@ router.get("/", function (req: Request, res: Response) {
 });
 
 // All Pages
-router.get("/all/:version", function (req: Request, res: Response) {
+router.get("/all/:version/:language", function (req: Request, res: Response) {
     const searchParams = req.query;
     console.log(searchParams);
     res.json({ "message": "Search All Endpoint" });
 });
 
 // Specific Page
-router.get("/page/:version", function (req: Request, res: Response) {
+router.get("/page/:version/:language", function (req: Request, res: Response) {
     const searchParams = req.query;
     console.log(searchParams);
     res.json({ "message": "Search Page Endpoint" });
