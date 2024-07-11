@@ -1,7 +1,7 @@
 // Get File
 export type FileRequest = {
     "folder": string,
-    "name": string,
+    "name": string
 }
 
 // File Index/TOC Item
