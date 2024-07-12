@@ -1,14 +1,14 @@
 import { defineStore } from "pinia";
-import { useStorage } from "@vueuse/core";
+import { useStorage, useSessionStorage } from "@vueuse/core";
 import type { DocumentationIndexItem, RecommendedItem } from "@/assets/customTypes";
 import { fetchDocumentationIndex, fetchRecommendedItems } from "@/utils/fetch";
 
 export const useDocumentationStore = defineStore("DocumentationStore", {
     state: () => {
         return {
-            index: useStorage("index", [] as Array<DocumentationIndexItem>),
-            recommendedItems: useStorage("recommendedItems", [] as Array<RecommendedItem>),
-            version: useStorage("version", "v1" as string),
+            index: useSessionStorage("index", [] as Array<DocumentationIndexItem>),
+            recommendedItems: useSessionStorage("recommendedItems", [] as Array<RecommendedItem>),
+            version: useStorage("documentationVersion", "v1" as string),
             language: useStorage("language", "en-US" as string)
         }
     },
@@ -40,7 +40,7 @@ export const useDocumentationStore = defineStore("DocumentationStore", {
          */
         async getIndex(force: boolean): Promise<Array<DocumentationIndexItem>> {
             if (this.index.length === 0 || force) {
-                const data = await fetchDocumentationIndex(this.version, this.language);
+                const data = await fetchDocumentationIndex(this.version, this.language, "doc");
                 if (typeof data === "boolean") return this.index;
                 this.index = data.index;
                 return data.index;
@@ -53,7 +53,7 @@ export const useDocumentationStore = defineStore("DocumentationStore", {
          */
         async getRecommendedItems(force: boolean): Promise<Array<RecommendedItem>> {
             if (this.recommendedItems.length === 0 || force) {
-                const data = await fetchRecommendedItems(this.language);
+                const data = await fetchRecommendedItems(this.language, "doc");
                 if (typeof data === "boolean") return this.recommendedItems;
                 this.recommendedItems = data.recommended_items;
                 return data.recommended_items;

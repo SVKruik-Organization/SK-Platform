@@ -34,52 +34,58 @@ app.get("/", (req: Request, res: Response) => {
 });
 
 // Get File
-app.get("/getFile/:version/:language", async (req: Request, res: Response) => {
+app.get("/getFile/:version/:language/:type", async (req: Request, res: Response) => {
     const searchQuery: FileRequest = req.query as FileRequest;
-    const file: string | number = getFile(searchQuery.folder, searchQuery.name, req.params.version, req.params.language);
+    const file: string | number = getFile(searchQuery.folder, searchQuery.name, req.params.version, req.params.language, req.params.type);
     if (typeof file === "number") return res.sendStatus(file);
     return res.json({ "file": file });
 });
 
 // Get Files
-app.get("/getFiles/:version/:language", async (req: Request, res: Response) => {
+app.get("/getFiles/:version/:language/:type", async (req: Request, res: Response) => {
     const searchQuery: FilesRequest = req.query as FilesRequest;
-    const files: Array<string> | number = getFiles(searchQuery.folder, req.params.version, req.params.language);
+    const files: Array<string> | number = getFiles(searchQuery.folder, req.params.version, req.params.language, req.params.type);
     if (typeof files === "number") return res.sendStatus(files);
     return res.json({ "files": files });
 });
 
 // Get Category Default
-app.get("/getDefault/:version/:language", async (req: Request, res: Response) => {
+app.get("/getDefault/:version/:language/:type", async (req: Request, res: Response) => {
     const searchQuery: FileRequest = req.query as FileRequest;
-    const file: string | number = getDefaultFile(searchQuery.folder, req.params.version, req.params.language);
+    const file: string | number = getDefaultFile(searchQuery.folder, req.params.version, req.params.language, req.params.type);
     if (typeof file === "number") return res.sendStatus(file);
     return res.json({ "file": file });
 });
 
 // Get Index
-const rateLimit2 = rateLimit({
-    windowMs: 2 * 60 * 1000,
+const getIndexLimit = rateLimit({
+    windowMs: 0 * 60 * 1000,
     limit: 1,
     standardHeaders: true,
     legacyHeaders: false
 });
-app.get("/getIndex/:version/:language", rateLimit2, async (req: Request, res: Response) => {
-    const index: Array<IndexItem> | number = getIndex(req.params.version, req.params.language);
+app.get("/getIndex/:version/:language/:type", getIndexLimit, async (req: Request, res: Response) => {
+    const index: Array<IndexItem> | number = getIndex(req.params.version, req.params.language, req.params.type);
     if (typeof index === "number") return res.sendStatus(index);
     return res.json({ "index": index });
 });
 
 // Get Recommended Items
-app.get("/getRecommendedItems/:language", rateLimit2, async (req: Request, res: Response) => {
-    const data: Array<RecommendedItem> | number = getRecommendedItems(req.params.language);
+const getRecommendedItemsLimit = rateLimit({
+    windowMs: 0 * 60 * 1000,
+    limit: 1,
+    standardHeaders: true,
+    legacyHeaders: false
+});
+app.get("/getRecommendedItems/:language/:type", getRecommendedItemsLimit, async (req: Request, res: Response) => {
+    const data: Array<RecommendedItem> | number = getRecommendedItems(req.params.language, req.params.type);
     if (typeof data === "number") return res.sendStatus(data);
     return res.json({ "recommended_items": data });
 });
 
 // Get Categories
-app.get("/getCategories/:version/:language", async (req: Request, res: Response) => {
-    const categories: Array<FolderItem> | number = getCategories(req.params.version, req.params.language);
+app.get("/getCategories/:version/:language/:type", async (req: Request, res: Response) => {
+    const categories: Array<FolderItem> | number = getCategories(req.params.version, req.params.language, req.params.type);
     if (typeof categories === "number") return res.sendStatus(categories);
     return res.json({ "categories": categories });
 });

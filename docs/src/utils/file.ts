@@ -9,18 +9,19 @@ import { FolderItem, IndexItem, RecommendedItem } from "../customTypes";
  * @param name The name of the specific HTML file to retrieve, without `.html`. Examples: Introduction, Collaborating
  * @param version The version number of the index. Examples: v1, v2
  * @param language The language of the documentation. Examples: en-US, nl-NL
+ * @param type Documentation (doc) or Guides (guide)
  * @returns HTML data as string or status code on error.
  */
-export function getFile(folder: string, name: string, version: string, language: string): string | number {
+export function getFile(folder: string, name: string, version: string, language: string, type: string): string | number {
     try {
         // TODO: Add metadata (GitHub/Git API?)
 
         // Retrieve Correct Folder
-        const rawFolders: Array<Dirent> = readDirectory(folder, version, language);
+        const rawFolders: Array<Dirent> = readDirectory(folder, version, language, type);
         if (rawFolders.length === 0) return 404;
 
         // Retrieve Correct File
-        const rawFile: Array<Dirent> = fs.readdirSync(path.resolve(__dirname, `../../data/html/${version}/${language}/${rawFolders[0].name}`), { withFileTypes: true })
+        const rawFile: Array<Dirent> = fs.readdirSync(path.resolve(__dirname, `../../data/html/${version}/${language}/${type}/${rawFolders[0].name}`), { withFileTypes: true })
             .filter(entity => entity.isFile() && entity.name !== "0_Default.html" && entity.name.slice(2, -5) === name);
         if (rawFile.length === 0) return 404;
 
@@ -41,18 +42,19 @@ export function getFile(folder: string, name: string, version: string, language:
  * @param folder The name of the folder with underscores instead of spaces. Examples: Get_Started, Community
  * @param version The version number of the index. Examples: v1, v2
  * @param language The language of the documentation. Examples: en-US, nl-NL
+ * @param type Documentation (doc) or Guides (guide)
  * @returns List of pages for the category or status code on error.
  */
-export function getFiles(folder: string, version: string, language: string): Array<string> | number {
+export function getFiles(folder: string, version: string, language: string, type: string): Array<string> | number {
     try {
         // TODO: Add metadata (GitHub/Git API?)
 
         // Retrieve Correct Folder
-        const rawFolders: Array<Dirent> = readDirectory(folder, version, language);
+        const rawFolders: Array<Dirent> = readDirectory(folder, version, language, type);
         if (rawFolders.length === 0) return 404;
 
         // Retrieve Correct File
-        return fs.readdirSync(path.resolve(__dirname, `../../data/html/${version}/${language}/${rawFolders[0].name}`), { withFileTypes: true })
+        return fs.readdirSync(path.resolve(__dirname, `../../data/html/${version}/${language}/${type}/${rawFolders[0].name}`), { withFileTypes: true })
             .filter(entity => entity.isFile() && entity.name !== "0_Default.html")
             .map(file => file.name.slice(2, -5));
     } catch (error: any) {
@@ -70,18 +72,19 @@ export function getFiles(folder: string, version: string, language: string): Arr
  * @param folder The name of the folder with underscores instead of spaces. Examples: Get_Started, Community
  * @param version The version number of the index. Examples: v1, v2
  * @param language The language of the documentation. Examples: en-US, nl-NL
+ * @param type Documentation (doc) or Guides (guide)
  * @returns HTML data as string or status code on error.
  */
-export function getDefaultFile(folder: string, version: string, language: string): string | number {
+export function getDefaultFile(folder: string, version: string, language: string, type: string): string | number {
     try {
         // TODO: Add metadata (GitHub/Git API?)
 
         // Retrieve Correct Folder
-        const rawFolders: Array<Dirent> = readDirectory(folder, version, language);
+        const rawFolders: Array<Dirent> = readDirectory(folder, version, language, type);
         if (rawFolders.length === 0) return 404;
 
         // Retrieve Correct File
-        const rawFile: Array<Dirent> = fs.readdirSync(path.resolve(__dirname, `../../data/html/${version}/${language}/${rawFolders[0].name}`), { withFileTypes: true })
+        const rawFile: Array<Dirent> = fs.readdirSync(path.resolve(__dirname, `../../data/html/${version}/${language}/${type}/${rawFolders[0].name}`), { withFileTypes: true })
             .filter(entity => entity.isFile() && entity.name === "0_Default.html");
         if (rawFile.length === 0) return 404;
 
@@ -101,19 +104,20 @@ export function getDefaultFile(folder: string, version: string, language: string
  * Fetch the index/table of contents.
  * @param version The version number of the index. Examples: v1, v2
  * @param language The language of the documentation. Examples: en-US, nl-NL
+ * @param type Documentation (doc) or Guides (guide)
  * @returns Data or status code on error.
  */
-export function getIndex(version: string, language: string): Array<IndexItem> | number {
+export function getIndex(version: string, language: string, type: string): Array<IndexItem> | number {
     try {
         // Retrieve Folder Names
-        const rawFolders: Array<string> = fs.readdirSync(path.resolve(__dirname, `../../data/html/${version}/${language}`), { withFileTypes: true })
+        const rawFolders: Array<string> = fs.readdirSync(path.resolve(__dirname, `../../data/html/${version}/${language}/${type}`), { withFileTypes: true })
             .filter(entity => entity.isDirectory())
             .map(directory => directory.name);
 
         // Retrieve & Format Files
         const index: Array<IndexItem> = [];
         for (const rawFolderName of rawFolders) {
-            const folderPath = path.join(__dirname, `../../data/html/${version}/${language}/${rawFolderName}`);
+            const folderPath = path.join(__dirname, `../../data/html/${version}/${language}/${type}/${rawFolderName}`);
             const indexItem: IndexItem = {
                 "category_icon": getFolderIcon(rawFolderName.slice(2)),
                 "category": rawFolderName.replace("_", " ").slice(2),
@@ -136,12 +140,13 @@ export function getIndex(version: string, language: string): Array<IndexItem> | 
  * Fetch the icons and names of the categories.
  * @param version The version number of the index. Examples: v1, v2
  * @param language The language of the documentation. Examples: en-US, nl-NL
+ * @param type Documentation (doc) or Guides (guide)
  * @returns Data or status code on error.
  */
-export function getCategories(version: string, language: string): Array<FolderItem> | number {
+export function getCategories(version: string, language: string, type: string): Array<FolderItem> | number {
     try {
         // Retrieve & Format Folder Names
-        return fs.readdirSync(path.resolve(__dirname, `../../data/html/${version}/${language}`), { withFileTypes: true })
+        return fs.readdirSync(path.resolve(__dirname, `../../data/html/${version}/${language}/${type}`), { withFileTypes: true })
             .filter(entity => entity.isDirectory())
             .map(directory => {
                 return {
@@ -159,8 +164,16 @@ export function getCategories(version: string, language: string): Array<FolderIt
     }
 }
 
-function readDirectory(folder: string, version: string, language: string): Array<Dirent> {
-    return fs.readdirSync(path.resolve(__dirname, `../../data/html/${version}/${language}`), { withFileTypes: true })
+/**
+ * Read the contents of a specified directory.
+ * @param folder The name of the folder with underscores instead of spaces. Examples: Get_Started, Community
+ * @param version The version number of the index. Examples: v1, v2
+ * @param language The language of the documentation. Examples: en-US, nl-NL
+ * @param type Documentation (doc) or Guides (guide)
+ * @returns The folders in Dirent format.
+ */
+function readDirectory(folder: string, version: string, language: string, type: string): Array<Dirent> {
+    return fs.readdirSync(path.resolve(__dirname, `../../data/html/${version}/${language}/${type}`), { withFileTypes: true })
         .filter(entity => entity.isDirectory() && entity.name.slice(2) === folder);
 }
 
@@ -196,11 +209,13 @@ export function getFolderIcon(name: string): string {
 
 /**
  * Retrieve recommended items from the JSON file.
+ * @param language The language of the documentation. Examples: en-US, nl-NL
+ * @param type Documentation (doc) or Guides (guide)
  * @returns The current recommended items.
  */
-export function getRecommendedItems(language: string): Array<RecommendedItem> | number {
+export function getRecommendedItems(language: string, type: string): Array<RecommendedItem> | number {
     try {
-        return JSON.parse(fs.readFileSync(path.resolve(path.resolve(__dirname, `../../data/json/${language}/recommendedItems.json`)), "utf8"));
+        return JSON.parse(fs.readFileSync(path.resolve(path.resolve(__dirname, `../../data/json/${language}/${type}.json`)), "utf8"));
     } catch (error: any) {
         return 404;
     }
