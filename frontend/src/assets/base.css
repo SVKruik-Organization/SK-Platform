@@ -49,13 +49,18 @@ body {
 }
 
 .visible {
-    opacity: 1;
+    opacity: 1 !important;
 }
 
 .ellipsis {
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
+}
+
+.light-text {
+    color: var(--font-light);
+    opacity: 0.3;
 }
 
 .gradient-button {

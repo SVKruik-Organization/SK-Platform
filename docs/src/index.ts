@@ -11,11 +11,6 @@ dotenv.config();
 const app: Express = express();
 app.use(express.json());
 
-// Variables
-const PORT: string | number = process.env.PORT || 3001;
-const VERSION: string = process.env.VERSION || "v1";
-const PREFIX: string = `/${VERSION}`;
-
 // CORS Config
 const corsOptions = {
     origin: ["http://localhost:3002", "https://bots.stefankruik.com"],
@@ -30,8 +25,8 @@ app.put("*", apiMiddleware);
 app.delete("*", apiMiddleware);
 
 // Other Routes
-app.use(`${PREFIX}/search`, SearchRoutes);
-app.use(`${PREFIX}/api`, APIRoutes);
+app.use("/search", SearchRoutes);
+app.use("/api", APIRoutes);
 
 // Base Route
 app.get("/", (req: Request, res: Response) => {
@@ -83,6 +78,7 @@ app.get("/getCategories/:version/:language", async (req: Request, res: Response)
 });
 
 // Start
+const PORT: string | number = process.env.PORT || 3001;
 app.listen(PORT, () => {
     log(`Documentation server listening on port ${PORT}`, "info");
 });

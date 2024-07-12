@@ -33,8 +33,29 @@ export default defineComponent({
 
 <template>
     <section class="banner flex">
-        <div class="banner-content flex-col">
-            <h1>Documentation</h1>
+        <div class="banner-content flex hero">
+            <div class="hero-left flex-col">
+                <h1>Documentation</h1>
+                <h3 class="content-splitter-header">Explore information about SK Platform and related product lines.
+                </h3>
+            </div>
+            <div class="hero-right flex">
+                <RouterLink to="/documentation/read/Products/First_Generation#Ciconia">
+                    <img src="/Ciconia.png" class="hero-bot-image" title="Ciconia, first gen main production bot.">
+                </RouterLink>
+                <RouterLink to="/documentation/read/Products/Discord_Bots#Interpres">
+                    <img src="/Interpres.png" class="hero-bot-image" title="Interpres, GitHub API proxy bot.">
+                </RouterLink>
+                <RouterLink to="/documentation/read/Products/Discord_Bots#Ispidina">
+                    <img src="/Ispidina.png" class="hero-bot-image" title="Ispidina, TypeScript pioneer bot.">
+                </RouterLink>
+                <RouterLink to="/documentation/read/Products/Discord_Bots#Stelleri">
+                    <img src="/Stelleri.png" class="hero-bot-image" title="Stelleri, early-access features bot.">
+                </RouterLink>
+                <RouterLink to=" /documentation/read/Products/Discord_Bots#Apricaria">
+                    <img src="/Apricaria.png" class="hero-bot-image" title="Apricaria, second gen main production bot.">
+                </RouterLink>
+            </div>
         </div>
     </section>
     <section class="content-container">
@@ -46,7 +67,7 @@ export default defineComponent({
         </div>
         <div class="content-item">
             <h2 class="banner-content content-splitter-header">Browse all categories</h2>
-            <div class="banner-content">
+            <div class="banner-content category-container-parent flex">
                 <div class="banner-content flex category-container" v-if="indexItems.length">
                     <menu class="category-item flex-col" v-for="indexItem of indexItems" :key="indexItem.category">
                         <RouterLink class="flex category-header" :to="`/documentation/read/${indexItem.category}`">
@@ -113,12 +134,26 @@ h1 {
 
 .category-item {
     width: 290px;
-    height: 350px;
+    height: 290px;
     gap: 20px;
 }
 
 .category-item a {
     color: var(--link);
+}
+
+.hero {
+    justify-content: space-between;
+}
+
+.hero-bot-image {
+    border-radius: 50%;
+    border: 1px solid var(--border);
+    aspect-ratio: 1 / 1;
+    height: 150px;
+    object-fit: cover;
+    margin-left: -75px;
+    user-select: none;
 }
 
 @media (width <=1280px) {
@@ -127,7 +162,74 @@ h1 {
     }
 
     .banner-content {
+        width: 100%;
+    }
+
+    .category-container-parent {
+        justify-content: center;
+    }
+
+    .category-container {
+        justify-content: center;
         width: 95%;
+        margin-left: 12vw;
+    }
+
+    .content-splitter-header {
+        text-align: center;
+    }
+
+    .hero {
+        justify-content: space-evenly;
+    }
+
+    .hero-bot-image {
+        height: 100px;
+        margin-left: -50px;
+    }
+}
+
+@media (width <=750px) {
+    .category-item {
+        width: 240px;
+    }
+}
+
+@media (width <=1070px) {
+    .hero {
+        flex-direction: column;
+        justify-content: center;
+        gap: 30px;
+        height: 100%;
+    }
+
+    .hero-left {
+        width: 95%;
+    }
+
+    .hero-left h1,
+    .hero-left h3 {
+        width: 100%;
+        text-align: center;
+    }
+
+    .hero-right {
+        margin-right: -35px;
+    }
+
+    .hero-bot-image {
+        height: 70px;
+        margin-left: -35px;
+    }
+}
+
+@media (width <=560px) {
+    .category-container {
+        gap: 40px;
+    }
+
+    .category-item {
+        height: min-content;
     }
 }
 </style>

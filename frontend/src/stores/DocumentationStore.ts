@@ -12,6 +12,21 @@ export const useDocumentationStore = defineStore("DocumentationStore", {
         }
     },
     actions: {
+        /**
+         * Change the documentation version.
+         * @param newLanguage The new version to set to.
+         * @returns Void, return if invalid.
+         */
+        setVersion(newVersion: string): void {
+            const validVersions: Array<string> = ["v1", "v2"];
+            if (validVersions.includes(newVersion)) return;
+            this.version = newVersion;
+        },
+        /**
+         * Change the documentation language.
+         * @param newLanguage The new language to set to.
+         * @returns Void, return if invalid.
+         */
         setLanguage(newLanguage: string): void {
             const validLanguages: Array<string> = ["nl-NL", "en-US"];
             if (!validLanguages.includes(newLanguage)) return;
