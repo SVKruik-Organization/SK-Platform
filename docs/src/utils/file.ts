@@ -1,7 +1,7 @@
 import fs, { Dirent } from "fs";
 import path from "path";
 import { logError } from "./logger";
-import { FolderItem, IndexItem } from "../customTypes";
+import { FolderItem, IndexItem, RecommendedItem } from "../customTypes";
 
 /**
  * Fetch a specific Documentation page from the file system.
@@ -20,7 +20,7 @@ export function getFile(folder: string, name: string, version: string, language:
         if (rawFolders.length === 0) return 404;
 
         // Retrieve Correct File
-        const rawFile: Array<Dirent> = fs.readdirSync(path.resolve(__dirname, `../../html/${version}/${language}/${rawFolders[0].name}`), { withFileTypes: true })
+        const rawFile: Array<Dirent> = fs.readdirSync(path.resolve(__dirname, `../../data/html/${version}/${language}/${rawFolders[0].name}`), { withFileTypes: true })
             .filter(entity => entity.isFile() && entity.name !== "0_Default.html" && entity.name.slice(2, -5) === name);
         if (rawFile.length === 0) return 404;
 
@@ -52,7 +52,7 @@ export function getFiles(folder: string, version: string, language: string): Arr
         if (rawFolders.length === 0) return 404;
 
         // Retrieve Correct File
-        return fs.readdirSync(path.resolve(__dirname, `../../html/${version}/${language}/${rawFolders[0].name}`), { withFileTypes: true })
+        return fs.readdirSync(path.resolve(__dirname, `../../data/html/${version}/${language}/${rawFolders[0].name}`), { withFileTypes: true })
             .filter(entity => entity.isFile() && entity.name !== "0_Default.html")
             .map(file => file.name.slice(2, -5));
     } catch (error: any) {
@@ -81,7 +81,7 @@ export function getDefaultFile(folder: string, version: string, language: string
         if (rawFolders.length === 0) return 404;
 
         // Retrieve Correct File
-        const rawFile: Array<Dirent> = fs.readdirSync(path.resolve(__dirname, `../../html/${version}/${language}/${rawFolders[0].name}`), { withFileTypes: true })
+        const rawFile: Array<Dirent> = fs.readdirSync(path.resolve(__dirname, `../../data/html/${version}/${language}/${rawFolders[0].name}`), { withFileTypes: true })
             .filter(entity => entity.isFile() && entity.name === "0_Default.html");
         if (rawFile.length === 0) return 404;
 
@@ -106,14 +106,14 @@ export function getDefaultFile(folder: string, version: string, language: string
 export function getIndex(version: string, language: string): Array<IndexItem> | number {
     try {
         // Retrieve Folder Names
-        const rawFolders: Array<string> = fs.readdirSync(path.resolve(__dirname, `../../html/${version}/${language}`), { withFileTypes: true })
+        const rawFolders: Array<string> = fs.readdirSync(path.resolve(__dirname, `../../data/html/${version}/${language}`), { withFileTypes: true })
             .filter(entity => entity.isDirectory())
             .map(directory => directory.name);
 
         // Retrieve & Format Files
         const index: Array<IndexItem> = [];
         for (const rawFolderName of rawFolders) {
-            const folderPath = path.join(__dirname, `../../html/${version}/${language}/${rawFolderName}`);
+            const folderPath = path.join(__dirname, `../../data/html/${version}/${language}/${rawFolderName}`);
             const indexItem: IndexItem = {
                 "category_icon": getFolderIcon(rawFolderName.slice(2)),
                 "category": rawFolderName.replace("_", " ").slice(2),
@@ -141,7 +141,7 @@ export function getIndex(version: string, language: string): Array<IndexItem> | 
 export function getCategories(version: string, language: string): Array<FolderItem> | number {
     try {
         // Retrieve & Format Folder Names
-        return fs.readdirSync(path.resolve(__dirname, `../../html/${version}/${language}`), { withFileTypes: true })
+        return fs.readdirSync(path.resolve(__dirname, `../../data/html/${version}/${language}`), { withFileTypes: true })
             .filter(entity => entity.isDirectory())
             .map(directory => {
                 return {
@@ -160,7 +160,7 @@ export function getCategories(version: string, language: string): Array<FolderIt
 }
 
 function readDirectory(folder: string, version: string, language: string): Array<Dirent> {
-    return fs.readdirSync(path.resolve(__dirname, `../../html/${version}/${language}`), { withFileTypes: true })
+    return fs.readdirSync(path.resolve(__dirname, `../../data/html/${version}/${language}`), { withFileTypes: true })
         .filter(entity => entity.isDirectory() && entity.name.slice(2) === folder);
 }
 
@@ -191,5 +191,17 @@ export function getFolderIcon(name: string): string {
             return "fa-cloud";
         default:
             return "fa-check";
+    }
+}
+
+/**
+ * Retrieve recommended items from the JSON file.
+ * @returns The current recommended items.
+ */
+export function getRecommendedItems(language: string): Array<RecommendedItem> | number {
+    try {
+        return JSON.parse(fs.readFileSync(path.resolve(path.resolve(__dirname, `../../data/json/${language}/recommendedItems.json`)), "utf8"));
+    } catch (error: any) {
+        return 404;
     }
 }

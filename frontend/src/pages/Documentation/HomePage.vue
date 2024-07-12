@@ -1,11 +1,18 @@
 <script lang="ts">
-import type { DocumentationIndexItem } from '@/assets/customTypes';
+import type { DocumentationIndexItem, RecommendedItem } from '@/assets/customTypes';
+import DocumentationRecommendedItem from '@/components/DocumentationRecommendedItem.vue';
 import { useDocumentationStore } from '@/stores/DocumentationStore';
 import { defineComponent } from 'vue';
-import { mapStores } from 'pinia';
 
 export default defineComponent({
     name: "DocumentationHomePage",
+    components: {
+        DocumentationRecommendedItem
+    },
+    props: {
+        "category": { type: String, required: false },
+        "page": { type: String, required: false }
+    },
     setup() {
         return {
             documentationStore: useDocumentationStore()
@@ -13,20 +20,17 @@ export default defineComponent({
     },
     data() {
         return {
-            "indexItems": [] as Array<DocumentationIndexItem>
-        }
-    },
-    computed: {
-        ...mapStores(useDocumentationStore)
-    },
-    watch: {
-        // WIP - Does not yet work.
-        documentationStore(newIndex, oldIndex) {
-            console.log(newIndex, oldIndex);
+            "indexItems": [] as Array<DocumentationIndexItem>,
+            "recommendedItems": [] as Array<RecommendedItem>
         }
     },
     async mounted() {
-        this.indexItems = this.documentationStore.index;
+        this.documentationStore.$subscribe((mutation, state) => {
+            this.indexItems = state.index;
+            this.recommendedItems = state.recommendedItems;
+        });
+        this.indexItems = await this.documentationStore.getIndex(false);
+        this.recommendedItems = await this.documentationStore.getRecommendedItems(false);
     }
 });
 </script>
@@ -52,7 +56,7 @@ export default defineComponent({
                 <RouterLink to="/documentation/read/Products/Discord_Bots#Stelleri">
                     <img src="/Stelleri.png" class="hero-bot-image" title="Stelleri, early-access features bot.">
                 </RouterLink>
-                <RouterLink to=" /documentation/read/Products/Discord_Bots#Apricaria">
+                <RouterLink to="/documentation/read/Products/Discord_Bots#Apricaria">
                     <img src="/Apricaria.png" class="hero-bot-image" title="Apricaria, second gen main production bot.">
                 </RouterLink>
             </div>
@@ -61,8 +65,9 @@ export default defineComponent({
     <section class="content-container">
         <div class="content-item">
             <h2 class="banner-content content-splitter-header">Recommended pages</h2>
-            <div class="banner-content">
-                <p>Come back later for these.</p>
+            <div class="banner-content recommended-item-container flex">
+                <DocumentationRecommendedItem v-for="recommendedItem of recommendedItems" :key="recommendedItem.id"
+                    :data="recommendedItem"></DocumentationRecommendedItem>
             </div>
         </div>
         <div class="content-item">
@@ -116,6 +121,7 @@ h1 {
 
 .content-item {
     gap: 30px;
+    width: 100%;
 }
 
 .banner-content {
@@ -148,12 +154,17 @@ h1 {
 
 .hero-bot-image {
     border-radius: 50%;
-    border: 1px solid var(--border);
+    border: 1px solid var(--fill);
     aspect-ratio: 1 / 1;
     height: 150px;
     object-fit: cover;
     margin-left: -75px;
     user-select: none;
+}
+
+.recommended-item-container {
+    flex-wrap: wrap;
+    gap: 20px;
 }
 
 @media (width <=1280px) {
@@ -166,6 +177,14 @@ h1 {
     }
 
     .category-container-parent {
+        justify-content: center;
+    }
+
+    .content-item {
+        width: 95%;
+    }
+
+    .recommended-item-container {
         justify-content: center;
     }
 

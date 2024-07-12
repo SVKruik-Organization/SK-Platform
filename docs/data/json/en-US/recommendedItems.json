@@ -1,0 +1,20 @@
+[
+    {
+        "id": 1,
+        "title": "Integrating Apricaria in your server",
+        "category": "Get_Started",
+        "page": "Integration",
+        "anchor": "#Apricaria",
+        "icon": "fa-code-pull-request",
+        "time": 3
+    },
+    {
+        "id": 2,
+        "title": "Creating & managing your Operator account",
+        "category": "Operator",
+        "page": "Account",
+        "anchor": "",
+        "icon": "fa-user-crown",
+        "time": 5
+    }
+]

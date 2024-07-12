@@ -51,7 +51,7 @@ export default defineComponent({
             this.languageDropdownVisible = !this.languageDropdownVisible;
         },
         /**
-         * Cosmetically disable the refresh button.
+         * Cosmetically disable the refresh button and refetch the documentation index & recommended items.
          * Enforced by backend rate limit.
          */
         reloadDocumentation(): void {
@@ -60,6 +60,7 @@ export default defineComponent({
             refreshButton.disabled = true;
             this.refreshDisabled = true;
             this.documentationStore.getIndex(true);
+            this.documentationStore.getRecommendedItems(true);
             setTimeout(() => {
                 refreshButton.disabled = false;
                 this.refreshDisabled = false;
@@ -312,7 +313,7 @@ input::placeholder {
 
     .middle-nav {
         top: 50px;
-        width: calc(100vw - 27px);
+        width: calc(100vw - 20px);
     }
 
     .input-container {

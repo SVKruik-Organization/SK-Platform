@@ -16,8 +16,8 @@ export default defineComponent({
         }
     },
     props: {
-        "category": String,
-        "page": String
+        "category": { type: String, required: true },
+        "page": { type: String, required: false }
     },
     async mounted() {
         if (!this.category) return;

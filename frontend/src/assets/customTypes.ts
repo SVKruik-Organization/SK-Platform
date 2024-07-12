@@ -62,3 +62,19 @@ export type FolderItem = {
     "category_icon": string,
     "category": string
 }
+
+// Raw Recommended Item Response
+export type DocumentationRecommendedItemsResponse = {
+    "recommended_items": Array<RecommendedItem>
+}
+
+// Documentation Homepage Recommended
+export type RecommendedItem = {
+    "id": number,
+    "category": string,
+    "page": string,
+    "title": string,
+    "anchor": string,
+    "icon": string,
+    "time": number
+}

@@ -1,8 +1,8 @@
 import express, { Express, Request, Response } from "express";
 import dotenv from "dotenv";
 import cors from "cors";
-import { FileRequest, FilesRequest, FolderItem, IndexItem } from "./customTypes";
-import { getCategories, getDefaultFile, getFile, getFiles, getIndex } from "./utils/file";
+import { FileRequest, FilesRequest, FolderItem, IndexItem, RecommendedItem } from "./customTypes";
+import { getCategories, getDefaultFile, getFile, getFiles, getIndex, getRecommendedItems } from "./utils/file";
 import { SearchRoutes } from "./routes/searchRoutes";
 import { APIRoutes } from "./routes/apiRoutes";
 import { apiMiddleware, log } from "./utils/logger";
@@ -58,16 +58,23 @@ app.get("/getDefault/:version/:language", async (req: Request, res: Response) =>
 });
 
 // Get Index
-const indexRateLimit = rateLimit({
-    windowMs: 0 * 60 * 1000,
+const rateLimit2 = rateLimit({
+    windowMs: 2 * 60 * 1000,
     limit: 1,
     standardHeaders: true,
     legacyHeaders: false
 });
-app.get("/getIndex/:version/:language", indexRateLimit, async (req: Request, res: Response) => {
+app.get("/getIndex/:version/:language", rateLimit2, async (req: Request, res: Response) => {
     const index: Array<IndexItem> | number = getIndex(req.params.version, req.params.language);
     if (typeof index === "number") return res.sendStatus(index);
     return res.json({ "index": index });
+});
+
+// Get Recommended Items
+app.get("/getRecommendedItems/:language", rateLimit2, async (req: Request, res: Response) => {
+    const data: Array<RecommendedItem> | number = getRecommendedItems(req.params.language);
+    if (typeof data === "number") return res.sendStatus(data);
+    return res.json({ "recommended_items": data });
 });
 
 // Get Categories

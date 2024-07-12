@@ -1,4 +1,4 @@
-import type { DocumentationCategoriesRepsponse, DocumentationFile, DocumentationIndexResponse, FolderItem, UserDataResponse } from "@/assets/customTypes";
+import type { DocumentationCategoriesRepsponse, DocumentationFile, DocumentationIndexResponse, DocumentationRecommendedItemsResponse, FolderItem, UserDataResponse } from "@/assets/customTypes";
 
 /**
  * Validates user session.
@@ -129,6 +129,28 @@ export async function fetchDocumentationIndex(version: string, language: string)
             return await response.json();
         } else if (response.status === 404) {
             return { "index": [] };
+        } else return false;
+    } catch (error) {
+        console.log(error);
+        return false;
+    }
+}
+
+/**
+ * Fetch the current recommended items.
+ * @param version The version number of the recommended items. Examples: v1, v2
+ * @param language The language of the documentation. Examples: en-US, nl-NL
+ * @returns Data or false on error.
+ */
+export async function fetchRecommendedItems(language: string): Promise<DocumentationRecommendedItemsResponse | boolean> {
+    try {
+        const response = await fetch(`${import.meta.env.VITE_DOCS_API_BASE}/getRecommendedItems/${language}`, {
+            method: "GET"
+        });
+        if (response.ok) {
+            return await response.json();
+        } else if (response.status === 404) {
+            return { "recommended_items": [] };
         } else return false;
     } catch (error) {
         console.log(error);

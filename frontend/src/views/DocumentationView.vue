@@ -5,8 +5,8 @@ import DocumentationNavbar from '../components/DocumentationNavbar.vue'
 export default defineComponent({
     name: "DocumentationView",
     props: {
-        "category": String,
-        "page": String
+        "category": { type: String, required: false },
+        "page": { type: String, required: false }
     },
     components: {
         DocumentationNavbar

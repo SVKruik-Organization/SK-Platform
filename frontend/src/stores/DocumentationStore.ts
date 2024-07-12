@@ -1,12 +1,13 @@
 import { defineStore } from "pinia";
 import { useStorage } from "@vueuse/core";
-import type { DocumentationIndexItem } from "@/assets/customTypes";
-import { fetchDocumentationIndex } from "@/utils/fetch";
+import type { DocumentationIndexItem, RecommendedItem } from "@/assets/customTypes";
+import { fetchDocumentationIndex, fetchRecommendedItems } from "@/utils/fetch";
 
 export const useDocumentationStore = defineStore("DocumentationStore", {
     state: () => {
         return {
             index: useStorage("index", [] as Array<DocumentationIndexItem>),
+            recommendedItems: useStorage("recommendedItems", [] as Array<RecommendedItem>),
             version: useStorage("version", "v1" as string),
             language: useStorage("language", "en-US" as string)
         }
@@ -44,6 +45,19 @@ export const useDocumentationStore = defineStore("DocumentationStore", {
                 this.index = data.index;
                 return data.index;
             } else return this.index;
+        },
+        /**
+         * Retrieve the current recommended items.
+         * @param force Overwrite exiting local storage.
+         * @returns The new or the existing recommended items.
+         */
+        async getRecommendedItems(force: boolean): Promise<Array<RecommendedItem>> {
+            if (this.recommendedItems.length === 0 || force) {
+                const data = await fetchRecommendedItems(this.language);
+                if (typeof data === "boolean") return this.recommendedItems;
+                this.recommendedItems = data.recommended_items;
+                return data.recommended_items;
+            } else return this.recommendedItems;
         },
         /**
          * Check if a string is a valid folder/category.
