@@ -5,24 +5,28 @@ import type { RecommendedItem } from '@/assets/customTypes';
 export default defineComponent({
     name: "DocumentationRecommendedItem",
     props: {
+        "type": { type: String, required: true },
         "data": { type: Object as PropType<RecommendedItem>, required: true },
     },
 });
 </script>
 
 <template>
-    <RouterLink :to="`/documentation/read/${data.category}/${data.page}${data.anchor}`" class="recommended-item flex">
+    <RouterLink :to="`/documentation/read/${type}/${data.category}/${data.page}${data.anchor}`"
+        class="recommended-item flex">
         <section class="recommended-item-left flex">
             <i :class="`fa-regular ${data.icon}`"></i>
         </section>
         <article class="recommended-item-right flex-col">
             <p class="recommended-title">{{ data.title }}</p>
             <div class="recommended-sub flex">
-                <RouterLink :to="`/documentation/read/${data.category}`" class="recommended-sub-item">
+                <RouterLink :to="`/documentation/read/${type}/${data.category}`" class="recommended-sub-item">
                     {{ data.category.replace("_", " ") }}
                 </RouterLink>
                 <i class="fa-regular fa-circle-small recommended-sub-item"></i>
                 <p class="recommended-sub-item">{{ data.time }} min read</p>
+                <i class="fa-regular fa-circle-small recommended-sub-item"></i>
+                <p class="recommended-sub-item">{{ type }}</p>
             </div>
         </article>
     </RouterLink>

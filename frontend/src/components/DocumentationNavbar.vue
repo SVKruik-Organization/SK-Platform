@@ -59,8 +59,8 @@ export default defineComponent({
             if (refreshButton.disabled) return;
             refreshButton.disabled = true;
             this.refreshDisabled = true;
-            this.documentationStore.getIndex(true);
-            this.documentationStore.getRecommendedItems(true);
+            this.documentationStore.getIndex(true, "Doc");
+            this.documentationStore.getRecommendedItems(true, "Doc");
             setTimeout(() => {
                 refreshButton.disabled = false;
                 this.refreshDisabled = false;
@@ -154,7 +154,7 @@ export default defineComponent({
                                 @click="documentationStore.setLanguage('nl-NL')">
                                 <i class="fa-regular fa-check"
                                     :class="{ 'visible': documentationStore.language === 'nl-NL' }"></i>
-                                <p>Nederlands</p>
+                                <p class="light-text">Nederlands</p>
                             </button>
                         </menu>
                     </button>

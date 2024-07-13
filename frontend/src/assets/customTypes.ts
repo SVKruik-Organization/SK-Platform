@@ -9,18 +9,6 @@ export type UserDataResponse = {
     "access_token": string
 }
 
-// JavaScript Types
-export enum ObjectTypes {
-    bigint = "bigint",
-    boolean = "boolean",
-    function = "function",
-    number = "number",
-    object = "object",
-    string = "string",
-    symbol = "symbol",
-    undefined = "undefined"
-}
-
 // Date Formatter
 export type DateFormat = {
     "date": string,
@@ -36,7 +24,14 @@ export enum PromptTypes {
     danger = "danger"
 }
 
-// Documentation File
+// Valid Page Types
+export enum DocumentationTypes {
+    doc = "Doc",
+    guide = "Guide"
+}
+
+// Single Documentation File
+// TODO - Metadata
 export type DocumentationFile = {
     "file": string
 }
@@ -46,18 +41,19 @@ export type DocumentationIndexResponse = {
     "index": Array<DocumentationIndexItem>
 }
 
-// File Index/TOC Item
+// Single Index/TOC Item
 export type DocumentationIndexItem = {
     "category_icon": string
     "category": string,
     "children": Array<string>
 }
 
-export type DocumentationCategoriesRepsponse = {
+//  Raw Page Categories Response
+export type DocumentationCategoriesResponse = {
     "categories": Array<FolderItem>
 }
 
-// Folder-Only
+// Single Folder Only
 export type FolderItem = {
     "category_icon": string,
     "category": string

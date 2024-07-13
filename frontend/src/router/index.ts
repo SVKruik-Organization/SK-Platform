@@ -39,7 +39,7 @@ const router = createRouter({
             path: "/documentation", component: DocumentationView, props: true, children: [
                 { path: "", component: DocumentationHomePage, props: true },
                 { path: "edit", component: TemporaryPage, props: true },
-                { path: "read/:category/:page?", component: DocumentationReadPage, props: true },
+                { path: "read/:type/:category/:page?", component: DocumentationReadPage, props: true },
                 { path: "notfound", component: DocumentationNotFound, props: true },
                 { path: ":pathMatch(.*)", redirect: "/documentation" },
             ]

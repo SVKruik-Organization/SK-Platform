@@ -20,17 +20,17 @@ export default defineComponent({
     },
     data() {
         return {
-            "indexItems": [] as Array<DocumentationIndexItem>,
-            "recommendedItems": [] as Array<RecommendedItem>
+            "docIndexItems": [] as Array<DocumentationIndexItem>,
+            "recommendedDocItems": [] as Array<RecommendedItem>
         }
     },
     async mounted() {
         this.documentationStore.$subscribe((mutation, state) => {
-            this.indexItems = state.index;
-            this.recommendedItems = state.recommendedItems;
+            this.docIndexItems = state.docIndex;
+            this.recommendedDocItems = state.recommendedDocItems;
         });
-        this.indexItems = await this.documentationStore.getIndex(false);
-        this.recommendedItems = await this.documentationStore.getRecommendedItems(false);
+        this.docIndexItems = await this.documentationStore.getIndex(false, "Doc");
+        this.recommendedDocItems = await this.documentationStore.getRecommendedItems(false, "Doc");
     }
 });
 </script>
@@ -44,19 +44,19 @@ export default defineComponent({
                 </h3>
             </div>
             <div class="hero-right flex">
-                <RouterLink to="/documentation/read/Products/First_Generation#Ciconia">
+                <RouterLink to="/documentation/read/Doc/Products/First_Generation#Ciconia">
                     <img src="/Ciconia.png" class="hero-bot-image" title="Ciconia, first gen main production bot.">
                 </RouterLink>
-                <RouterLink to="/documentation/read/Products/Discord_Bots#Interpres">
+                <RouterLink to="/documentation/read/Doc/Products/Discord_Bots#Interpres">
                     <img src="/Interpres.png" class="hero-bot-image" title="Interpres, GitHub API proxy bot.">
                 </RouterLink>
-                <RouterLink to="/documentation/read/Products/Discord_Bots#Ispidina">
+                <RouterLink to="/documentation/read/Doc/Products/Discord_Bots#Ispidina">
                     <img src="/Ispidina.png" class="hero-bot-image" title="Ispidina, TypeScript pioneer bot.">
                 </RouterLink>
-                <RouterLink to="/documentation/read/Products/Discord_Bots#Stelleri">
+                <RouterLink to="/documentation/read/Doc/Products/Discord_Bots#Stelleri">
                     <img src="/Stelleri.png" class="hero-bot-image" title="Stelleri, early-access features bot.">
                 </RouterLink>
-                <RouterLink to="/documentation/read/Products/Discord_Bots#Apricaria">
+                <RouterLink to="/documentation/read/Doc/Products/Discord_Bots#Apricaria">
                     <img src="/Apricaria.png" class="hero-bot-image" title="Apricaria, second gen main production bot.">
                 </RouterLink>
             </div>
@@ -66,24 +66,43 @@ export default defineComponent({
         <div class="content-item">
             <h2 class="banner-content content-splitter-header">Recommended pages</h2>
             <div class="banner-content recommended-item-container flex">
-                <DocumentationRecommendedItem v-for="recommendedItem of recommendedItems" :key="recommendedItem.id"
-                    :data="recommendedItem"></DocumentationRecommendedItem>
+                <DocumentationRecommendedItem
+                    v-if="recommendedDocItems.length > 0 && recommendedDocItems[0].title !== 'Not_Found'"
+                    v-for="recommendedDocItem of recommendedDocItems" type="Doc" :key="recommendedDocItem.id"
+                    :data="recommendedDocItem"></DocumentationRecommendedItem>
+                <article v-else-if="recommendedDocItems.length > 0 && recommendedDocItems[0].category === 'Not_Found'"
+                    class="flex-col">
+                    <p>Looks like there aren't any recommended docs available right now. This is likely due to your
+                        language
+                        and/or version settings.</p>
+                    <p>Please change them to their defaults and try again.</p>
+                </article>
+                <div v-else>Something went wrong while retrieving the recommended docs. Please try again later.</div>
             </div>
         </div>
         <div class="content-item">
             <h2 class="banner-content content-splitter-header">Browse all categories</h2>
             <div class="banner-content category-container-parent flex">
-                <div class="banner-content flex category-container" v-if="indexItems.length">
-                    <menu class="category-item flex-col" v-for="indexItem of indexItems" :key="indexItem.category">
-                        <RouterLink class="flex category-header" :to="`/documentation/read/${indexItem.category}`">
-                            <i class=" fa-regular" :class="indexItem.category_icon"></i>
-                            <h3>{{ indexItem.category.replace("_", " ") }}</h3>
+                <div class="banner-content flex category-container"
+                    v-if="docIndexItems.length > 0 && docIndexItems[0].category !== 'Not_Found'">
+                    <menu class="category-item flex-col" v-for="docIndexItem of docIndexItems"
+                        :key="docIndexItem.category">
+                        <RouterLink class="flex category-header"
+                            :to="`/documentation/read/Doc/${docIndexItem.category}`">
+                            <i class=" fa-regular" :class="docIndexItem.category_icon"></i>
+                            <h3>{{ docIndexItem.category.replace("_", " ") }}</h3>
                         </RouterLink>
-                        <RouterLink v-for="child of indexItem.children"
-                            :to="`/documentation/read/${indexItem.category}/${child}`">{{
+                        <RouterLink v-for="child of docIndexItem.children"
+                            :to="`/documentation/read/Doc/${docIndexItem.category}/${child}`">{{
                                 child.replace("_", " ") }}</RouterLink>
                     </menu>
                 </div>
+                <article v-else-if="docIndexItems.length > 0 && docIndexItems[0].category === 'Not_Found'"
+                    class="flex-col">
+                    <p>Looks like there aren't any docs available right now. This is likely due to your language
+                        and/or version settings.</p>
+                    <p>Please change them to their defaults and try again.</p>
+                </article>
                 <div v-else>Something went wrong while retrieving the documentation index. Please try again later.</div>
             </div>
         </div>

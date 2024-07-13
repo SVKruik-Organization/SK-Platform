@@ -9,7 +9,7 @@ import { FolderItem, IndexItem, RecommendedItem } from "../customTypes";
  * @param name The name of the specific HTML file to retrieve, without `.html`. Examples: Introduction, Collaborating
  * @param version The version number of the index. Examples: v1, v2
  * @param language The language of the documentation. Examples: en-US, nl-NL
- * @param type Documentation (doc) or Guides (guide)
+ * @param type Documentation (Doc) or Guides (Guide)
  * @returns HTML data as string or status code on error.
  */
 export function getFile(folder: string, name: string, version: string, language: string, type: string): string | number {
@@ -42,7 +42,7 @@ export function getFile(folder: string, name: string, version: string, language:
  * @param folder The name of the folder with underscores instead of spaces. Examples: Get_Started, Community
  * @param version The version number of the index. Examples: v1, v2
  * @param language The language of the documentation. Examples: en-US, nl-NL
- * @param type Documentation (doc) or Guides (guide)
+ * @param type Documentation (Doc) or Guides (Guide)
  * @returns List of pages for the category or status code on error.
  */
 export function getFiles(folder: string, version: string, language: string, type: string): Array<string> | number {
@@ -72,7 +72,7 @@ export function getFiles(folder: string, version: string, language: string, type
  * @param folder The name of the folder with underscores instead of spaces. Examples: Get_Started, Community
  * @param version The version number of the index. Examples: v1, v2
  * @param language The language of the documentation. Examples: en-US, nl-NL
- * @param type Documentation (doc) or Guides (guide)
+ * @param type Documentation (Doc) or Guides (Guide)
  * @returns HTML data as string or status code on error.
  */
 export function getDefaultFile(folder: string, version: string, language: string, type: string): string | number {
@@ -104,7 +104,7 @@ export function getDefaultFile(folder: string, version: string, language: string
  * Fetch the index/table of contents.
  * @param version The version number of the index. Examples: v1, v2
  * @param language The language of the documentation. Examples: en-US, nl-NL
- * @param type Documentation (doc) or Guides (guide)
+ * @param type Documentation (Doc) or Guides (Guide)
  * @returns Data or status code on error.
  */
 export function getIndex(version: string, language: string, type: string): Array<IndexItem> | number {
@@ -140,7 +140,7 @@ export function getIndex(version: string, language: string, type: string): Array
  * Fetch the icons and names of the categories.
  * @param version The version number of the index. Examples: v1, v2
  * @param language The language of the documentation. Examples: en-US, nl-NL
- * @param type Documentation (doc) or Guides (guide)
+ * @param type Documentation (Doc) or Guides (Guide)
  * @returns Data or status code on error.
  */
 export function getCategories(version: string, language: string, type: string): Array<FolderItem> | number {
@@ -169,7 +169,7 @@ export function getCategories(version: string, language: string, type: string): 
  * @param folder The name of the folder with underscores instead of spaces. Examples: Get_Started, Community
  * @param version The version number of the index. Examples: v1, v2
  * @param language The language of the documentation. Examples: en-US, nl-NL
- * @param type Documentation (doc) or Guides (guide)
+ * @param type Documentation (Doc) or Guides (Guide)
  * @returns The folders in Dirent format.
  */
 function readDirectory(folder: string, version: string, language: string, type: string): Array<Dirent> {
@@ -210,7 +210,7 @@ export function getFolderIcon(name: string): string {
 /**
  * Retrieve recommended items from the JSON file.
  * @param language The language of the documentation. Examples: en-US, nl-NL
- * @param type Documentation (doc) or Guides (guide)
+ * @param type Documentation (Doc) or Guides (Guide)
  * @returns The current recommended items.
  */
 export function getRecommendedItems(language: string, type: string): Array<RecommendedItem> | number {
