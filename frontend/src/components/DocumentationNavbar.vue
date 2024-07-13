@@ -184,10 +184,11 @@ nav {
     box-sizing: border-box;
     padding: 5px;
     width: 35px;
-    transition: width 0.5s;
+    transition: width 0.5s, background-color 0.5s;
 }
 
-.navbar-pill-expand {
+.navbar-pill:hover {
+    background-color: var(--border);
     width: 120px;
 }
 
@@ -228,6 +229,10 @@ nav {
 
 .input-container {
     gap: 5px;
+    width: 300px;
+}
+
+.input-container:hover {
     width: 300px;
 }
 
@@ -302,17 +307,24 @@ input::placeholder {
 @media (width <=800px) {
     nav {
         align-items: flex-start;
-        height: 92px;
+        height: 96px;
+    }
+
+    .left-nav {
+        position: absolute;
+        left: 10px;
+        top: 10px;
     }
 
     .right-nav {
         align-items: flex-end;
         flex-direction: column-reverse;
+        width: 100%;
     }
 
     .middle-nav {
-        top: 50px;
-        width: calc(100vw - 20px);
+        position: unset;
+        width: 100%;
     }
 
     .input-container {

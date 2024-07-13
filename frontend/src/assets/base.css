@@ -68,6 +68,10 @@ body {
     color: var(--font-light);
 }
 
+.small-text {
+    font-size: 14px;
+}
+
 .gradient-button {
     background-image: linear-gradient(to right, #3977a0 0%, #68589f 39%, #3977a0 100%);
     background-size: 200% auto;

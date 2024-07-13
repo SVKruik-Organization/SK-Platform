@@ -1,5 +1,6 @@
 <script lang="ts">
 import type { DocumentationIndexItem, RecommendedItem } from '@/assets/customTypes';
+import DocumentationCategoryItem from '@/components/DocumentationCategoryItem.vue';
 import DocumentationRecommendedItem from '@/components/DocumentationRecommendedItem.vue';
 import { useDocumentationStore } from '@/stores/DocumentationStore';
 import { defineComponent } from 'vue';
@@ -7,7 +8,8 @@ import { defineComponent } from 'vue';
 export default defineComponent({
     name: "DocumentationHomePage",
     components: {
-        DocumentationRecommendedItem
+        DocumentationRecommendedItem,
+        DocumentationCategoryItem
     },
     setup() {
         return {
@@ -18,7 +20,8 @@ export default defineComponent({
         return {
             "docIndexItems": [] as Array<DocumentationIndexItem>,
             "guideIndexItems": [] as Array<DocumentationIndexItem>,
-            "recommendedItems": [] as Array<RecommendedItem>
+            "recommendedItems": [] as Array<RecommendedItem>,
+            "pressedButton": "" as string
         }
     },
     async mounted() {
@@ -61,8 +64,8 @@ export default defineComponent({
         <div class="banner-content flex hero">
             <div class="hero-left flex-col">
                 <h1>Information & Guides</h1>
-                <h3 class="content-splitter-header light-text">Explore information about SK Platform and related
-                    product lines.
+                <h3 class="content-splitter-header light-text ">Explore information about SK Platform
+                    and related product lines.
                 </h3>
             </div>
             <div class="hero-right flex">
@@ -98,29 +101,21 @@ export default defineComponent({
                         language and/or version settings.</p>
                     <p>Please change them to their defaults and try again.</p>
                 </article>
-                <div v-else>Something went wrong while retrieving the recommended items. Please try again later.</div>
+                <div v-else>Something went wrong while retrieving the recommended items. Please try again later.
+                </div>
             </div>
         </div>
-        <div class="banner-content flex-col">
+        <div class="banner-content flex-col section-title-container">
             <h2 ref="Documentation">Information</h2>
-            <p class="light-text">In-depth information about all topics from integrating to managing my products.</p>
+            <p class="light-text">In-depth information about all topics from integrating to
+                managing the SK Platform products.</p>
         </div>
         <div class="content-item">
-            <h3 class="banner-content content-splitter-header">Browse all categories</h3>
             <div class="banner-content category-container-parent flex">
-                <div class="banner-content flex category-container"
+                <div class="banner-content category-container"
                     v-if="docIndexItems.length > 0 && docIndexItems[0].category !== 'Not_Found'">
-                    <menu class="category-item flex-col" v-for="docIndexItem of docIndexItems"
-                        :key="docIndexItem.category">
-                        <RouterLink class="flex category-header"
-                            :to="`/documentation/read/Doc/${docIndexItem.category}`">
-                            <i class=" fa-regular" :class="docIndexItem.category_icon"></i>
-                            <h4>{{ docIndexItem.category.replace("_", " ") }}</h4>
-                        </RouterLink>
-                        <RouterLink v-for="child of docIndexItem.children"
-                            :to="`/documentation/read/Doc/${docIndexItem.category}/${child}`">{{
-                                child.replace("_", " ") }}</RouterLink>
-                    </menu>
+                    <DocumentationCategoryItem v-for="docIndexItem of docIndexItems" :data="docIndexItem" type="Doc"
+                        :key="docIndexItem.category"></DocumentationCategoryItem>
                 </div>
                 <article v-else-if="docIndexItems.length > 0 && docIndexItems[0].category === 'Not_Found'"
                     class="flex-col">
@@ -128,31 +123,23 @@ export default defineComponent({
                         and/or version settings.</p>
                     <p>Please change them to their defaults and try again.</p>
                 </article>
-                <div v-else>Something went wrong while retrieving the documentation index. Please try again later.</div>
+                <div v-else>Something went wrong while retrieving the documentation index. Please try again later.
+                </div>
             </div>
         </div>
     </section>
-    <section class="content-container">
-        <div class="banner-content flex-col">
+    <section class="content-container last-content-container">
+        <div class="banner-content flex-col section-title-container">
             <h2 ref="Guides">Guides</h2>
-            <p class="light-text">Step-by-step tutorials to perform a wide variety of actions.</p>
+            <p class="light-text">Step-by-step tutorials on performing a wide variety of actions.</p>
         </div>
         <div class="content-item">
-            <h3 class="banner-content content-splitter-header">Browse all categories</h3>
             <div class="banner-content category-container-parent flex">
-                <div class="banner-content flex category-container"
+                <div class="banner-content category-container"
                     v-if="guideIndexItems.length > 0 && guideIndexItems[0].category !== 'Not_Found'">
-                    <menu class="category-item flex-col" v-for="guideIndexItem of guideIndexItems"
-                        :key="guideIndexItem.category">
-                        <RouterLink class="flex category-header"
-                            :to="`/documentation/read/Guide/${guideIndexItem.category}`">
-                            <i class=" fa-regular" :class="guideIndexItem.category_icon"></i>
-                            <h4>{{ guideIndexItem.category.replace("_", " ") }}</h4>
-                        </RouterLink>
-                        <RouterLink v-for="child of guideIndexItem.children"
-                            :to="`/documentation/read/Guide/${guideIndexItem.category}/${child}`">{{
-                                child.replace("_", " ") }}</RouterLink>
-                    </menu>
+                    <DocumentationCategoryItem v-for="guideIndexItem of guideIndexItems" :key="guideIndexItem.category"
+                        :data="guideIndexItem" type="Guide">
+                    </DocumentationCategoryItem>
                 </div>
                 <article v-else-if="docIndexItems.length > 0 && docIndexItems[0].category === 'Not_Found'"
                     class="flex-col">
@@ -163,6 +150,63 @@ export default defineComponent({
                 <div v-else>Something went wrong while retrieving the guide index. Please try again later.</div>
             </div>
         </div>
+    </section>
+    <section class="content-container last-content-container">
+        <div class="banner-content flex-col section-title-container">
+            <h2 ref="More">More</h2>
+            <span class="splitter"></span>
+        </div>
+        <div class="banner-content documentation-footer">
+            <form class="flex-col documentation-footer-item">
+                <h4>Happy with SK Docs?</h4>
+                <div class="flex">
+                    <button @click="pressedButton = 'like'" class="flex footer-button footer-button-like"
+                        :class="{ 'active-button-like': pressedButton === 'like' }" type="button"
+                        title="Click this if you like the design and information available.">
+                        <p>Yes</p>
+                        <i class="fa-regular fa-heart light-text"></i>
+                    </button>
+                    <button @click="pressedButton = 'dislike'" class="flex footer-button footer-button-dislike"
+                        :class="{ 'active-button-dislike': pressedButton === 'dislike' }" type="button"
+                        title="Click this if you think some things could be better.">
+                        <p>No</p>
+                        <i class="fa-regular fa-heart-crack light-text"></i>
+                    </button>
+                </div>
+            </form>
+            <div class="flex-col documentation-footer-item">
+                <h4>Contributing</h4>
+                <p class="light-text small-text">See room for improvement or something unclear?</p>
+                <div class="flex-col">
+                    <RouterLink to="/documentation/read/Doc/Contributing/SK_Docs"
+                        class="flex footer-button footer-button-contribute">
+                        <p>Help writing SK Docs</p>
+                        <i class="fa-regular fa-handshake-angle light-text"></i>
+                    </RouterLink>
+                </div>
+            </div>
+            <div class="flex-col documentation-footer-item">
+                <h4>Docs didn't cut it?</h4>
+                <div class="flex-col">
+                    <RouterLink to="/documentation/read/Doc/Community/Support" class="flex footer-link">
+                        <i class="fa-regular fa-mailbox-flag-up"></i>
+                        <p>Contact support</p>
+                    </RouterLink>
+                    <RouterLink to="/documentation/read/Doc/Community/Links#Discord" class="flex footer-link">
+                        <i class="fa-brands fa-discord"></i>
+                        <p>Join the Discord</p>
+                    </RouterLink>
+                </div>
+            </div>
+        </div>
+        <a href="https://github.com/SVKruik" target="_blank"
+            class="banner-content last-content-container footer-note flex">
+            <p class="disabled-text">Stefan Kruik</p>
+            <i class="fa-regular fa-circle-small disabled-text"></i>
+            <p class="disabled-text">{{ new Date().getFullYear() }}</p>
+            <i class="fa-regular fa-circle-small disabled-text"></i>
+            <p class="disabled-text">v1_dev_alpha</p>
+        </a>
     </section>
 </template>
 
@@ -204,23 +248,13 @@ h1 {
 }
 
 .category-container {
-    align-items: flex-start;
-    flex-wrap: wrap;
-    column-gap: 13px;
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr 1fr;
+    justify-items: flex-start;
 }
 
 .category-header {
     gap: 15px;
-}
-
-.category-item {
-    width: 290px;
-    height: 290px;
-    gap: 20px;
-}
-
-.category-item a {
-    color: var(--link);
 }
 
 .hero {
@@ -246,6 +280,91 @@ h1 {
     gap: 20px;
 }
 
+.splitter {
+    width: 100%;
+    height: 2px;
+    background-color: var(--fill);
+}
+
+.documentation-footer {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+}
+
+.documentation-footer-item {
+    gap: 20px;
+}
+
+.footer-button {
+    border-radius: var(--border-radius-low);
+    border: 1px solid var(--border);
+    background-color: var(--fill);
+    height: 35px;
+    box-sizing: border-box;
+    padding: 5px 10px;
+    width: max-content;
+    justify-content: space-between;
+    transition: 0.5s;
+}
+
+.footer-button p {
+    color: var(--font-light);
+}
+
+.footer-button-like:hover {
+    border: 1px solid #345a32;
+    background-color: #5c7f5d;
+}
+
+.footer-button-dislike:hover {
+    border: 1px solid #9f4c4c;
+    background-color: #8e4444;
+}
+
+.footer-button-contribute:hover {
+    border: 1px solid #355667;
+    background-color: #5b6b78;
+}
+
+.footer-button-like:hover p,
+.footer-button-like:hover i,
+.footer-button-dislike:hover p,
+.footer-button-dislike:hover i,
+.footer-button-contribute:hover p,
+.footer-button-contribute:hover i {
+    color: var(--font);
+}
+
+.active-button-like {
+    border: 1px solid #1d331c;
+    background-color: #324633;
+}
+
+.active-button-dislike {
+    border: 1px solid #703434;
+    background-color: #572929;
+}
+
+.footer-note {
+    margin-bottom: 15px;
+    margin-top: 40px;
+    width: 100%;
+    justify-content: center;
+}
+
+.footer-note p {
+    font-size: small
+}
+
+.footer-note i {
+    font-size: 10px;
+}
+
+.footer-link {
+    gap: 10px;
+    padding: 5px;
+}
+
 @media (width <=1280px) {
     .banner {
         padding: 10px;
@@ -255,22 +374,28 @@ h1 {
         width: 100%;
     }
 
+    .section-title-container {
+        align-items: center;
+    }
+
+    .banner-content h2,
+    .banner-content p {
+        width: 90%;
+        text-align: center;
+    }
+
     .category-container-parent {
         justify-content: center;
     }
 
-    .content-item {
-        width: 95%;
-    }
-
     .recommended-item-container {
         justify-content: center;
+        width: 90%;
     }
 
     .category-container {
-        justify-content: center;
-        width: 95%;
-        margin-left: 12vw;
+        grid-template-columns: 1fr 1fr 1fr;
+        justify-items: flex-end;
     }
 
     .content-splitter-header {
@@ -285,11 +410,22 @@ h1 {
         height: 100px;
         margin-left: -50px;
     }
-}
 
-@media (width <=750px) {
-    .category-item {
-        width: 240px;
+    .splitter {
+        width: 90%;
+    }
+
+    .documentation-footer {
+        display: flex;
+        justify-content: center;
+        margin-bottom: 70px;
+        flex-wrap: wrap;
+    }
+
+    .documentation-footer-item {
+        gap: 20px;
+        width: 300px;
+        align-items: center;
     }
 }
 
@@ -321,13 +457,29 @@ h1 {
     }
 }
 
-@media (width <=560px) {
+@media (width <=910px) {
+    .documentation-footer {
+        row-gap: 50px;
+    }
+}
+
+@media (width <=580px) {
     .category-container {
         gap: 40px;
     }
 
-    .category-item {
-        height: min-content;
+    .last-content-container {
+        margin-top: 40px;
+    }
+
+    .category-container {
+        grid-template-columns: 1fr 1fr;
+    }
+}
+
+@media (width <=360px) {
+    .category-container {
+        grid-template-columns: 1fr;
     }
 }
 </style>
