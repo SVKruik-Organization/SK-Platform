@@ -38,6 +38,7 @@ export const useDocumentationStore = defineStore("DocumentationStore", {
         /**
          * Retrieve the index/table of contents.
          * @param force Overwrite exiting local storage.
+         * @param type Documentation (Doc) or Guides (Guide)
          * @returns A new or the existing index.
          */
         async getIndex(force: boolean, type: string): Promise<Array<DocumentationIndexItem>> {
@@ -55,6 +56,7 @@ export const useDocumentationStore = defineStore("DocumentationStore", {
         /**
          * Retrieve the current recommended items.
          * @param force Overwrite exiting local storage.
+         * @param type Documentation (Doc) or Guides (Guide)
          * @returns The new or the existing recommended items.
          */
         async getRecommendedItems(force: boolean, type: string): Promise<Array<RecommendedItem>> {
@@ -72,6 +74,7 @@ export const useDocumentationStore = defineStore("DocumentationStore", {
         /**
          * Check if a string is a valid folder/category.
          * @param folder The name of the folder to validate.
+         * @param type Documentation (Doc) or Guides (Guide)
          * @returns The folder object from local storage or undefined if not found.
          */
         validateFolder(folder: string | undefined, type: string): DocumentationIndexItem | undefined {
@@ -84,7 +87,9 @@ export const useDocumentationStore = defineStore("DocumentationStore", {
         },
         /**
          * Check if a string is a valid category item.
-         * @param folder The name of the page to validate.
+         * @param folder The name of the folder to validate.
+         * @param name The name of the page to validate.
+         * @param type Documentation (Doc) or Guides (Guide)
          * @returns If the page is valid or not.
          */
         validatePage(folder: string | undefined, name: string | undefined, type: string): boolean {
@@ -93,6 +98,10 @@ export const useDocumentationStore = defineStore("DocumentationStore", {
             if (!target) return false;
             return 0 < target.children.filter(child => child === name).length;
         },
+        /**
+         * Reload all store keys.
+         * @returns Void, return on error.
+         */
         async refresh(): Promise<void> {
             const data = await fetchDocumentationRefresh(this.version, this.language);
             if (typeof data === "boolean") return;
@@ -100,6 +109,17 @@ export const useDocumentationStore = defineStore("DocumentationStore", {
             this.guideIndex = data.guideIndex;
             this.recommendedDocItems = data.recommendedDocItems;
             this.recommendedGuideItems = data.recommendedGuideItems;
+        },
+        /**
+         * Retrieve all child items of a category.
+         * @param type Documentation (Doc) or Guides (Guide)
+         * @param categoryName The name of the folder.
+         * @returns The list of pages as primitive strings.
+         */
+        getCategoryList(type: string, categoryName: string): Array<string> {
+            let convertedType: "docIndex" | "guideIndex" = "docIndex";
+            if (type === "Guide") convertedType = "guideIndex";
+            return this[convertedType].filter(indexItem => indexItem.category === categoryName)[0].children;
         }
     }
 });

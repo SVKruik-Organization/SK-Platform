@@ -43,8 +43,8 @@ export default defineComponent({
     border: 1px solid var(--border);
     background-color: var(--fill);
     width: 49%;
-    gap: 15px;
     height: 60px;
+    gap: 0;
 }
 
 .recommended-item-left {
@@ -57,6 +57,15 @@ export default defineComponent({
 .recommended-item-right {
     height: 100%;
     justify-content: center;
+    flex: 1;
+    padding: 0 0 0 15px;
+    border-top-right-radius: var(--border-radius-low);
+    border-bottom-right-radius: var(--border-radius-low);
+    transition: background-color 0.5s;
+}
+
+.recommended-item:hover .recommended-item-right {
+    background-color: var(--border);
 }
 
 .recommended-sub-item {
