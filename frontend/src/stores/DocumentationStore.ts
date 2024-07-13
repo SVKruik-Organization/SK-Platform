@@ -1,7 +1,7 @@
 import { defineStore } from "pinia";
 import { useStorage, useSessionStorage } from "@vueuse/core";
 import type { DocumentationIndexItem, RecommendedItem } from "@/assets/customTypes";
-import { fetchDocumentationIndex, fetchRecommendedItems } from "@/utils/fetch";
+import { fetchDocumentationIndex, fetchDocumentationRefresh, fetchRecommendedItems } from "@/utils/fetch";
 
 export const useDocumentationStore = defineStore("DocumentationStore", {
     state: () => {
@@ -92,6 +92,14 @@ export const useDocumentationStore = defineStore("DocumentationStore", {
             const target = this.validateFolder(folder, type);
             if (!target) return false;
             return 0 < target.children.filter(child => child === name).length;
+        },
+        async refresh(): Promise<void> {
+            const data = await fetchDocumentationRefresh(this.version, this.language);
+            if (typeof data === "boolean") return;
+            this.docIndex = data.docIndex;
+            this.guideIndex = data.guideIndex;
+            this.recommendedDocItems = data.recommendedDocItems;
+            this.recommendedGuideItems = data.recommendedGuideItems;
         }
     }
 });

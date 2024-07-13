@@ -27,12 +27,12 @@ export default defineComponent({
         // Category Landing Page
         if (!this.page) {
             if (!this.documentationStore.validateFolder(this.category, this.type)) return this.$router.push(`/documentation/notfound?type=${this.type}&category=${this.category}`);
-            this.html = await fetchDocumentationDefault(this.category, this.documentationStore.version, this.documentationStore.language, "Doc");
+            this.html = await fetchDocumentationDefault(this.category, this.documentationStore.version, this.documentationStore.language, this.type);
 
             // Specific Documentation Page
         } else {
             if (!this.documentationStore.validatePage(this.category, this.page, this.type)) return this.$router.push(`/documentation/notfound?type=${this.type}&category=${this.category}&page=${this.page}`);
-            this.html = await fetchDocumentationPage(this.category, this.page, this.documentationStore.version, this.documentationStore.language, "Doc");
+            this.html = await fetchDocumentationPage(this.category, this.page, this.documentationStore.version, this.documentationStore.language, this.type);
         }
     }
 });

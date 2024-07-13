@@ -4,15 +4,17 @@ import type { RecommendedItem } from '@/assets/customTypes';
 
 export default defineComponent({
     name: "DocumentationRecommendedItem",
+    emits: [
+        "scrollAnchor"
+    ],
     props: {
-        "type": { type: String, required: true },
         "data": { type: Object as PropType<RecommendedItem>, required: true },
     },
 });
 </script>
 
 <template>
-    <RouterLink :to="`/documentation/read/${type}/${data.category}/${data.page}${data.anchor}`"
+    <RouterLink :to="`/documentation/read/${data.type}/${data.category}/${data.page}${data.anchor}`"
         class="recommended-item flex">
         <section class="recommended-item-left flex">
             <i :class="`fa-regular ${data.icon}`"></i>
@@ -20,13 +22,16 @@ export default defineComponent({
         <article class="recommended-item-right flex-col">
             <p class="recommended-title">{{ data.title }}</p>
             <div class="recommended-sub flex">
-                <RouterLink :to="`/documentation/read/${type}/${data.category}`" class="recommended-sub-item">
+                <RouterLink :to="`/documentation${data.type === 'Doc' ? '#Documentation' : '#Guides'}`"
+                    @click="$emit('scrollAnchor', data.type)" class="recommended-sub-item">
+                    {{ data.type }}
+                </RouterLink>
+                <i class="fa-regular fa-circle-small recommended-sub-item"></i>
+                <RouterLink :to="`/documentation/read/${data.type}/${data.category}`" class="recommended-sub-item">
                     {{ data.category.replace("_", " ") }}
                 </RouterLink>
                 <i class="fa-regular fa-circle-small recommended-sub-item"></i>
                 <p class="recommended-sub-item">{{ data.time }} min read</p>
-                <i class="fa-regular fa-circle-small recommended-sub-item"></i>
-                <p class="recommended-sub-item">{{ type }}</p>
             </div>
         </article>
     </RouterLink>

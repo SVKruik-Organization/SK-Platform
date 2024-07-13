@@ -72,5 +72,14 @@ export type RecommendedItem = {
     "title": string,
     "anchor": string,
     "icon": string,
-    "time": number
+    "time": number,
+    "type": string
+}
+
+// Raw Full Refresh Response
+export type DocumentationRefreshResponse = {
+    "docIndex": Array<DocumentationIndexItem>,
+    "guideIndex": Array<DocumentationIndexItem>,
+    "recommendedDocItems": Array<RecommendedItem>,
+    "recommendedGuideItems": Array<RecommendedItem>
 }

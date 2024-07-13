@@ -54,13 +54,12 @@ export default defineComponent({
          * Cosmetically disable the refresh button and refetch the documentation index & recommended items.
          * Enforced by backend rate limit.
          */
-        reloadDocumentation(): void {
+        async reloadDocumentation(): Promise<void> {
             const refreshButton: HTMLButtonElement = this.$refs["refreshButton"] as HTMLButtonElement;
             if (refreshButton.disabled) return;
             refreshButton.disabled = true;
             this.refreshDisabled = true;
-            this.documentationStore.getIndex(true, "Doc");
-            this.documentationStore.getRecommendedItems(true, "Doc");
+            await this.documentationStore.refresh();
             setTimeout(() => {
                 refreshButton.disabled = false;
                 this.refreshDisabled = false;
@@ -104,7 +103,7 @@ export default defineComponent({
                             <button type="button" class="menu-item flex" @click="documentationStore.setVersion('v2')">
                                 <i class="fa-regular fa-check"
                                     :class="{ 'visible': documentationStore.version === 'v2' }"></i>
-                                <p class="light-text">v2 Beta</p>
+                                <p class="disabled-text">v2 Beta</p>
                             </button>
                         </menu>
                     </button>
@@ -126,7 +125,7 @@ export default defineComponent({
                         :title="refreshDisabled ? 'Re-fetch is rate-limited for less than 2 minutes to prevent spam.' : 'Re-fetch the documentation.'"
                         class="flex justify-center navbar-pill" type="button" @click="reloadDocumentation()"
                         @mouseenter="refreshHover = true" ref="refreshButton"
-                        :class="{ 'navbar-pill-expand': refreshHover && !refreshDisabled, 'light-text': refreshDisabled }"
+                        :class="{ 'navbar-pill-expand': refreshHover && !refreshDisabled, 'disabled-text': refreshDisabled }"
                         @mouseleave="refreshHover = false">
                         <p
                             :class="refreshHover && !refreshDisabled ? 'navbar-pill-text-expand' : 'navbar-pill-text-closed'">
@@ -154,7 +153,7 @@ export default defineComponent({
                                 @click="documentationStore.setLanguage('nl-NL')">
                                 <i class="fa-regular fa-check"
                                     :class="{ 'visible': documentationStore.language === 'nl-NL' }"></i>
-                                <p class="light-text">Nederlands</p>
+                                <p class="disabled-text">Nederlands</p>
                             </button>
                         </menu>
                     </button>

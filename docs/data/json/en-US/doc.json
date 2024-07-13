@@ -1,12 +1,13 @@
 [
     {
         "id": 1,
-        "title": "Integrating Apricaria in your server",
-        "category": "Get_Started",
-        "page": "Integration",
+        "title": "Getting to know Apricaria",
+        "category": "Products",
+        "page": "Discord_Bots",
         "anchor": "#Apricaria",
-        "icon": "fa-code-pull-request",
-        "time": 3
+        "icon": "fa-bird",
+        "time": 3,
+        "type": "Doc"
     },
     {
         "id": 2,
@@ -15,6 +16,7 @@
         "page": "Account",
         "anchor": "",
         "icon": "fa-user-crown",
-        "time": 5
+        "time": 5,
+        "type": "Doc"
     }
 ]

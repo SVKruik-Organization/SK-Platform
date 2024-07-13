@@ -24,6 +24,17 @@ app.post("*", apiMiddleware);
 app.put("*", apiMiddleware);
 app.delete("*", apiMiddleware);
 
+// Placeholder Recommended Item
+const placeholder: RecommendedItem = {
+    "title": "None_Available",
+    "anchor": "",
+    "category": "",
+    "id": 1,
+    "page": "",
+    "time": 1,
+    "icon": ""
+};
+
 // Other Routes
 app.use("/search", SearchRoutes);
 app.use("/api", APIRoutes);
@@ -31,6 +42,36 @@ app.use("/api", APIRoutes);
 // Base Route
 app.get("/", (req: Request, res: Response) => {
     res.json({ "message": "Default Documentation Endpoint" });
+});
+
+// Refresh
+const refreshLimit = rateLimit({
+    windowMs: 2 * 60 * 1000,
+    limit: 1,
+    standardHeaders: true,
+    legacyHeaders: false
+});
+app.get("/refresh/:version/:language", refreshLimit, async (req: Request, res: Response) => {
+    // Indices
+    const docIndex: Array<IndexItem> | number = getIndex(req.params.version, req.params.language, "Doc");
+    if (typeof docIndex === "number") return res.sendStatus(docIndex);
+    const guideIndex: Array<IndexItem> | number = getIndex(req.params.version, req.params.language, "Guide");
+    if (typeof guideIndex === "number") return res.sendStatus(guideIndex);
+
+    // Recommended Items
+    const recommendedDocItems: Array<RecommendedItem> | number = getRecommendedItems(req.params.language, "Doc");
+    if (typeof recommendedDocItems === "number") return res.sendStatus(recommendedDocItems);
+    if (recommendedDocItems.length === 0) recommendedDocItems.push(placeholder);
+    const recommendedGuideItems: Array<RecommendedItem> | number = getRecommendedItems(req.params.language, "Guide");
+    if (typeof recommendedGuideItems === "number") return res.sendStatus(recommendedGuideItems);
+    if (recommendedGuideItems.length === 0) recommendedGuideItems.push(placeholder);
+
+    return res.json({
+        "docIndex": docIndex,
+        "guideIndex": guideIndex,
+        "recommendedDocItems": recommendedDocItems,
+        "recommendedGuideItems": recommendedGuideItems
+    });
 });
 
 // Get File
@@ -58,28 +99,17 @@ app.get("/getDefault/:version/:language/:type", async (req: Request, res: Respon
 });
 
 // Get Index
-const getIndexLimit = rateLimit({
-    windowMs: 0 * 60 * 1000,
-    limit: 1,
-    standardHeaders: true,
-    legacyHeaders: false
-});
-app.get("/getIndex/:version/:language/:type", getIndexLimit, async (req: Request, res: Response) => {
+app.get("/getIndex/:version/:language/:type", async (req: Request, res: Response) => {
     const index: Array<IndexItem> | number = getIndex(req.params.version, req.params.language, req.params.type);
     if (typeof index === "number") return res.sendStatus(index);
     return res.json({ "index": index });
 });
 
 // Get Recommended Items
-const getRecommendedItemsLimit = rateLimit({
-    windowMs: 0 * 60 * 1000,
-    limit: 1,
-    standardHeaders: true,
-    legacyHeaders: false
-});
-app.get("/getRecommendedItems/:language/:type", getRecommendedItemsLimit, async (req: Request, res: Response) => {
+app.get("/getRecommendedItems/:language/:type", async (req: Request, res: Response) => {
     const data: Array<RecommendedItem> | number = getRecommendedItems(req.params.language, req.params.type);
     if (typeof data === "number") return res.sendStatus(data);
+    if (data.length === 0) data.push(placeholder);
     return res.json({ "recommended_items": data });
 });
 

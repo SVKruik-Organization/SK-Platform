@@ -1,4 +1,4 @@
-import type { DocumentationCategoriesResponse, DocumentationFile, DocumentationIndexResponse, DocumentationRecommendedItemsResponse, FolderItem, UserDataResponse } from "@/assets/customTypes";
+import type { DocumentationCategoriesResponse, DocumentationFile, DocumentationIndexResponse, DocumentationRecommendedItemsResponse, DocumentationRefreshResponse, UserDataResponse } from "@/assets/customTypes";
 
 /**
  * Validates user session.
@@ -41,6 +41,28 @@ export async function fetchLogin(username: string, password: string): Promise<Us
     } catch (error) {
         console.log(error);
         return false;
+    }
+}
+
+/**
+ * Refresh both indices & recommended items in one fetch.
+ * @param name The name of the specific HTML file to retrieve, without `.html`. Examples: Introduction, Collaborating
+ * @param version The version number of the index. Examples: v1, v2
+ * @returns Data or false on error.
+ */
+export async function fetchDocumentationRefresh(version: string, language: string): Promise<DocumentationRefreshResponse | boolean> {
+    try {
+        const response = await fetch(`${import.meta.env.VITE_DOCS_API_BASE}/refresh/${version}/${language}`, {
+            method: "GET"
+        });
+        if (response.ok) {
+            return await response.json();
+        } else if (response.status === 404) {
+            return false;
+        } else return false;
+    } catch (error) {
+        console.log(error);
+        return false
     }
 }
 

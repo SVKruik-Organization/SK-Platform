@@ -9,10 +9,6 @@ export default defineComponent({
     components: {
         DocumentationRecommendedItem
     },
-    props: {
-        "category": { type: String, required: false },
-        "page": { type: String, required: false }
-    },
     setup() {
         return {
             documentationStore: useDocumentationStore()
@@ -21,16 +17,41 @@ export default defineComponent({
     data() {
         return {
             "docIndexItems": [] as Array<DocumentationIndexItem>,
-            "recommendedDocItems": [] as Array<RecommendedItem>
+            "guideIndexItems": [] as Array<DocumentationIndexItem>,
+            "recommendedItems": [] as Array<RecommendedItem>
         }
     },
     async mounted() {
+        // Pinia Watcher
         this.documentationStore.$subscribe((mutation, state) => {
             this.docIndexItems = state.docIndex;
-            this.recommendedDocItems = state.recommendedDocItems;
+            this.guideIndexItems = state.guideIndex;
+
+            const newRecommendedItems: Array<RecommendedItem> = state.recommendedDocItems.concat(state.recommendedGuideItems);
+            this.recommendedItems = newRecommendedItems;
         });
+
+        // Initial Load - Indices
         this.docIndexItems = await this.documentationStore.getIndex(false, "Doc");
-        this.recommendedDocItems = await this.documentationStore.getRecommendedItems(false, "Doc");
+        this.guideIndexItems = await this.documentationStore.getIndex(false, "Guide");
+
+        // Initial Load - Recommended
+        const initialRecommendedItems: Array<RecommendedItem> = (await this.documentationStore.getRecommendedItems(false, "Doc"))
+            .concat(await this.documentationStore.getRecommendedItems(false, "Guide"));
+        this.recommendedItems = initialRecommendedItems;
+
+        // Anchor Scroll
+        if (this.$route.hash) {
+            this.scrollAnchor(this.$route.hash === "#Documentation" ? "Doc" : "Guide");
+            this.$router.push(this.$route.path);
+        }
+    },
+    methods: {
+        scrollAnchor(type: string): void {
+            const element: HTMLHeadingElement = this.$refs[type === "Doc" ? "Documentation" : "Guides"] as HTMLHeadingElement;
+            if (!element) return;
+            element.scrollIntoView({ behavior: "smooth" });
+        }
     }
 });
 </script>
@@ -39,8 +60,9 @@ export default defineComponent({
     <section class="banner flex">
         <div class="banner-content flex hero">
             <div class="hero-left flex-col">
-                <h1>Documentation</h1>
-                <h3 class="content-splitter-header">Explore information about SK Platform and related product lines.
+                <h1>Information & Guides</h1>
+                <h3 class="content-splitter-header light-text">Explore information about SK Platform and related
+                    product lines.
                 </h3>
             </div>
             <div class="hero-right flex">
@@ -63,25 +85,28 @@ export default defineComponent({
         </div>
     </section>
     <section class="content-container">
-        <div class="content-item">
-            <h2 class="banner-content content-splitter-header">Recommended pages</h2>
+        <div class="content-item recommended-parent">
+            <h3 class="banner-content content-splitter-header">Recommended pages</h3>
             <div class="banner-content recommended-item-container flex">
-                <DocumentationRecommendedItem
-                    v-if="recommendedDocItems.length > 0 && recommendedDocItems[0].title !== 'Not_Found'"
-                    v-for="recommendedDocItem of recommendedDocItems" type="Doc" :key="recommendedDocItem.id"
-                    :data="recommendedDocItem"></DocumentationRecommendedItem>
-                <article v-else-if="recommendedDocItems.length > 0 && recommendedDocItems[0].category === 'Not_Found'"
+                <DocumentationRecommendedItem @scrollAnchor="scrollAnchor"
+                    v-if="recommendedItems.length > 0 && recommendedItems[0].title !== 'Not_Found'"
+                    v-for="recommendedItem of recommendedItems" :key="recommendedItem.id" :data="recommendedItem">
+                </DocumentationRecommendedItem>
+                <article v-else-if="recommendedItems.length > 0 && recommendedItems[0].category === 'Not_Found'"
                     class="flex-col">
-                    <p>Looks like there aren't any recommended docs available right now. This is likely due to your
-                        language
-                        and/or version settings.</p>
+                    <p>Looks like there aren't any recommended items available right now. This is likely due to your
+                        language and/or version settings.</p>
                     <p>Please change them to their defaults and try again.</p>
                 </article>
-                <div v-else>Something went wrong while retrieving the recommended docs. Please try again later.</div>
+                <div v-else>Something went wrong while retrieving the recommended items. Please try again later.</div>
             </div>
         </div>
+        <div class="banner-content flex-col">
+            <h2 ref="Documentation">Information</h2>
+            <p class="light-text">In-depth information about all topics from integrating to managing my products.</p>
+        </div>
         <div class="content-item">
-            <h2 class="banner-content content-splitter-header">Browse all categories</h2>
+            <h3 class="banner-content content-splitter-header">Browse all categories</h3>
             <div class="banner-content category-container-parent flex">
                 <div class="banner-content flex category-container"
                     v-if="docIndexItems.length > 0 && docIndexItems[0].category !== 'Not_Found'">
@@ -90,7 +115,7 @@ export default defineComponent({
                         <RouterLink class="flex category-header"
                             :to="`/documentation/read/Doc/${docIndexItem.category}`">
                             <i class=" fa-regular" :class="docIndexItem.category_icon"></i>
-                            <h3>{{ docIndexItem.category.replace("_", " ") }}</h3>
+                            <h4>{{ docIndexItem.category.replace("_", " ") }}</h4>
                         </RouterLink>
                         <RouterLink v-for="child of docIndexItem.children"
                             :to="`/documentation/read/Doc/${docIndexItem.category}/${child}`">{{
@@ -107,6 +132,38 @@ export default defineComponent({
             </div>
         </div>
     </section>
+    <section class="content-container">
+        <div class="banner-content flex-col">
+            <h2 ref="Guides">Guides</h2>
+            <p class="light-text">Step-by-step tutorials to perform a wide variety of actions.</p>
+        </div>
+        <div class="content-item">
+            <h3 class="banner-content content-splitter-header">Browse all categories</h3>
+            <div class="banner-content category-container-parent flex">
+                <div class="banner-content flex category-container"
+                    v-if="guideIndexItems.length > 0 && guideIndexItems[0].category !== 'Not_Found'">
+                    <menu class="category-item flex-col" v-for="guideIndexItem of guideIndexItems"
+                        :key="guideIndexItem.category">
+                        <RouterLink class="flex category-header"
+                            :to="`/documentation/read/Guide/${guideIndexItem.category}`">
+                            <i class=" fa-regular" :class="guideIndexItem.category_icon"></i>
+                            <h4>{{ guideIndexItem.category.replace("_", " ") }}</h4>
+                        </RouterLink>
+                        <RouterLink v-for="child of guideIndexItem.children"
+                            :to="`/documentation/read/Guide/${guideIndexItem.category}/${child}`">{{
+                                child.replace("_", " ") }}</RouterLink>
+                    </menu>
+                </div>
+                <article v-else-if="docIndexItems.length > 0 && docIndexItems[0].category === 'Not_Found'"
+                    class="flex-col">
+                    <p>Looks like there aren't any guides available right now. This is likely due to your language
+                        and/or version settings.</p>
+                    <p>Please change them to their defaults and try again.</p>
+                </article>
+                <div v-else>Something went wrong while retrieving the guide index. Please try again later.</div>
+            </div>
+        </div>
+    </section>
 </template>
 
 <style scoped>
@@ -117,6 +174,7 @@ export default defineComponent({
     box-sizing: border-box;
     padding: 40px;
     justify-content: center;
+    margin-bottom: 40px;
 }
 
 h1 {
@@ -124,7 +182,6 @@ h1 {
 }
 
 .content-splitter-header {
-    color: var(--font-light);
     font-weight: 500;
 }
 
@@ -134,7 +191,6 @@ h1 {
     flex-direction: column;
     align-items: center;
     background-color: unset;
-    margin-top: 40px;
     gap: 40px;
 }
 
@@ -148,9 +204,9 @@ h1 {
 }
 
 .category-container {
-    justify-content: space-between;
     align-items: flex-start;
     flex-wrap: wrap;
+    column-gap: 13px;
 }
 
 .category-header {
@@ -179,6 +235,10 @@ h1 {
     object-fit: cover;
     margin-left: -75px;
     user-select: none;
+}
+
+.recommended-parent {
+    margin-bottom: 40px;
 }
 
 .recommended-item-container {

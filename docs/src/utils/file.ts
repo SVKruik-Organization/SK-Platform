@@ -22,7 +22,7 @@ export function getFile(folder: string, name: string, version: string, language:
 
         // Retrieve Correct File
         const rawFile: Array<Dirent> = fs.readdirSync(path.resolve(__dirname, `../../data/html/${version}/${language}/${type}/${rawFolders[0].name}`), { withFileTypes: true })
-            .filter(entity => entity.isFile() && entity.name !== "0_Default.html" && entity.name.slice(2, -5) === name);
+            .filter(entity => entity.isFile() && entity.name !== "00_Default.html" && entity.name.slice(3, -5) === name);
         if (rawFile.length === 0) return 404;
 
         // Retrieve & Send File
@@ -55,8 +55,8 @@ export function getFiles(folder: string, version: string, language: string, type
 
         // Retrieve Correct File
         return fs.readdirSync(path.resolve(__dirname, `../../data/html/${version}/${language}/${type}/${rawFolders[0].name}`), { withFileTypes: true })
-            .filter(entity => entity.isFile() && entity.name !== "0_Default.html")
-            .map(file => file.name.slice(2, -5));
+            .filter(entity => entity.isFile() && entity.name !== "00_Default.html")
+            .map(file => file.name.slice(3, -5));
     } catch (error: any) {
         if (error.code === "ENOENT") {
             return 404;
@@ -85,7 +85,7 @@ export function getDefaultFile(folder: string, version: string, language: string
 
         // Retrieve Correct File
         const rawFile: Array<Dirent> = fs.readdirSync(path.resolve(__dirname, `../../data/html/${version}/${language}/${type}/${rawFolders[0].name}`), { withFileTypes: true })
-            .filter(entity => entity.isFile() && entity.name === "0_Default.html");
+            .filter(entity => entity.isFile() && entity.name === "00_Default.html");
         if (rawFile.length === 0) return 404;
 
         // Retrieve & Send File
@@ -119,9 +119,9 @@ export function getIndex(version: string, language: string, type: string): Array
         for (const rawFolderName of rawFolders) {
             const folderPath = path.join(__dirname, `../../data/html/${version}/${language}/${type}/${rawFolderName}`);
             const indexItem: IndexItem = {
-                "category_icon": getFolderIcon(rawFolderName.slice(2)),
-                "category": rawFolderName.replace("_", " ").slice(2),
-                "children": fs.readdirSync(folderPath).filter(fileName => fileName.endsWith(".html") && fileName !== "0_Default.html").map(fileName => fileName.slice(2, -5))
+                "category_icon": getFolderIcon(rawFolderName.slice(3)),
+                "category": rawFolderName.replace("_", " ").slice(3),
+                "children": fs.readdirSync(folderPath).filter(fileName => fileName.endsWith(".html") && fileName !== "00_Default.html").map(fileName => fileName.slice(3, -5))
             }
             index.push(indexItem);
         }
@@ -150,8 +150,8 @@ export function getCategories(version: string, language: string, type: string): 
             .filter(entity => entity.isDirectory())
             .map(directory => {
                 return {
-                    "category_icon": getFolderIcon(directory.name.slice(2)),
-                    "category": directory.name.replace("_", " ").slice(2)
+                    "category_icon": getFolderIcon(directory.name.slice(3)),
+                    "category": directory.name.replace("_", " ").slice(3)
                 }
             });
     } catch (error: any) {
@@ -174,7 +174,7 @@ export function getCategories(version: string, language: string, type: string): 
  */
 function readDirectory(folder: string, version: string, language: string, type: string): Array<Dirent> {
     return fs.readdirSync(path.resolve(__dirname, `../../data/html/${version}/${language}/${type}`), { withFileTypes: true })
-        .filter(entity => entity.isDirectory() && entity.name.slice(2) === folder);
+        .filter(entity => entity.isDirectory() && entity.name.slice(3) === folder);
 }
 
 /**
@@ -202,6 +202,14 @@ export function getFolderIcon(name: string): string {
             return "fa-conveyor-belt";
         case "Other":
             return "fa-cloud";
+        case "Contributing":
+            return "fa-handshake-angle";
+        case "Technical":
+            return "fa-compass-drafting";
+        case "Managment":
+            return "fa-chart-mixed";
+        case "Customization":
+            return "fa-swatchbook"
         default:
             return "fa-check";
     }

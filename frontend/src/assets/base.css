@@ -59,9 +59,13 @@ body {
     text-overflow: ellipsis;
 }
 
-.light-text {
+.disabled-text {
     color: var(--font-light);
     opacity: 0.3;
+}
+
+.light-text {
+    color: var(--font-light);
 }
 
 .gradient-button {
