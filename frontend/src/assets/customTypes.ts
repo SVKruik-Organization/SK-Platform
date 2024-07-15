@@ -83,3 +83,10 @@ export type DocumentationRefreshResponse = {
     "recommendedDocItems": Array<RecommendedItem>,
     "recommendedGuideItems": Array<RecommendedItem>
 }
+
+// Vue Dropdowns Toggle State
+export enum DropdownStates {
+    version = "versionDropdownVisible",
+    language = "languageDropdownVisible",
+    information = "informationDropdownVisible"
+}

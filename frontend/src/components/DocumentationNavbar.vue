@@ -1,4 +1,5 @@
 <script lang="ts">
+import { DropdownStates } from '@/assets/customTypes';
 import { useDocumentationStore } from '@/stores/DocumentationStore';
 import { defineComponent } from 'vue';
 
@@ -9,27 +10,18 @@ export default defineComponent({
             documentationStore: useDocumentationStore()
         }
     },
+    emits: [
+        "dropdownState"
+    ],
+    props: {
+        "versionDropdownVisible": { type: Boolean, required: true },
+        "languageDropdownVisible": { type: Boolean, required: true }
+    },
     data() {
         return {
-            "versionDropdownVisible": false,
-            "languageDropdownVisible": false,
-            "versionHover": false,
-            "homeHover": false,
-            "newsHover": false,
-            "refreshHover": false,
-            "languageHover": false,
-            "refreshDisabled": false
+            "refreshDisabled": false,
+            "refreshHover": false
         }
-    },
-    async mounted() {
-        // Toggle Dropdown
-        document.addEventListener("click", event => {
-            const target: HTMLElement = event.target as HTMLElement;
-            if (target.classList.contains("disable-close")) return;
-            if (target.tagName === "MENU") return;
-            this.languageDropdownVisible = false;
-            this.versionDropdownVisible = false;
-        });
     },
     methods: {
         /**
@@ -39,7 +31,7 @@ export default defineComponent({
         toggleVersionMenu(event: Event): void {
             const target: HTMLElement = event.target as HTMLElement;
             if (target.tagName === "MENU") return;
-            this.versionDropdownVisible = !this.versionDropdownVisible;
+            this.$emit("dropdownState", DropdownStates.version, !this.versionDropdownVisible);
         },
         /**
          * Toggle the language dropdown menu.
@@ -48,7 +40,7 @@ export default defineComponent({
         toggleLanguageMenu(event: Event): void {
             const target: HTMLElement = event.target as HTMLElement;
             if (target.tagName === "MENU") return;
-            this.languageDropdownVisible = !this.languageDropdownVisible;
+            this.$emit("dropdownState", DropdownStates.language, !this.languageDropdownVisible);
         },
         /**
          * Cosmetically disable the refresh button and refetch the documentation index & recommended items.
@@ -84,41 +76,34 @@ export default defineComponent({
                         <i class="fa-regular fa-magnifying-glass"></i>
                         <input ref="searchbar" type="text" placeholder="Search through everything">
                     </button>
-                    <button title="Change the language of the documentation." type="button"
-                        class="flex language-container justify-center navbar-pill disable-close version-disable-close"
-                        :class="{ 'navbar-pill-expand': versionHover || versionDropdownVisible }"
-                        @mouseenter="versionHover = true" @mouseleave="versionHover = false"
-                        @click="toggleVersionMenu($event)">
-                        <p class="disable-close version-disable-close"
-                            :class="versionHover || versionDropdownVisible ? 'navbar-pill-text-expand' : 'navbar-pill-text-closed'">
+                    <button title="Change the version of the documentation." type="button"
+                        class="flex dropdown-container navbar-pill disable-close"
+                        :class="{ 'navbar-pill-expand': versionDropdownVisible }" @click="toggleVersionMenu($event)">
+                        <p class="disable-close" :class="{ 'navbar-pill-text-expand': versionDropdownVisible }">
                             Version</p>
                         <i class="fa-regular fa-code-branch"></i>
-                        <menu :class="{ 'language-dropdown-expand': versionDropdownVisible }"
-                            class="dropdown-menu flex-col disable-close version-disable-close">
+                        <menu :class="{ 'dropdown-expand': versionDropdownVisible }"
+                            class="dropdown-menu dropdown-menu-left flex-col disable-close">
                             <button type="button" class="menu-item flex" @click="documentationStore.setVersion('v1')">
                                 <i class="fa-regular fa-check"
                                     :class="{ 'visible': documentationStore.version === 'v1' }"></i>
-                                <p>v1 Stable</p>
+                                <label>v1 Stable</label>
                             </button>
                             <button type="button" class="menu-item flex" @click="documentationStore.setVersion('v2')">
                                 <i class="fa-regular fa-check"
                                     :class="{ 'visible': documentationStore.version === 'v2' }"></i>
-                                <p class="disabled-text">v2 Beta</p>
+                                <label class="disabled-text">v2 Beta</label>
                             </button>
                         </menu>
                     </button>
                 </div>
                 <div class="right-nav-buttons flex">
-                    <RouterLink title="Go back to the homepage." class="flex justify-center navbar-pill gradient-button"
-                        to="/" @mouseenter="homeHover = true" :class="{ 'navbar-pill-expand': homeHover }"
-                        @mouseleave="homeHover = false">
-                        <p :class="homeHover ? 'navbar-pill-text-expand' : 'navbar-pill-text-closed'">Home</p>
+                    <RouterLink title="Go back to the homepage." class="flex navbar-pill gradient-button" to="/">
+                        <p>Home</p>
                         <i class="fa-regular fa-house"></i>
                     </RouterLink>
-                    <a title="Read the release notes." class="flex justify-center navbar-pill" href="#"
-                        @mouseenter="newsHover = true" :class="{ 'navbar-pill-expand': newsHover }"
-                        @mouseleave="newsHover = false">
-                        <p :class="newsHover ? 'navbar-pill-text-expand' : 'navbar-pill-text-closed'">News</p>
+                    <a title="Read the release notes." class="flex navbar-pill" href="#">
+                        <p>News</p>
                         <i class="fa-regular fa-newspaper"></i>
                     </a>
                     <button
@@ -127,33 +112,29 @@ export default defineComponent({
                         @mouseenter="refreshHover = true" ref="refreshButton"
                         :class="{ 'navbar-pill-expand': refreshHover && !refreshDisabled, 'disabled-text': refreshDisabled }"
                         @mouseleave="refreshHover = false">
-                        <p
-                            :class="refreshHover && !refreshDisabled ? 'navbar-pill-text-expand' : 'navbar-pill-text-closed'">
+                        <p :class="{ 'navbar-pill-text-expand': refreshHover && !refreshDisabled }">
                             Refresh</p>
                         <i class="fa-regular fa-rotate"></i>
                     </button>
                     <button title="Change the language of the documentation." type="button"
-                        class="flex language-container justify-center navbar-pill disable-close language-disable-close"
-                        :class="{ 'navbar-pill-expand': languageHover || languageDropdownVisible }"
-                        @mouseenter="languageHover = true" @mouseleave="languageHover = false"
-                        @click="toggleLanguageMenu($event)">
-                        <p class="disable-close language-disable-close"
-                            :class="languageHover || languageDropdownVisible ? 'navbar-pill-text-expand' : 'navbar-pill-text-closed'">
+                        class="flex dropdown-container justify-center navbar-pill disable-close"
+                        :class="{ 'navbar-pill-expand': languageDropdownVisible }" @click="toggleLanguageMenu($event)">
+                        <p class="disable-close" :class="{ 'navbar-pill-text-expand': languageDropdownVisible }">
                             Language</p>
-                        <i class="fa-regular fa-globe disable-close language-disable-close"></i>
-                        <menu :class="{ 'language-dropdown-expand': languageDropdownVisible }"
-                            class="dropdown-menu flex-col disable-close language-disable-close">
+                        <i class="fa-regular fa-globe disable-close"></i>
+                        <menu :class="{ 'dropdown-expand': languageDropdownVisible }"
+                            class="dropdown-menu dropdown-menu-left flex-col disable-close">
                             <button type="button" class="menu-item flex"
                                 @click="documentationStore.setLanguage('en-US')">
                                 <i class="fa-regular fa-check"
                                     :class="{ 'visible': documentationStore.language === 'en-US' }"></i>
-                                <p>English</p>
+                                <label>English</label>
                             </button>
                             <button type="button" class="menu-item flex"
                                 @click="documentationStore.setLanguage('nl-NL')">
                                 <i class="fa-regular fa-check"
                                     :class="{ 'visible': documentationStore.language === 'nl-NL' }"></i>
-                                <p class="disabled-text">Nederlands</p>
+                                <label class="disabled-text">Nederlands</label>
                             </button>
                         </menu>
                     </button>
@@ -172,48 +153,6 @@ nav {
     border-bottom: 1px solid var(--border);
 }
 
-.justify-center {
-    justify-content: center;
-}
-
-.navbar-pill {
-    border-radius: var(--border-radius-low);
-    border: 1px solid var(--border);
-    background-color: var(--fill);
-    height: 35px;
-    box-sizing: border-box;
-    padding: 5px;
-    width: 35px;
-    transition: width 0.5s, background-color 0.5s;
-}
-
-.navbar-pill:hover {
-    background-color: var(--border);
-    width: 120px;
-}
-
-.navbar-pill-text-expand {
-    opacity: 1;
-    width: 75px;
-    transition: width 0.6s, opacity 1s;
-}
-
-.navbar-pill-text-closed {
-    opacity: 0;
-    width: 0;
-    transition: width 0.6s, opacity 1s;
-}
-
-.navbar-pill i {
-    font-size: 14px;
-    color: var(--font-light);
-}
-
-.navbar-pill p {
-    overflow: hidden;
-    text-align: left;
-}
-
 .gradient-button i {
     color: var(--font);
 }
@@ -228,7 +167,7 @@ nav {
 }
 
 .input-container {
-    gap: 10px;
+    gap: 6px;
     width: 300px;
     padding-left: 10px;
 }
@@ -253,38 +192,6 @@ input::placeholder {
     color: var(--font-light);
 }
 
-.language-container {
-    position: relative;
-}
-
-.dropdown-menu {
-    position: absolute;
-    box-sizing: border-box;
-    padding: 5px 5px 5px 10px;
-    top: 40px;
-    width: 170px;
-    opacity: 0;
-    height: 0;
-    right: -2px;
-    border-radius: var(--border-radius-low);
-    background-color: var(--fill);
-    border: 1px solid var(--border);
-    transition: height 0.8s, opacity 0.7s;
-    overflow: hidden;
-}
-
-.language-dropdown-expand {
-    height: 55px;
-    opacity: 1;
-    transition: height 0.4s, opacity 0.3s;
-}
-
-.version-dropdown-expand {
-    height: 55px;
-    opacity: 1;
-    transition: height 0.4s, opacity 0.3s;
-}
-
 .menu-item {
     gap: 10px;
     width: 100%;
@@ -292,17 +199,6 @@ input::placeholder {
 
 .menu-item i {
     opacity: 0;
-}
-
-.fa-house {
-    margin-right: 3px;
-}
-
-.fa-newspaper,
-.fa-globe,
-.fa-rotate,
-.fa-code-branch {
-    margin-right: 4px;
 }
 
 @media (width <=800px) {
