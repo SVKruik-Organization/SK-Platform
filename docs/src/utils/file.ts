@@ -78,6 +78,7 @@ export function getFiles(folder: string, version: string, language: string, type
 export function getDefaultFile(folder: string, version: string, language: string, type: string): string | number {
     try {
         // TODO: Add metadata (GitHub/Git API?)
+        // Chapters, paragraphs (aside)
 
         // Retrieve Correct Folder
         const rawFolders: Array<Dirent> = readDirectory(folder, version, language, type);

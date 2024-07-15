@@ -228,8 +228,9 @@ nav {
 }
 
 .input-container {
-    gap: 5px;
+    gap: 10px;
     width: 300px;
+    padding-left: 10px;
 }
 
 .input-container:hover {

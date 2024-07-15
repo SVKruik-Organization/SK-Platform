@@ -263,7 +263,7 @@ h1 {
 
 .hero-bot-image {
     border-radius: 50%;
-    border: 1px solid var(--fill);
+    border: 5px solid var(--fill);
     aspect-ratio: 1 / 1;
     height: 150px;
     object-fit: cover;
@@ -426,6 +426,10 @@ h1 {
         gap: 20px;
         width: 300px;
         align-items: center;
+    }
+
+    .footer-note p {
+        width: max-content;
     }
 }
 
