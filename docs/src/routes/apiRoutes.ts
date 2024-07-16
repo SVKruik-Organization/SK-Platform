@@ -21,7 +21,7 @@ router.post("/deploy", deploymentAuthentication, (req: Request, res: Response) =
 
 // Temporary Testing Endpoint
 router.get("/test", (req: Request, res: Response) => {
-    res.json({ "test": 2 });
+    res.json({ "test": 3 });
 });
 
 export { router as APIRoutes };
