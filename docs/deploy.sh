@@ -4,10 +4,10 @@ export PATH=/root/.nvm/versions/node/v20.15.1/bin:$PATH
 
 # Git
 cd ..
-# git config --global --add safe.directory /home/svkruik/Documents/GitHub/Bot-Website
-# git reset --hard
-# git pull
-# echo "Git setup complete"
+git config --global --add safe.directory /home/svkruik/Documents/GitHub/Bot-Website
+git reset --hard
+git pull
+echo "Git setup complete"
 
 # Documentation - docs.stefankruik.com
 cd docs

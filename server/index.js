@@ -19,7 +19,7 @@ app.get("/api/status/badge", (req, res) => {
 
 // Temporary Testing Endpoint
 app.get("/api/test", (req, res) => {
-    res.json({ "test": 1 });
+    res.json({ "test": 2 });
 });
 
 // Static Frontend Deployment
