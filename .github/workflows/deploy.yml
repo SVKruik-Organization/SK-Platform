@@ -8,3 +8,4 @@ jobs:
     steps:
       - run: |
           curl -X POST -H "Content-Type: application/json" -H "Authorization: Bearer ${{ secrets.DEPLOYMENT_KEY }}" ${{ secrets.WEBSITE_DEPLOYMENT_ENDPOINT }}
+          curl -X POST -H "Content-Type: application/json" -H "Authorization: Bearer ${{ secrets.DEPLOYMENT_KEY }}" ${{ secrets.DOCUMENTATION_DEPLOYMENT_ENDPOINT }}

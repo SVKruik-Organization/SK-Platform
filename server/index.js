@@ -17,7 +17,12 @@ app.get("/api/status/badge", (req, res) => {
     res.json({ "schemaVersion": 1, "label": "Site Status", "message": "online", "color": "brightgreen" });
 });
 
-// Deployment
+// Temporary Testing Endpoint
+app.get("/api/test", (req, res) => {
+    res.json({ "test": 1 });
+});
+
+// Static Frontend Deployment
 app.post("/api/deploy", deploymentAuthentication, (req, res) => {
     res.json({ "status": "Received" });
     deployApplication();
