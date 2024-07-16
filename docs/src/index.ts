@@ -1,7 +1,7 @@
 import express, { Express, Request, Response } from "express";
 import dotenv from "dotenv";
 import cors from "cors";
-import { FileRequest, FilesRequest, FolderItem, IndexItem, RecommendedItem } from "./customTypes";
+import { DocumentationFile, FileRequest, FilesRequest, FolderItem, IndexItem, RecommendedItem } from "./customTypes";
 import { getCategories, getDefaultFile, getFile, getFiles, getIndex, getRecommendedItems } from "./utils/file";
 import { SearchRoutes } from "./routes/searchRoutes";
 import { APIRoutes } from "./routes/apiRoutes";
@@ -77,7 +77,7 @@ app.get("/refresh/:version/:language", refreshLimit, async (req: Request, res: R
 // Get File
 app.get("/getFile/:version/:language/:type", async (req: Request, res: Response) => {
     const searchQuery: FileRequest = req.query as FileRequest;
-    const file: string | number = getFile(searchQuery.folder, searchQuery.name, req.params.version, req.params.language, req.params.type);
+    const file: DocumentationFile | number = getFile(searchQuery.folder, searchQuery.name, req.params.version, req.params.language, req.params.type);
     if (typeof file === "number") return res.sendStatus(file);
     return res.json({ "file": file });
 });
@@ -93,7 +93,7 @@ app.get("/getFiles/:version/:language/:type", async (req: Request, res: Response
 // Get Category Default
 app.get("/getDefault/:version/:language/:type", async (req: Request, res: Response) => {
     const searchQuery: FileRequest = req.query as FileRequest;
-    const file: string | number = getDefaultFile(searchQuery.folder, req.params.version, req.params.language, req.params.type);
+    const file: DocumentationFile | number = getDefaultFile(searchQuery.folder, req.params.version, req.params.language, req.params.type);
     if (typeof file === "number") return res.sendStatus(file);
     return res.json({ "file": file });
 });

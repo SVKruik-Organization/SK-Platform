@@ -19,9 +19,4 @@ router.post("/deploy", deploymentAuthentication, (req: Request, res: Response) =
     shell.exec("sh deploy.sh");
 });
 
-// Temporary Testing Endpoint
-router.get("/test", (req: Request, res: Response) => {
-    res.json({ "test": 3 });
-});
-
 export { router as APIRoutes };

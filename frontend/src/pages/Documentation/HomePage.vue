@@ -16,6 +16,9 @@ export default defineComponent({
             documentationStore: useDocumentationStore()
         }
     },
+    emits: [
+        "dropdownState"
+    ],
     data() {
         return {
             "docIndexItems": [] as Array<DocumentationIndexItem>,
@@ -23,6 +26,9 @@ export default defineComponent({
             "recommendedItems": [] as Array<RecommendedItem>,
             "pressedButton": "" as string
         }
+    },
+    props: {
+        "informationDropdownVisible": { type: Boolean, required: false },
     },
     async mounted() {
         // Pinia Watcher

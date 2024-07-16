@@ -4,6 +4,16 @@ export type FileRequest = {
     "name": string
 }
 
+// Single Documentation File
+export type DocumentationFile = {
+    "name": string,
+    "fileContents": string,
+    "size": number,
+    "access_time": Date,
+    "modification_time": Date,
+    "creation_time": Date
+}
+
 // Get Files
 export type FilesRequest = {
     "folder": string

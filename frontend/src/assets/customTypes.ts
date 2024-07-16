@@ -13,7 +13,8 @@ export type UserDataResponse = {
 export type DateFormat = {
     "date": string,
     "time": string,
-    "today": Date
+    "today": Date,
+    "fullDate": string
 }
 
 // Prompt/Informational Message Types
@@ -31,9 +32,13 @@ export enum DocumentationTypes {
 }
 
 // Single Documentation File
-// TODO - Metadata
 export type DocumentationFile = {
-    "file": string
+    "name": string,
+    "fileContents": string,
+    "size": number,
+    "access_time": string,
+    "modification_time": string,
+    "creation_time": string
 }
 
 // Raw File Index/TOC Item Response

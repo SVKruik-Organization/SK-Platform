@@ -1,4 +1,5 @@
 import type { DocumentationCategoriesResponse, DocumentationFile, DocumentationIndexResponse, DocumentationRecommendedItemsResponse, DocumentationRefreshResponse, UserDataResponse } from "@/assets/customTypes";
+import { getDate } from "./date";
 
 /**
  * Validates user session.
@@ -75,15 +76,15 @@ export async function fetchDocumentationRefresh(version: string, language: strin
  * @param type Documentation (Doc) or Guides (Guide)
  * @returns HTML data as string or false on error.
  */
-export async function fetchDocumentationPage(folder: string, name: string, version: string, language: string, type: string): Promise<string | boolean> {
+export async function fetchDocumentationPage(folder: string, name: string, version: string, language: string, type: string): Promise<DocumentationFile | boolean> {
     try {
         const response = await fetch(`${import.meta.env.VITE_DOCS_API_BASE}/getFile/${version}/${language}/${type}?folder=${folder}&name=${name}`, {
             method: "GET"
         });
         if (response.ok) {
-            return (await response.json() as DocumentationFile).file;
+            return parseDocumentationFile(await response.json());
         } else if (response.status === 404) {
-            return false;
+            return true;
         } else return false;
     } catch (error) {
         console.log(error);
@@ -99,13 +100,13 @@ export async function fetchDocumentationPage(folder: string, name: string, versi
  * @param type Documentation (Doc) or Guides (Guide)
  * @returns List of pages for the category or status code on error.
  */
-export async function fetchDocumentationPages(folder: string, version: string, language: string, type: string): Promise<string | boolean> {
+export async function fetchDocumentationPages(folder: string, version: string, language: string, type: string): Promise<DocumentationFile | boolean> {
     try {
         const response = await fetch(`${import.meta.env.VITE_DOCS_API_BASE}/getFiles/${version}/${language}/${type}?folder=${folder}`, {
             method: "GET"
         });
         if (response.ok) {
-            return (await response.json() as DocumentationFile).file;
+            return parseDocumentationFile(await response.json());
         } else if (response.status === 404) {
             return false;
         } else return false;
@@ -123,13 +124,13 @@ export async function fetchDocumentationPages(folder: string, version: string, l
  * @param type Documentation (Doc) or Guides (Guide)
  * @returns HTML data as string or false on error.
  */
-export async function fetchDocumentationDefault(folder: string, version: string, language: string, type: string): Promise<string | boolean> {
+export async function fetchDocumentationDefault(folder: string, version: string, language: string, type: string): Promise<DocumentationFile | boolean> {
     try {
         const response = await fetch(`${import.meta.env.VITE_DOCS_API_BASE}/getDefault/${version}/${language}/${type}?folder=${folder}`, {
             method: "GET"
         });
         if (response.ok) {
-            return (await response.json() as DocumentationFile).file;
+            return parseDocumentationFile(await response.json());
         } else if (response.status === 404) {
             return false;
         } else return false;
@@ -176,7 +177,7 @@ export async function fetchRecommendedItems(language: string, type: string): Pro
         if (response.ok) {
             return await response.json();
         } else if (response.status === 404) {
-            return { "recommended_items": [{ "title": "Not_Found", "anchor": "", "category": "", "id": 1, "page": "", "time": 1, "icon": "" }] };
+            return { "recommended_items": [{ "title": "Not_Found", "anchor": "", "category": "", "id": 1, "page": "", "time": 1, "icon": "", "type": "" }] };
         } else return false;
     } catch (error) {
         console.log(error);
@@ -204,5 +205,21 @@ export async function fetchDocumentationCategories(version: string, language: st
     } catch (error) {
         console.log(error);
         return false;
+    }
+}
+
+/**
+ * Convert the API response to a DocumentationFile typed object.
+ * @param input Raw documentation file.
+ * @returns The usable parsed DocumentationFile.
+ */
+function parseDocumentationFile(input: any): DocumentationFile {
+    return {
+        "name": input.file.name,
+        "fileContents": input.file.fileContents,
+        "size": input.file.size,
+        "access_time": getDate(input.file.access_time).fullDate,
+        "modification_time": getDate(input.file.modification_time).fullDate,
+        "creation_time": getDate(input.file.creation_time).fullDate
     }
 }

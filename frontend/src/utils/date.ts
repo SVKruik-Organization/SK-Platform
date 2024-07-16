@@ -3,9 +3,7 @@ import type { DateFormat } from "@/assets/customTypes";
 export function getDate(datetime: Date | undefined): DateFormat {
     let targetDate: Date = new Date();
     if (datetime) targetDate = new Date(datetime);
-    const today: Date = new Date(targetDate.toLocaleString("en-US", {
-        timeZone: "Europe/Amsterdam"
-    }));
+    const today: Date = new Date(targetDate.toLocaleString("en-US"));
 
     const hh: string = formatTime(today.getHours());
     const m: string = formatTime(today.getMinutes());
@@ -16,6 +14,7 @@ export function getDate(datetime: Date | undefined): DateFormat {
 
     const date: string = `${dd}-${mm}-${yyyy}`;
     const time: string = `${hh}:${m}`;
+    const fullDate: string = `${time} ${date}`;
 
     /**
      * Time formatter.
@@ -26,5 +25,5 @@ export function getDate(datetime: Date | undefined): DateFormat {
         return value < 10 ? "0" + value : value.toString();
     }
 
-    return { date, time, today };
+    return { date, time, today, fullDate };
 }

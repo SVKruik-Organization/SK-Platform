@@ -1,7 +1,7 @@
-import fs, { Dirent } from "fs";
+import fs, { Dirent, Stats } from "fs";
 import path from "path";
 import { logError } from "./logger";
-import { FolderItem, IndexItem, RecommendedItem } from "../customTypes";
+import { DocumentationFile, FolderItem, IndexItem, RecommendedItem } from "../customTypes";
 
 /**
  * Fetch a specific Documentation page from the file system.
@@ -12,10 +12,8 @@ import { FolderItem, IndexItem, RecommendedItem } from "../customTypes";
  * @param type Documentation (Doc) or Guides (Guide)
  * @returns HTML data as string or status code on error.
  */
-export function getFile(folder: string, name: string, version: string, language: string, type: string): string | number {
+export function getFile(folder: string, name: string, version: string, language: string, type: string): DocumentationFile | number {
     try {
-        // TODO: Add metadata (GitHub/Git API?)
-
         // Retrieve Correct Folder
         const rawFolders: Array<Dirent> = readDirectory(folder, version, language, type);
         if (rawFolders.length === 0) return 404;
@@ -26,7 +24,15 @@ export function getFile(folder: string, name: string, version: string, language:
         if (rawFile.length === 0) return 404;
 
         // Retrieve & Send File
-        return fs.readFileSync(`${rawFile[0].parentPath}/${rawFile[0].name}`, "utf8");
+        const metadata: Stats = fs.statSync(`${rawFile[0].parentPath}/${rawFile[0].name}`);
+        return {
+            "name": rawFile[0].name,
+            "fileContents": fs.readFileSync(`${rawFile[0].parentPath}/${rawFile[0].name}`, "utf8"),
+            "size": metadata.size,
+            "access_time": new Date(metadata.atimeMs),
+            "modification_time": new Date(metadata.mtimeMs),
+            "creation_time": new Date(metadata.birthtimeMs)
+        }
     } catch (error: any) {
         if (error.code === "ENOENT") {
             return 404;
@@ -47,8 +53,6 @@ export function getFile(folder: string, name: string, version: string, language:
  */
 export function getFiles(folder: string, version: string, language: string, type: string): Array<string> | number {
     try {
-        // TODO: Add metadata (GitHub/Git API?)
-
         // Retrieve Correct Folder
         const rawFolders: Array<Dirent> = readDirectory(folder, version, language, type);
         if (rawFolders.length === 0) return 404;
@@ -75,11 +79,8 @@ export function getFiles(folder: string, version: string, language: string, type
  * @param type Documentation (Doc) or Guides (Guide)
  * @returns HTML data as string or status code on error.
  */
-export function getDefaultFile(folder: string, version: string, language: string, type: string): string | number {
+export function getDefaultFile(folder: string, version: string, language: string, type: string): DocumentationFile | number {
     try {
-        // TODO: Add metadata (GitHub/Git API?)
-        // Chapters, paragraphs (aside)
-
         // Retrieve Correct Folder
         const rawFolders: Array<Dirent> = readDirectory(folder, version, language, type);
         if (rawFolders.length === 0) return 404;
@@ -90,7 +91,15 @@ export function getDefaultFile(folder: string, version: string, language: string
         if (rawFile.length === 0) return 404;
 
         // Retrieve & Send File
-        return fs.readFileSync(`${rawFile[0].parentPath}/${rawFile[0].name}`, "utf8");
+        const metadata: Stats = fs.statSync(`${rawFile[0].parentPath}/${rawFile[0].name}`);
+        return {
+            "name": rawFile[0].name,
+            "fileContents": fs.readFileSync(`${rawFile[0].parentPath}/${rawFile[0].name}`, "utf8"),
+            "size": metadata.size,
+            "access_time": new Date(metadata.atimeMs),
+            "modification_time": new Date(metadata.mtimeMs),
+            "creation_time": new Date(metadata.birthtimeMs)
+        }
     } catch (error: any) {
         if (error.code === "ENOENT") {
             return 404;
