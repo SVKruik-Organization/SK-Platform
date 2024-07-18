@@ -42,3 +42,10 @@ export type RecommendedItem = {
     "icon": string,
     "time": number
 }
+
+// Search Request
+export type SearchRequest = {
+    "index": string,
+    "query": string,
+    "limit": string | undefined
+}

@@ -1,5 +1,10 @@
 import type { DateFormat } from "@/assets/customTypes";
 
+/**
+ * Timestamp Calculation
+ * @param datetime Overwrite Date.now.
+ * @returns Object with date, time, now and the full date string.
+ */
 export function getDate(datetime: Date | undefined): DateFormat {
     let targetDate: Date = new Date();
     if (datetime) targetDate = new Date(datetime);

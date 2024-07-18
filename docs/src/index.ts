@@ -17,12 +17,7 @@ const corsOptions = {
     optionsSuccessStatus: 200
 }
 app.use(cors(corsOptions));
-
-// Logging
-app.get("*", apiMiddleware);
-app.post("*", apiMiddleware);
-app.put("*", apiMiddleware);
-app.delete("*", apiMiddleware);
+app.use(apiMiddleware);
 
 // Placeholder Recommended Item
 const placeholder: RecommendedItem = {
