@@ -9,7 +9,7 @@ const router: Router = express.Router();
 // Meilisearch Setup
 const MEILISEARCH_HOST: string | undefined = process.env.MEILISEARCH_HOST;
 const MEILISEARCH_MASTER: string | undefined = process.env.MEILISEARCH_MASTER;
-if (!MEILISEARCH_HOST || !MEILISEARCH_MASTER) process.exit(1);
+if (!MEILISEARCH_HOST || !MEILISEARCH_MASTER) throw new Error("One or more Meilisearch environment variables are missing.");
 const MeiliSearchClient: MeiliSearch = new MeiliSearch({
     host: MEILISEARCH_HOST,
     apiKey: MEILISEARCH_MASTER
