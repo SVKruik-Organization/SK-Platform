@@ -34,6 +34,7 @@ export default defineComponent({
     },
     async mounted() {
         if (!this.type || !this.category) return;
+        if (!this.documentationStore.docIndex.length || !this.documentationStore.guideIndex.length) await this.documentationStore.refresh();
 
         // Category Landing Page
         if (!this.page) {
@@ -77,7 +78,7 @@ export default defineComponent({
                 <p style="margin-bottom: 20px;">Other pages in {{ category }}</p>
                 <RouterLink :to="`/documentation/read/${type}/${category}/${link}`"
                     v-for="link in documentationStore.getCategoryList(type, category)">
-                    {{ link.replace("_", " ") }}
+                    {{ link.replace(/_/g, " ") }}
                 </RouterLink>
             </section>
             <section class="controls flex-col">

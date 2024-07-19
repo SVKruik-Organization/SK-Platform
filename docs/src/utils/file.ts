@@ -129,7 +129,7 @@ export function getIndex(version: string, language: string, type: string): Array
             const folderPath = `${__dirname}/../../data/html/${version}/${language}/${type}/${rawFolderName}`;
             const indexItem: IndexItem = {
                 "category_icon": getFolderIcon(rawFolderName.slice(3)),
-                "category": rawFolderName.replace("_", " ").slice(3),
+                "category": rawFolderName.replace(/_/g, " ").slice(3),
                 "children": readdirSync(folderPath).filter(fileName => fileName.endsWith(".html") && fileName !== "00_Default.html").map(fileName => fileName.slice(3, -5))
             }
             index.push(indexItem);
@@ -160,7 +160,7 @@ export function getCategories(version: string, language: string, type: string): 
             .map(directory => {
                 return {
                     "category_icon": getFolderIcon(directory.name.slice(3)),
-                    "category": directory.name.replace("_", " ").slice(3)
+                    "category": directory.name.replace(/_/g, " ").slice(3)
                 }
             });
     } catch (error: any) {
@@ -188,37 +188,46 @@ function readDirectory(folder: string, version: string, language: string, type: 
 
 /**
  * Get the icon for the specified folder/category.
- * @param name The folder name excluding order number.
+ * @param name The folder name excluding order number including underscores.
  * @returns 
  */
 export function getFolderIcon(name: string): string {
     switch (name) {
+        // Docs
+        case "Get_Started":
+            return "fa-rocket-launch";
+        case "Products":
+            return "fa-conveyor-belt";
+        case "Services":
+            return "fa-tower-cell";
         case "Community":
             return "fa-users";
         case "Developers":
             return "fa-code";
-        case "Get_Started":
-            return "fa-rocket-launch";
-        case "Operations":
-            return "fa-gear";
         case "Operator":
             return "fa-user-crown";
         case "Parties":
             return "fa-user-group-crown";
-        case "Plans":
-            return "fa-gem";
-        case "Products":
-            return "fa-conveyor-belt";
-        case "Other":
-            return "fa-cloud";
+        case "Operations":
+            return "fa-gear";
         case "Contributing":
             return "fa-handshake-angle";
+        case "Plans":
+            return "fa-gem";
+        case "More":
+            return "fa-cloud";
+        case "Legal":
+            return "fa-scale-balanced"
+
+        // Guides
         case "Technical":
             return "fa-compass-drafting";
         case "Managment":
             return "fa-chart-mixed";
         case "Customization":
             return "fa-swatchbook"
+        case "Self_Hosting":
+            return "fa-server"
         default:
             return "fa-check";
     }

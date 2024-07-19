@@ -38,6 +38,7 @@ router.get("/all/:version/:language", async (req: Request, res: Response) => {
         res.json({ "result": search.hits, "count": search.hits.length, "duration_ms": search.processingTimeMs });
     } catch (error: any) {
         const userErrorCodes: Array<string> = ["index_not_found", "invalid_search_limit"];
+        if (error.toString().includes("fetch failed")) return res.sendStatus(503);
         if (!userErrorCodes.includes(error.code)) logError(error);
         return res.sendStatus(error.httpStatus || 500);
     }
@@ -62,6 +63,7 @@ router.get("/page/:version/:language", async (req: Request, res: Response) => {
         res.json({ "result": search.hits, "count": search.hits.length, "duration_ms": search.processingTimeMs });
     } catch (error: any) {
         const userErrorCodes: Array<string> = ["index_not_found", "invalid_search_limit"];
+        if (error.toString().includes("fetch failed")) return res.sendStatus(503);
         if (!userErrorCodes.includes(error.code)) logError(error);
         return res.sendStatus(error.httpStatus || 500);
     }

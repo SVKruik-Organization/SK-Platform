@@ -36,13 +36,13 @@ app.use("/api", APIRoutes);
 
 // Base Route
 app.get("/", (req: Request, res: Response) => {
-    res.json({ "message": "Default Documentation Endpoint" });
+    res.json({ "message": "If you are looking for documentation on SK Platform, you should go here: https://bots.stefankruik.com/documentation. This subdomain only hosts the backend of the documentation." });
 });
 
 // Refresh
 const refreshLimit = rateLimit({
     windowMs: 2 * 60 * 1000,
-    limit: 1,
+    limit: 10,
     standardHeaders: true,
     legacyHeaders: false
 });

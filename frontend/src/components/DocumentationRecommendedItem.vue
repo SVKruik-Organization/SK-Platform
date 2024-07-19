@@ -28,7 +28,7 @@ export default defineComponent({
                 </RouterLink>
                 <i class="fa-regular fa-circle-small recommended-sub-item"></i>
                 <RouterLink :to="`/documentation/read/${data.type}/${data.category}`" class="recommended-sub-item">
-                    {{ data.category.replace("_", " ") }}
+                    {{ data.category.replace(/_/g, " ") }}
                 </RouterLink>
                 <i class="fa-regular fa-circle-small recommended-sub-item"></i>
                 <p class="recommended-sub-item">{{ data.time }} min read</p>

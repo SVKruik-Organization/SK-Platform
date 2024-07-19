@@ -7,7 +7,7 @@ export default defineComponent({
     props: {
         "type": { type: String, required: true },
         "data": { type: Object as PropType<DocumentationIndexItem>, required: true },
-    },
+    }
 });
 </script>
 
@@ -15,10 +15,10 @@ export default defineComponent({
     <menu class="category-item flex-col">
         <RouterLink class="flex category-header" :to="`/documentation/read/${type}/${data.category}`">
             <i class=" fa-regular" :class="data.category_icon"></i>
-            <h4>{{ data.category.replace("_", " ") }}</h4>
+            <h4>{{ data.category.replace(/_/g, " ") }}</h4>
         </RouterLink>
         <RouterLink v-for="child of data.children" :to="`/documentation/read/${type}/${data.category}/${child}`">{{
-            child.replace("_", " ") }}</RouterLink>
+            child.replace(/_/g, " ") }}</RouterLink>
     </menu>
 </template>
 

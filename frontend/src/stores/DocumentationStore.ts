@@ -1,17 +1,17 @@
 import { defineStore } from "pinia";
-import { useStorage, useSessionStorage } from "@vueuse/core";
+import { useSessionStorage, useLocalStorage } from "@vueuse/core";
 import type { DocumentationIndexItem, RecommendedItem } from "@/assets/customTypes";
 import { fetchDocumentationIndex, fetchDocumentationRefresh, fetchRecommendedItems } from "@/utils/fetch";
 
 export const useDocumentationStore = defineStore("DocumentationStore", {
     state: () => {
         return {
-            docIndex: useSessionStorage("docIndex", [] as Array<DocumentationIndexItem>),
-            guideIndex: useSessionStorage("guideIndex", [] as Array<DocumentationIndexItem>),
+            docIndex: useLocalStorage("docIndex", [] as Array<DocumentationIndexItem>),
+            guideIndex: useLocalStorage("guideIndex", [] as Array<DocumentationIndexItem>),
             recommendedDocItems: useSessionStorage("recommendedDocItems", [] as Array<RecommendedItem>),
             recommendedGuideItems: useSessionStorage("recommendedGuideItems", [] as Array<RecommendedItem>),
-            version: useStorage("documentationVersion", "v1" as string),
-            language: useStorage("language", "en-US" as string)
+            version: useLocalStorage("documentationVersion", "v1" as string),
+            language: useLocalStorage("language", "en-US" as string)
         }
     },
     actions: {
@@ -119,7 +119,7 @@ export const useDocumentationStore = defineStore("DocumentationStore", {
         getCategoryList(type: string, categoryName: string): Array<string> {
             let convertedType: "docIndex" | "guideIndex" = "docIndex";
             if (type === "Guide") convertedType = "guideIndex";
-            return this[convertedType].filter(indexItem => indexItem.category === categoryName)[0].children;
+            return this[convertedType].filter(indexItem => indexItem.category === categoryName)[0]?.children;
         }
     }
 });

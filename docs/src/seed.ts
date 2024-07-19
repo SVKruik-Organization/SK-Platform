@@ -64,8 +64,8 @@ for (let i = 0; i < seedItems.length; i++) {
         index.push({
             "id": seedItemIndex++,
             "type": seedItem.type,
-            "category": seedItem.category.slice(3).replace("_", " "),
-            "page": file.slice(3, -5).replace("_", " "),
+            "category": seedItem.category.slice(3).replace(/_/g, " "),
+            "page": file.slice(3, -5).replace(/_/g, " "),
             "content": readFileSync(`${__dirname}/../data/html/${version}/${language}/${seedItem.type}/${seedItem.category}/${file}`, "utf-8")
                 .replace(/(<([^>]+)>)/ig, "") // HTML
                 .replace(/\\./ig, "").trim() // Escape Characters
