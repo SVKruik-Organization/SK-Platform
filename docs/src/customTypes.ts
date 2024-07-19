@@ -43,9 +43,37 @@ export type RecommendedItem = {
     "time": number
 }
 
-// Search Request
-export type SearchRequest = {
+// Search All Pages Request
+export type SearchAllRequest = {
     "index": string,
     "query": string,
-    "limit": string | undefined
+    "limit": string | undefined,
+    "offset": string | undefined,
+}
+
+// Search Specific Page Request
+export type SearchPageRequest = {
+    "index": string,
+    "query": string,
+    "type": string,
+    "category": string,
+    "page": string,
+    "limit": string | undefined,
+    "offset": string | undefined
+}
+
+// Pre-Read Seed Item
+export type SeedItem = {
+    "type": string,
+    "category": string,
+    "children": Array<string>
+}
+
+// Read Seed Item
+export type SeedIndexItem = {
+    "id": number,
+    "type": string,
+    "category": string,
+    "page": string,
+    "content": string
 }

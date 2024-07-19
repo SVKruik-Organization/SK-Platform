@@ -8,4 +8,4 @@ logs
 data.ms
 dumps
 meilisearch
-*.json
+exports

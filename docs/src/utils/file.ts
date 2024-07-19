@@ -1,5 +1,4 @@
-import fs, { Dirent, Stats } from "fs";
-import path from "path";
+import { Dirent, readdirSync, readFileSync, Stats, statSync } from "fs";
 import { logError } from "./logger";
 import { DocumentationFile, FolderItem, IndexItem, RecommendedItem } from "../customTypes";
 
@@ -19,15 +18,15 @@ export function getFile(folder: string, name: string, version: string, language:
         if (rawFolders.length === 0) return 404;
 
         // Retrieve Correct File
-        const rawFile: Array<Dirent> = fs.readdirSync(path.resolve(__dirname, `../../data/html/${version}/${language}/${type}/${rawFolders[0].name}`), { withFileTypes: true })
+        const rawFile: Array<Dirent> = readdirSync(`${__dirname}/../../data/html/${version}/${language}/${type}/${rawFolders[0].name}`, { withFileTypes: true })
             .filter(entity => entity.isFile() && entity.name !== "00_Default.html" && entity.name.slice(3, -5) === name);
         if (rawFile.length === 0) return 404;
 
         // Retrieve & Send File
-        const metadata: Stats = fs.statSync(`${rawFile[0].parentPath}/${rawFile[0].name}`);
+        const metadata: Stats = statSync(`${rawFile[0].parentPath}/${rawFile[0].name}`);
         return {
             "name": rawFile[0].name,
-            "fileContents": fs.readFileSync(`${rawFile[0].parentPath}/${rawFile[0].name}`, "utf8"),
+            "fileContents": readFileSync(`${rawFile[0].parentPath}/${rawFile[0].name}`, "utf8"),
             "size": metadata.size,
             "access_time": new Date(metadata.atimeMs),
             "modification_time": new Date(metadata.mtimeMs),
@@ -58,7 +57,7 @@ export function getFiles(folder: string, version: string, language: string, type
         if (rawFolders.length === 0) return 404;
 
         // Retrieve Correct File
-        return fs.readdirSync(path.resolve(__dirname, `../../data/html/${version}/${language}/${type}/${rawFolders[0].name}`), { withFileTypes: true })
+        return readdirSync(`${__dirname}/../../data/html/${version}/${language}/${type}/${rawFolders[0].name}`, { withFileTypes: true })
             .filter(entity => entity.isFile() && entity.name !== "00_Default.html")
             .map(file => file.name.slice(3, -5));
     } catch (error: any) {
@@ -86,15 +85,15 @@ export function getDefaultFile(folder: string, version: string, language: string
         if (rawFolders.length === 0) return 404;
 
         // Retrieve Correct File
-        const rawFile: Array<Dirent> = fs.readdirSync(path.resolve(__dirname, `../../data/html/${version}/${language}/${type}/${rawFolders[0].name}`), { withFileTypes: true })
+        const rawFile: Array<Dirent> = readdirSync(`${__dirname}/../../data/html/${version}/${language}/${type}/${rawFolders[0].name}`, { withFileTypes: true })
             .filter(entity => entity.isFile() && entity.name === "00_Default.html");
         if (rawFile.length === 0) return 404;
 
         // Retrieve & Send File
-        const metadata: Stats = fs.statSync(`${rawFile[0].parentPath}/${rawFile[0].name}`);
+        const metadata: Stats = statSync(`${rawFile[0].parentPath}/${rawFile[0].name}`);
         return {
             "name": rawFile[0].name,
-            "fileContents": fs.readFileSync(`${rawFile[0].parentPath}/${rawFile[0].name}`, "utf8"),
+            "fileContents": readFileSync(`${rawFile[0].parentPath}/${rawFile[0].name}`, "utf8"),
             "size": metadata.size,
             "access_time": new Date(metadata.atimeMs),
             "modification_time": new Date(metadata.mtimeMs),
@@ -120,18 +119,18 @@ export function getDefaultFile(folder: string, version: string, language: string
 export function getIndex(version: string, language: string, type: string): Array<IndexItem> | number {
     try {
         // Retrieve Folder Names
-        const rawFolders: Array<string> = fs.readdirSync(path.resolve(__dirname, `../../data/html/${version}/${language}/${type}`), { withFileTypes: true })
+        const rawFolders: Array<string> = readdirSync(`${__dirname}/../../data/html/${version}/${language}/${type}`, { withFileTypes: true })
             .filter(entity => entity.isDirectory())
             .map(directory => directory.name);
 
         // Retrieve & Format Files
         const index: Array<IndexItem> = [];
         for (const rawFolderName of rawFolders) {
-            const folderPath = path.join(__dirname, `../../data/html/${version}/${language}/${type}/${rawFolderName}`);
+            const folderPath = `${__dirname}/../../data/html/${version}/${language}/${type}/${rawFolderName}`;
             const indexItem: IndexItem = {
                 "category_icon": getFolderIcon(rawFolderName.slice(3)),
                 "category": rawFolderName.replace("_", " ").slice(3),
-                "children": fs.readdirSync(folderPath).filter(fileName => fileName.endsWith(".html") && fileName !== "00_Default.html").map(fileName => fileName.slice(3, -5))
+                "children": readdirSync(folderPath).filter(fileName => fileName.endsWith(".html") && fileName !== "00_Default.html").map(fileName => fileName.slice(3, -5))
             }
             index.push(indexItem);
         }
@@ -156,7 +155,7 @@ export function getIndex(version: string, language: string, type: string): Array
 export function getCategories(version: string, language: string, type: string): Array<FolderItem> | number {
     try {
         // Retrieve & Format Folder Names
-        return fs.readdirSync(path.resolve(__dirname, `../../data/html/${version}/${language}/${type}`), { withFileTypes: true })
+        return readdirSync(`${__dirname}/../../data/html/${version}/${language}/${type}`, { withFileTypes: true })
             .filter(entity => entity.isDirectory())
             .map(directory => {
                 return {
@@ -183,7 +182,7 @@ export function getCategories(version: string, language: string, type: string): 
  * @returns The folders in Dirent format.
  */
 function readDirectory(folder: string, version: string, language: string, type: string): Array<Dirent> {
-    return fs.readdirSync(path.resolve(__dirname, `../../data/html/${version}/${language}/${type}`), { withFileTypes: true })
+    return readdirSync(`${__dirname}/../../data/html/${version}/${language}/${type}`, { withFileTypes: true })
         .filter(entity => entity.isDirectory() && entity.name.slice(3) === folder);
 }
 
@@ -233,7 +232,7 @@ export function getFolderIcon(name: string): string {
  */
 export function getRecommendedItems(language: string, type: string): Array<RecommendedItem> | number {
     try {
-        return JSON.parse(fs.readFileSync(path.resolve(path.resolve(__dirname, `../../data/json/${language}/${type}.json`)), "utf8"));
+        return JSON.parse(readFileSync(`${__dirname}/../../data/json/${language}/${type}.json`, "utf8"));
     } catch (error: any) {
         return 404;
     }

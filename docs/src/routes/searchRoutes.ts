@@ -2,7 +2,7 @@ import dotenv from "dotenv";
 import express, { Request, Response, Router } from "express";
 import { logError } from "../utils/logger";
 import MeiliSearch, { Index } from "meilisearch";
-import { SearchRequest } from "../customTypes";
+import { SearchAllRequest, SearchPageRequest } from "../customTypes";
 dotenv.config();
 const router: Router = express.Router();
 
@@ -25,14 +25,17 @@ router.get("/all/:version/:language", async (req: Request, res: Response) => {
     try {
         // Setup
         if (!MeiliSearchClient) return;
-        const searchParams = req.query as SearchRequest;
+        const searchParams = req.query as SearchAllRequest;
         if (!searchParams.index || !searchParams.query) return res.sendStatus(400);
 
         const index: Index = MeiliSearchClient.index(searchParams.index);
         const search = await index.search(searchParams.query, {
             "limit": searchParams.limit ? parseInt(searchParams.limit) : 5,
+            "attributesToSearchOn": ["content"],
+            "offset": searchParams.offset ? parseInt(searchParams.offset) : 0
         });
-        res.json({ "result": search.hits, "count": search.hits.length });
+
+        res.json({ "result": search.hits, "count": search.hits.length, "duration_ms": search.processingTimeMs });
     } catch (error: any) {
         const userErrorCodes: Array<string> = ["index_not_found", "invalid_search_limit"];
         if (!userErrorCodes.includes(error.code)) logError(error);
@@ -42,9 +45,26 @@ router.get("/all/:version/:language", async (req: Request, res: Response) => {
 
 // Specific Page
 router.get("/page/:version/:language", async (req: Request, res: Response) => {
-    const searchParams = req.query as SearchRequest;
-    console.log(searchParams);
-    res.json({ "result": "Search Page Endpoint", "count": 0 });
+    try {
+        // Setup
+        if (!MeiliSearchClient) return;
+        const searchParams = req.query as SearchPageRequest;
+        if (!searchParams.index || !searchParams.query || !searchParams.type || !searchParams.category || !searchParams.page) return res.sendStatus(400);
+
+        const index: Index = MeiliSearchClient.index(searchParams.index);
+        const search = await index.search(searchParams.query, {
+            "filter": `type = '${searchParams.type}' AND category = '${searchParams.category}' AND page = '${searchParams.page}'`,
+            "limit": searchParams.limit ? parseInt(searchParams.limit) : 5,
+            "attributesToSearchOn": ["content"],
+            "offset": searchParams.offset ? parseInt(searchParams.offset) : 0
+        });
+
+        res.json({ "result": search.hits, "count": search.hits.length, "duration_ms": search.processingTimeMs });
+    } catch (error: any) {
+        const userErrorCodes: Array<string> = ["index_not_found", "invalid_search_limit"];
+        if (!userErrorCodes.includes(error.code)) logError(error);
+        return res.sendStatus(error.httpStatus || 500);
+    }
 });
 
 export { router as SearchRoutes };
