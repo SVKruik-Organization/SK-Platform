@@ -107,7 +107,8 @@ export default defineComponent({
                         language and/or version settings.</p>
                     <p>Please change them to their defaults and try again.</p>
                 </article>
-                <div v-else>Something went wrong while retrieving the recommended items. Please try again later.
+                <div class="error-message" v-else>Something went wrong while retrieving the recommended items. Please
+                    try again later.
                 </div>
             </div>
         </div>
@@ -129,7 +130,8 @@ export default defineComponent({
                         and/or version settings.</p>
                     <p>Please change them to their defaults and try again.</p>
                 </article>
-                <div v-else>Something went wrong while retrieving the documentation index. Please try again later.
+                <div class="error-message" v-else>Something went wrong while retrieving the documentation index. Please
+                    try again later.
                 </div>
             </div>
         </div>
@@ -360,6 +362,10 @@ h1 {
 
 .footer-note p {
     font-size: small
+}
+
+.error-message {
+    margin-bottom: 30px;
 }
 
 .footer-note i {
