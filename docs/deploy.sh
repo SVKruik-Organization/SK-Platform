@@ -9,10 +9,15 @@ git config --global --add safe.directory /home/svkruik/Documents/GitHub/Bot-Webs
 git reset --hard
 git pull
 echo "Git setup complete."
+
+# Init
 cd docs
+[ -d logs ] || mkdir logs
+npm install
 
 # Search Engine - search.stefankruik.com
 npm run seed v1 en-US w
+[ -d exports ] || mkdir exports
 cd exports
 
 if [ -f "v1_en-US.json" ]; then
@@ -29,7 +34,6 @@ fi
 
 # Documentation - docs.stefankruik.com
 cd ..
-npm install
 npm run build
 echo "Documentation build complete"
 
