@@ -47,6 +47,7 @@ app.listen(port, async () => {
             const messageContent: UplinkMessage = JSON.parse(message.content.toString());
             channel.ack(message);
             if (messageContent.task === "Deploy" && process.platform === "linux") {
+                console.log(`Received new deploy task from ${messageContent.sender}. Running Server deployment script.`);
                 shell.exec("sh deploy.sh");
             }
         }

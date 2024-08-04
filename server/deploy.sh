@@ -18,6 +18,7 @@ echo "Hosting build complete"
 if [ -d "dist" ]; then
     cd ../server
     npm install
+    npm run build
     rm -rf frontendDist
     mkdir -p frontendDist
     mv ../frontend/dist/* frontendDist/

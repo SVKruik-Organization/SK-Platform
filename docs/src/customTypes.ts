@@ -77,3 +77,14 @@ export type SeedIndexItem = {
     "page": string,
     "content": string
 }
+
+// Uplink Network Payload
+export type UplinkMessage = {
+    "sender": string,
+    "recipient": string,
+    "trigger_source": string,
+    "reason": string,
+    "task": string,
+    "content": string,
+    "timestamp": Date
+}

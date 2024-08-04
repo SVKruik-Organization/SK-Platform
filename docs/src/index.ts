@@ -1,12 +1,14 @@
 import express, { Express, Request, Response } from "express";
 import dotenv from "dotenv";
 import cors from "cors";
-import { DocumentationFile, FileRequest, FilesRequest, FolderItem, IndexItem, RecommendedItem } from "./customTypes";
+import { DocumentationFile, FileRequest, FilesRequest, FolderItem, IndexItem, RecommendedItem, UplinkMessage } from "./customTypes";
 import { getCategories, getDefaultFile, getFile, getFiles, getIndex, getRecommendedItems } from "./utils/file";
 import { SearchRoutes } from "./routes/searchRoutes";
-import { APIRoutes } from "./routes/apiRoutes";
 import { apiMiddleware, log } from "./utils/logger";
-import { rateLimit } from 'express-rate-limit'
+import { rateLimit } from 'express-rate-limit';
+import { Channel, Message } from "amqplib";
+import shell from "shelljs";
+import { getConnection } from "./utils/connection";
 dotenv.config();
 const app: Express = express();
 app.use(express.json());
@@ -32,11 +34,15 @@ const placeholder: RecommendedItem = {
 
 // Other Routes
 app.use("/search", SearchRoutes);
-app.use("/api", APIRoutes);
 
 // Base Route
-app.get("/", (req: Request, res: Response) => {
+app.get("/", (_req: Request, res: Response) => {
     res.json({ "message": "If you are looking for documentation on SK Platform, you should go here: https://bots.stefankruik.com/documentation. This subdomain only hosts the backend of the documentation." });
+});
+
+// Status Shield
+app.get("/api/status/badge", (_req: Request, res: Response) => {
+    res.json({ "schemaVersion": 1, "label": "Docs Status", "message": "online", "color": "brightgreen" });
 });
 
 // Refresh
@@ -117,6 +123,26 @@ app.get("/getCategories/:version/:language/:type", async (req: Request, res: Res
 
 // Start
 const PORT: string | number = process.env.PORT || 3001;
-app.listen(PORT, () => {
+app.listen(PORT, async () => {
+    // Setup
+    const channel: Channel | null = await getConnection();
+    if (!channel) throw new Error("Uplink connection missing.");
+    channel.assertExchange("platform", "direct", { durable: false });
+    const queue = await channel.assertQueue("", { exclusive: true });
+    await channel.bindQueue(queue.queue, "platform", "server");
+
+    // Listen
+    channel.consume(queue.queue, (message: Message | null) => {
+        if (message) {
+            const messageContent: UplinkMessage = JSON.parse(message.content.toString());
+            channel.ack(message);
+            if (messageContent.task === "Deploy" && process.platform === "linux") {
+                log(`Received new deploy task from ${messageContent.sender}. Running Documentation deployment script.`, "info");
+                shell.exec("sh deploy.sh");
+            }
+        }
+    }, {
+        noAck: false
+    });
     log(`Documentation server listening on port ${PORT}`, "info");
 });
