@@ -16,10 +16,10 @@ app.get("/api/status/badge", (_req: Request, res: Response) => {
 });
 
 // Serve Vue Build
-app.use(express.static(path.join(__dirname, 'dist')));
+app.use(express.static(path.join(__dirname, '../frontendDist')));
 
 // Files
-const distDir: string = path.join(__dirname, 'dist');
+const distDir: string = path.join(__dirname, '../frontendDist');
 const vueIndexFile: string = path.join(distDir, 'index.html');
 const fallbackFile: string = path.join(__dirname, 'fallback.html');
 
@@ -28,7 +28,7 @@ app.get('*', (_req: Request, res: Response) => {
     const distExists: boolean = fs.existsSync(distDir);
     const indexExists: boolean = fs.existsSync(vueIndexFile);
     if (distExists && indexExists) {
-        res.sendFile(path.resolve(__dirname, 'dist', 'index.html'));
+        res.sendFile(path.resolve(__dirname, '../frontendDist', 'index.html'));
     } else res.sendFile(fallbackFile);
 });
 
