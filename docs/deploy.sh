@@ -11,7 +11,7 @@ echo "Git setup complete."
 
 # Init
 cd docs
-source .env
+. .env
 [ -d logs ] || mkdir logs
 npm install
 
