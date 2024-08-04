@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/bin/sh
 export HOME=/home/SVKruik
 export PATH=/root/.nvm/versions/node/v20.15.1/bin:$PATH
 

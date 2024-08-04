@@ -138,7 +138,7 @@ app.listen(PORT, async () => {
             channel.ack(message);
             if (messageContent.task === "Deploy" && process.platform === "linux") {
                 log(`Received new deploy task from ${messageContent.sender}. Running Documentation deployment script.`, "info");
-                shell.exec("sh deploy.sh");
+                shell.exec("bash deploy.sh");
             }
         }
     }, {
