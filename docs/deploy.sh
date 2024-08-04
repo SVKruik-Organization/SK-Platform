@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/bin/bash
 export HOME=/home/svkruik
 export PATH=/root/.nvm/versions/node/v20.15.1/bin:$PATH
 
@@ -11,7 +11,7 @@ echo "Git setup complete."
 
 # Init
 cd docs
-. .env
+source .env
 [ -d logs ] || mkdir logs
 npm install
 
