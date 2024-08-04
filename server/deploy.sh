@@ -3,7 +3,7 @@ export HOME=/home/SVKruik
 export PATH=/root/.nvm/versions/node/v20.15.1/bin:$PATH
 
 # Git
-cd ..
+cd ../..
 git config --global --add safe.directory /home/SVKruik/Documents/GitHub/Bot-Website
 git reset --hard
 git pull
