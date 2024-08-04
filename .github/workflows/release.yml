@@ -1,14 +1,15 @@
-name: Deploy Platform
+name: Release Platform
 on:
-  push
+  release:
+    types: [created]
 
 jobs:
-  deploy:
+  release:
     runs-on: ubuntu-latest
     steps:
       - run: |
           curl -X POST \
                -H "Content-Type: application/json" \
                -H "Authorization: Bearer ${{ secrets.DEPLOYMENT_PASSWORD }}" \
-               -d '{"type":"push","repository":"Bot-Website", "payload":${{ toJson(github.event) }}}' \
+               -d '{"type":"release","repository":"Bot-Website", "payload":${{ toJson(github.event.release) }}}' \
                ${{ secrets.DEPLOYMENT_ENDPOINT }}
