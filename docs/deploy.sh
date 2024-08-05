@@ -13,7 +13,7 @@ echo "Git setup complete."
 cd docs
 source .env
 [ -d logs ] || mkdir logs
-npm install
+npm install --omit=dev
 
 # Search Engine - search.stefankruik.com
 npm run seed v1 en-US w

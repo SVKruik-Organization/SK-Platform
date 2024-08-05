@@ -54,8 +54,8 @@ function write(data: string): void {
  * @param res The responds.
  * @param next Send downstream.
  */
-function apiMiddleware(req: any, res: Response, next: NextFunction): void {
-    log(`API Request || Agent: ${req.headers["user-agent"]} || ${req.method} ${req.url} || Body: ${!!req._body} || Content Type: ${req.headers["content-type"]}`, "info");
+function apiMiddleware(req: any, _res: Response, next: NextFunction): void {
+    log(`API Request || Agent: ${req.headers["user-agent"]} || ${req.method} ${req.url} || Body: ${req.body ? `(100 char limit) ${JSON.stringify(req.body).slice(0, 100)}` : "None"}`, "info");
     next();
 }
 
