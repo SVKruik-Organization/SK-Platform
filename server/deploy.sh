@@ -11,13 +11,13 @@ echo "Git setup complete"
 
 # Hosting - platform.stefankruik.com
 cd frontend
-npm install --omit=dev
+npm install
 npm run build
 echo "Hosting build complete"
 
 if [ -d "dist" ]; then
     cd ../server
-    npm install --omit=dev
+    npm install
     npm run build
     rm -rf frontendDist
     mkdir -p frontendDist
