@@ -1,8 +1,16 @@
 {
-    "name": "frontend-bot-website",
+    "name": "sk-platform-frontend",
+    "description": "SK Platform Frontend",
     "version": "1.0.0",
-    "description": "Bot Website Frontend",
-    "private": true,
+    "author": "Stefan Kruik",
+    "repository": {
+        "type": "git",
+        "url": "git+https://github.com/SVKruik-Organization/SK-Platform.git"
+    },
+    "bugs": {
+        "url": "https://github.com/SVKruik-Organization/SK-Platform/issues"
+    },
+    "homepage": "https://github.com/SVKruik-Organization/SK-Platform#readme",
     "type": "module",
     "scripts": {
         "dev": "vite --port 3002",

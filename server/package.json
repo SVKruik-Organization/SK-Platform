@@ -1,22 +1,21 @@
 {
-    "name": "static-bot-website",
+    "name": "sk-platform-server",
+    "description": "SK Platform Server",
     "version": "1.0.0",
-    "description": "Static Bot Website",
+    "author": "Stefan Kruik",
     "repository": {
         "type": "git",
-        "url": "git+https://github.com/SVKruik-Organization/Bot-Website.git"
+        "url": "git+https://github.com/SVKruik-Organization/SK-Platform.git"
     },
+    "bugs": {
+        "url": "https://github.com/SVKruik-Organization/SK-Platform/issues"
+    },
+    "homepage": "https://github.com/SVKruik-Organization/SK-Platform#readme",
     "scripts": {
         "build": "npx tsc",
         "dev": "nodemon src/server.ts",
         "start": "node dist/server.js"
     },
-    "author": "Stefan Kruik",
-    "license": "ISC",
-    "bugs": {
-        "url": "https://github.com/SVKruik-Organization/Bot-Website/issues"
-    },
-    "homepage": "https://github.com/SVKruik-Organization/Bot-Website#readme",
     "dependencies": {
         "amqplib": "^0.10.4",
         "dotenv": "^16.4.5",

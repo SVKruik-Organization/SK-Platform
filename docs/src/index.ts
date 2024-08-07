@@ -15,7 +15,7 @@ app.use(express.json());
 
 // CORS Config
 const corsOptions = {
-    origin: ["http://localhost:3002", "https://bots.stefankruik.com"],
+    origin: ["http://localhost:3002", "https://platform.stefankruik.com"],
     optionsSuccessStatus: 200
 }
 app.use(cors(corsOptions));
@@ -37,7 +37,7 @@ app.use("/search", SearchRoutes);
 
 // Base Route
 app.get("/", (_req: Request, res: Response) => {
-    res.json({ "message": "If you are looking for documentation on SK Platform, you should go here: https://bots.stefankruik.com/documentation. This subdomain only hosts the backend of the documentation." });
+    res.redirect(308, "https://platform.stefankruik.com/documentation");
 });
 
 // Status Shield

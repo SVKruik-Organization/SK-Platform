@@ -4,12 +4,12 @@ export PATH=/root/.nvm/versions/node/v20.15.1/bin:$PATH
 
 # Git
 cd ..
-git config --global --add safe.directory /home/SVKruik/Documents/GitHub/Bot-Website
+git config --global --add safe.directory /home/SVKruik/Documents/GitHub/SK-Platform
 git reset --hard
 git pull
 echo "Git setup complete"
 
-# Hosting - bots.stefankruik.com
+# Hosting - platform.stefankruik.com
 cd frontend
 npm install --omit=dev
 npm run build
@@ -29,7 +29,7 @@ if [ -d "dist" ]; then
     echo "Cleanup complete"
 
     echo "Hosting deployment complete. Reloading server."
-    sudo systemctl restart bot-website.service
+    sudo systemctl restart sk-platform.service
 else
     echo "Hosting deployment failed. Dist directory missing."
     exit 1

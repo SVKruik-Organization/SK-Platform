@@ -1,7 +1,7 @@
 {
-    "name": "docs-bot-website",
+    "name": "sk-docs",
     "version": "1.0.0",
-    "description": "Bot Website Documentation",
+    "description": "SK Docs",
     "scripts": {
         "build": "npx tsc",
         "start": "node dist/index.js",

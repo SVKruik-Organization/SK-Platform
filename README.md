@@ -1,9 +1,7 @@
-# Bot-Website
+# SK Platform
 
-[![Deploy Application](https://github.com/SVKruik-Organization/Bot-Website/actions/workflows/deploy.yml/badge.svg)](https://github.com/SVKruik-Organization/Bot-Website/actions/workflows/deploy.yml)
-[![Website Badge](https://img.shields.io/endpoint?url=https%3A%2F%2Fbots.stefankruik.com%2Fapi%2Fstatus%2Fbadge)](https://bots.stefankruik.com)
-[![Documentation Badge](https://img.shields.io/endpoint?url=https%3A%2F%2Fdocs.stefankruik.com%2Fapi%2Fstatus%2Fbadge)](https://docs.stefankruik.com)
+Welcome to SK Platform, the place where the whole project comes together. SK Platform is the homepage of this project. It features SK Docs, account management and a lot more. If you want to start using my products, this is the place to be. Check out the website [here](https://platform.stefankruik.com), and [reach out](https://platform.stefankruik.com/documentation/read/Doc/Community/Support) if you have any questions.
 
-A platform for reading all about the products, documentation, managing your Operator account and downloading the Bot Commander app.
+---
 
-Heavy WIP, but ramping up development as the other projects rely on the website.
+Because a simple `README.md` can only do so much, I have also made an documentation platform, [SK Docs](https://platform.stefankruik.com/documentation). If you are serious about using my products, I highly recommend reading the relevant articles. Don't have time for that? Don't hesitate to [reach out](https://platform.stefankruik.com/documentation/read/Doc/Community/Support). I am always open to have a chat and answer questions to your heart's content, unless I am debugging deployment 😄.
