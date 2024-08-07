@@ -13,10 +13,9 @@ echo "Git setup complete."
 cd docs
 source .env
 [ -d logs ] || mkdir logs
-npm install
+[ -d exports ] || mkdir exports
 
 # Search Engine - search.stefankruik.com
-[ -d exports ] || mkdir exports
 npm run seed v1 en-US w
 cd exports
 
@@ -26,15 +25,17 @@ if [ -f "v1_en-US.json" ]; then
         -H 'Content-Type: application/json' \
         -H "Authorization: Bearer $MEILISEARCH_MASTER" \
         --data-binary @v1_en-US.json
-    echo "\nSearch engine index deployment complete."
+    echo -e "\nSearch engine index deployment complete."
 else
-    echo "\nSearch engine indexing failed. HTML export file missing."
+    echo -e "\nSearch engine indexing failed. HTML export file missing."
     exit 1
 fi
 
 # Documentation - docs.stefankruik.com
+cd ..
+npm install
 npm run build
-echo "Documentation build complete"
+echo "Documentation build complete."
 
 if [ -d "dist" ]; then
     echo "Documentation deployment complete. Reloading server soon."
