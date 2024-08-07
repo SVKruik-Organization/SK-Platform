@@ -16,8 +16,8 @@ source .env
 npm install --omit=dev
 
 # Search Engine - search.stefankruik.com
-npm run seed v1 en-US w
 [ -d exports ] || mkdir exports
+npm run seed v1 en-US w
 cd exports
 
 if [ -f "v1_en-US.json" ]; then
@@ -33,13 +33,12 @@ else
 fi
 
 # Documentation - docs.stefankruik.com
-cd ..
 npm run build
 echo "Documentation build complete"
 
 if [ -d "dist" ]; then
     echo "Documentation deployment complete. Reloading server soon."
-    sudo systemctl restart docs-website.service
+    sudo systemctl restart sk-docs.service
 else
     echo "Documentation deployment failed. Dist directory missing."
     exit 1
