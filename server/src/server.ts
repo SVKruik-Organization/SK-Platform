@@ -3,7 +3,7 @@ import fs from "fs";
 import path from "path";
 import shell from "shelljs";
 import dotenv from "dotenv";
-import { Channel, Message } from "amqplib";
+import { Channel, Message, Replies } from "amqplib";
 import { getConnection } from "./connection";
 import { UplinkMessage } from "./customTypes";
 const app: Express = express();
@@ -35,24 +35,26 @@ app.get('*', (_req: Request, res: Response) => {
 // Start
 app.listen(port, async () => {
     // Setup
-    const channel: Channel | null = await getConnection();
-    if (!channel) throw new Error("Uplink connection missing.");
-    channel.assertExchange("platform", "direct", { durable: false });
-    const queue = await channel.assertQueue("", { exclusive: true });
-    await channel.bindQueue(queue.queue, "platform", "server");
+    try {
+        const channel: Channel | null = await getConnection();
+        if (!channel) throw new Error("Uplink connection missing.");
+        channel.assertExchange("platform", "direct", { durable: false });
+        const queue: Replies.AssertQueue = await channel.assertQueue("", { exclusive: true });
+        await channel.bindQueue(queue.queue, "platform", "server");
 
-    // Listen
-    channel.consume(queue.queue, (message: Message | null) => {
-        if (message) {
-            const messageContent: UplinkMessage = JSON.parse(message.content.toString());
-            channel.ack(message);
-            if (messageContent.task === "Deploy" && process.platform === "linux") {
-                console.log(`Received new deploy task from ${messageContent.sender}. Running Server deployment script.`);
-                shell.exec("bash deploy.sh");
+        // Listen
+        channel.consume(queue.queue, (message: Message | null) => {
+            if (message) {
+                const messageContent: UplinkMessage = JSON.parse(message.content.toString());
+                channel.ack(message);
+                if (messageContent.task === "Deploy" && process.platform === "linux") {
+                    console.log(`Received new deploy task from ${messageContent.sender}. Running Server deployment script.`);
+                    shell.exec("bash deploy.sh");
+                }
             }
-        }
-    }, {
-        noAck: false
-    });
-    console.log(`Hosting server listening on port ${port}.`);
+        }, { noAck: false });
+        console.log(`Hosting server listening on port ${port}.`);
+    } catch (error: any) {
+        console.error(error);
+    }
 });
