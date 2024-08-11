@@ -129,7 +129,7 @@ export function getIndex(version: string, language: string, type: string): Array
             const folderPath = `${__dirname}/../../data/html/${version}/${language}/${type}/${rawFolderName}`;
             const indexItem: IndexItem = {
                 "category_icon": getFolderIcon(rawFolderName.slice(3)),
-                "category": rawFolderName.replace(/_/g, " ").slice(3),
+                "category": rawFolderName.slice(3),
                 "children": readdirSync(folderPath).filter(fileName => fileName.endsWith(".html") && fileName !== "00_Default.html").map(fileName => fileName.slice(3, -5))
             }
             index.push(indexItem);

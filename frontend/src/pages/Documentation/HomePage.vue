@@ -2,6 +2,7 @@
 import type { DocumentationIndexItem, RecommendedItem } from '@/assets/customTypes';
 import DocumentationCategoryItem from '@/components/DocumentationCategoryItem.vue';
 import DocumentationRecommendedItem from '@/components/DocumentationRecommendedItem.vue';
+import DocumentationFooter from '@/components/DocumentationFooter.vue';
 import { useDocumentationStore } from '@/stores/DocumentationStore';
 import { defineComponent } from 'vue';
 
@@ -9,7 +10,8 @@ export default defineComponent({
     name: "DocumentationHomePage",
     components: {
         DocumentationRecommendedItem,
-        DocumentationCategoryItem
+        DocumentationCategoryItem,
+        DocumentationFooter
     },
     setup() {
         return {
@@ -32,7 +34,7 @@ export default defineComponent({
     },
     async mounted() {
         // Pinia Watcher
-        this.documentationStore.$subscribe((mutation, state) => {
+        this.documentationStore.$subscribe((_mutation, state) => {
             this.docIndexItems = state.docIndex;
             this.guideIndexItems = state.guideIndex;
 
@@ -50,16 +52,19 @@ export default defineComponent({
         this.recommendedItems = initialRecommendedItems;
 
         // Anchor Scroll
-        if (this.$route.hash) {
-            this.scrollAnchor(this.$route.hash === "#Documentation" ? "Doc" : "Guide");
-            this.$router.push(this.$route.path);
-        }
+        if (this.$route.hash) this.scrollAnchor(this.$route.hash);
     },
     methods: {
+        /**
+         * Scroll the specified anchor into view.
+         * @param type The target anchor type.
+         */
         scrollAnchor(type: string): void {
-            const element: HTMLHeadingElement = this.$refs[type === "Doc" ? "Documentation" : "Guides"] as HTMLHeadingElement;
-            if (!element) return;
-            element.scrollIntoView({ behavior: "smooth" });
+            const anchors: Array<string> = ["#Documentation", "#Guides", "#More"];
+            if (!anchors.includes(type)) return;
+            const element: HTMLHeadingElement = this.$refs[type.slice(1)] as HTMLHeadingElement;
+            if (element) element.scrollIntoView({ behavior: "smooth" });
+            this.$router.push(this.$route.path);
         }
     }
 });
@@ -164,49 +169,7 @@ export default defineComponent({
             <h2 ref="More">More</h2>
             <span class="splitter"></span>
         </div>
-        <div class="banner-content documentation-footer">
-            <form class="flex-col documentation-footer-item">
-                <h4>Happy with SK Docs?</h4>
-                <div class="flex">
-                    <button @click="pressedButton = 'like'" class="flex footer-button footer-button-like"
-                        :class="{ 'active-button-like': pressedButton === 'like' }" type="button"
-                        title="Click this if you like the design and information available.">
-                        <p>Yes</p>
-                        <i class="fa-regular fa-heart light-text"></i>
-                    </button>
-                    <button @click="pressedButton = 'dislike'" class="flex footer-button footer-button-dislike"
-                        :class="{ 'active-button-dislike': pressedButton === 'dislike' }" type="button"
-                        title="Click this if you think some things could be better.">
-                        <p>No</p>
-                        <i class="fa-regular fa-heart-crack light-text"></i>
-                    </button>
-                </div>
-            </form>
-            <div class="flex-col documentation-footer-item">
-                <h4>Contributing</h4>
-                <p class="light-text small-text">See room for improvement or something unclear?</p>
-                <div class="flex-col">
-                    <RouterLink to="/documentation/read/Doc/Contributing/SK_Docs"
-                        class="flex footer-button footer-button-contribute">
-                        <p>Help writing SK Docs</p>
-                        <i class="fa-regular fa-handshake-angle light-text"></i>
-                    </RouterLink>
-                </div>
-            </div>
-            <div class="flex-col documentation-footer-item">
-                <h4>Docs didn't cut it?</h4>
-                <div class="flex-col">
-                    <RouterLink to="/documentation/read/Doc/Community/Support" class="flex footer-link">
-                        <i class="fa-regular fa-mailbox-flag-up"></i>
-                        <p>Contact support</p>
-                    </RouterLink>
-                    <RouterLink to="/documentation/read/Doc/Community/Links#Discord" class="flex footer-link">
-                        <i class="fa-brands fa-discord"></i>
-                        <p>Join the Discord</p>
-                    </RouterLink>
-                </div>
-            </div>
-        </div>
+        <DocumentationFooter></DocumentationFooter>
         <a href="https://github.com/SVKruik" target="_blank"
             class="banner-content last-content-container footer-note flex">
             <p class="disabled-text">Stefan Kruik</p>
@@ -294,65 +257,6 @@ h1 {
     background-color: var(--fill);
 }
 
-.documentation-footer {
-    display: grid;
-    grid-template-columns: 1fr 1fr 1fr;
-}
-
-.documentation-footer-item {
-    gap: 20px;
-}
-
-.footer-button {
-    border-radius: var(--border-radius-low);
-    border: 1px solid var(--border);
-    background-color: var(--fill);
-    height: 35px;
-    box-sizing: border-box;
-    padding: 5px 10px;
-    width: max-content;
-    justify-content: space-between;
-    transition: 0.5s;
-}
-
-.footer-button p {
-    color: var(--font-light);
-}
-
-.footer-button-like:hover {
-    border: 1px solid #345a32;
-    background-color: #5c7f5d;
-}
-
-.footer-button-dislike:hover {
-    border: 1px solid #9f4c4c;
-    background-color: #8e4444;
-}
-
-.footer-button-contribute:hover {
-    border: 1px solid #355667;
-    background-color: #5b6b78;
-}
-
-.footer-button-like:hover p,
-.footer-button-like:hover i,
-.footer-button-dislike:hover p,
-.footer-button-dislike:hover i,
-.footer-button-contribute:hover p,
-.footer-button-contribute:hover i {
-    color: var(--font);
-}
-
-.active-button-like {
-    border: 1px solid #1d331c;
-    background-color: #324633;
-}
-
-.active-button-dislike {
-    border: 1px solid #703434;
-    background-color: #572929;
-}
-
 .footer-note {
     margin-bottom: 15px;
     margin-top: 40px;
@@ -364,17 +268,12 @@ h1 {
     font-size: small
 }
 
-.error-message {
-    margin-bottom: 30px;
-}
-
 .footer-note i {
     font-size: 10px;
 }
 
-.footer-link {
-    gap: 10px;
-    padding: 5px;
+.error-message {
+    margin-bottom: 30px;
 }
 
 @media (width <=1280px) {
@@ -427,19 +326,6 @@ h1 {
         width: 90%;
     }
 
-    .documentation-footer {
-        display: flex;
-        justify-content: center;
-        margin-bottom: 70px;
-        flex-wrap: wrap;
-    }
-
-    .documentation-footer-item {
-        gap: 20px;
-        width: 300px;
-        align-items: center;
-    }
-
     .footer-note p {
         width: max-content;
     }
@@ -470,12 +356,6 @@ h1 {
     .hero-bot-image {
         height: 70px;
         margin-left: -35px;
-    }
-}
-
-@media (width <=910px) {
-    .documentation-footer {
-        row-gap: 50px;
     }
 }
 

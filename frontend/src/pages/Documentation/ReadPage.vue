@@ -3,9 +3,13 @@ import { DropdownStates, type DocumentationFile, type DocumentationTypes } from 
 import { useDocumentationStore } from '@/stores/DocumentationStore';
 import { fetchDocumentationDefault, fetchDocumentationPage } from '@/utils/fetch';
 import { defineComponent, type PropType } from 'vue';
+import DocumentationFooter from '@/components/DocumentationFooter.vue';
 
 export default defineComponent({
     name: "ReadPage",
+    components: {
+        DocumentationFooter
+    },
     setup() {
         return {
             documentationStore: useDocumentationStore()
@@ -121,39 +125,44 @@ export default defineComponent({
                 </button>
             </section>
         </nav>
-        <div class="flex-col documentation-content-wrapper">
-            <section class="flex-col documentation-content-parent">
-                <div class="breadcrumbs-container flex">
-                    <RouterLink :to="`/documentation${type === 'Doc' ? '#Documentation' : '#Guides'}`"
-                        class="breadcrumb-item breadcrumb-link">
-                        {{ type }}
-                    </RouterLink>
-                    <p>/</p>
-                    <RouterLink :to="`/documentation/read/${type}/${category}`" class="breadcrumb-item breadcrumb-link">
-                        {{ category }}
-                    </RouterLink>
-                    <p v-if="page">/</p>
-                    <p v-if="page" class="breadcrumb-item">
-                        {{ page }}
-                    </p>
-                </div>
-                <section class="flex documentation-content-container">
-                    <div class="documentation-content-child" v-if="typeof fileData === 'object'"
-                        v-html="fileData.fileContents">
+        <div style="flex: 1">
+            <div class="flex-col documentation-content-wrapper">
+                <section class="flex-col documentation-content-parent">
+                    <div class="breadcrumbs-container flex">
+                        <RouterLink :to="`/documentation${type === 'Doc' ? '#Documentation' : '#Guides'}`"
+                            class="breadcrumb-item breadcrumb-link">
+                            {{ type }}
+                        </RouterLink>
+                        <p>/</p>
+                        <RouterLink :to="`/documentation/read/${type}/${category}`"
+                            class="breadcrumb-item breadcrumb-link">
+                            {{ category.replace(/_/g, " ") }}
+                        </RouterLink>
+                        <p v-if="page">/</p>
+                        <p v-if="page" class="breadcrumb-item">
+                            {{ page.replace(/_/g, " ") }}
+                        </p>
                     </div>
-                    <div class="documentation-content-child"
-                        v-else-if="typeof fileData === 'boolean' && fileData === true">
-                        <p>Looks like this page is not available in this language and/or version. Please change them to
-                            their defaults and try again.</p>
-                    </div>
-                    <div class="documentation-content-child" v-else>
-                        <p>Something went wrong while retrieving this page. Please try again later.</p>
-                    </div>
-                    <aside>
-                        <p>Aside</p>
-                    </aside>
+                    <section class="flex documentation-content-container">
+                        <div class="documentation-content-child" v-if="typeof fileData === 'object'"
+                            v-html="fileData.fileContents">
+                        </div>
+                        <div class="documentation-content-child"
+                            v-else-if="typeof fileData === 'boolean' && fileData === true">
+                            <p>Looks like this page is not available in this language and/or version. Please change them
+                                to
+                                their defaults and try again.</p>
+                        </div>
+                        <div class="documentation-content-child" v-else>
+                            <p>Something went wrong while retrieving this page. Please try again later.</p>
+                        </div>
+                        <aside>
+                            <p>Aside</p>
+                        </aside>
+                    </section>
                 </section>
-            </section>
+            </div>
+            <DocumentationFooter></DocumentationFooter>
         </div>
     </div>
 </template>
@@ -230,5 +239,24 @@ aside {
     top: 120px;
     width: 150px;
     height: 600px;
+}
+
+footer {
+    display: flex;
+    justify-content: space-between;
+    padding-right: 40px;
+    box-sizing: border-box;
+}
+
+@media (width <=1480px) {
+    footer {
+        flex-direction: column;
+        align-items: center;
+        row-gap: 60px;
+    }
+
+    .documentation-footer-item {
+        width: 100%;
+    }
 }
 </style>
