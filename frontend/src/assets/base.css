@@ -7,6 +7,7 @@
     --border: #30363d;
     --link: #2f81f7;
     --border-radius-low: 5px;
+    --border-radius-mid: 10px;
 }
 
 body {
@@ -76,8 +77,9 @@ body {
 }
 
 .gradient-button {
-    background-image: linear-gradient(to right, #3977a0 0%, #68589f 39%, #3977a0 100%);
-    background-size: 200% auto;
+    background-image: url("/Mesh_1.png");
+    background-size: 400% auto;
+    background-position: center;
 }
 
 /* HTML Tags */
@@ -135,6 +137,10 @@ button {
     outline: none;
     background-color: transparent;
     font-weight: 500;
+}
+
+img {
+    background-color: var(--fill-light);
 }
 
 /* Scrollbar */

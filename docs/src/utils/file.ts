@@ -26,7 +26,7 @@ export function getFile(folder: string, name: string, version: string, language:
 
         // Retrieve Chapters
         const root = parse(fileContents);
-        const chapters: Array<string> = root.querySelectorAll("a.chapter-container")
+        const chapters: Array<string> = root.querySelectorAll("a.chapter")
             .reduce((acc: Array<string>, link) => {
                 const href = link.getAttribute("href");
                 if (href) acc.push(href);

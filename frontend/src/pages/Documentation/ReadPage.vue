@@ -34,6 +34,7 @@ export default defineComponent({
             if (!this.page) {
                 this.fileData = await fetchDocumentationDefault(this.category, this.documentationStore.version, this.documentationStore.language, this.type);
             } else this.fileData = await fetchDocumentationPage(this.category, this.page, this.documentationStore.version, this.documentationStore.language, this.type);
+            this.scrollAnchor();
         }
     },
     async mounted() {
@@ -49,8 +50,8 @@ export default defineComponent({
         } else {
             if (!this.documentationStore.validatePage(this.category, this.page, this.type)) return this.$router.push(`/documentation/notfound?type=${this.type}&category=${this.category}&page=${this.page}`);
             this.fileData = await fetchDocumentationPage(this.category, this.page, this.documentationStore.version, this.documentationStore.language, this.type);
-            setTimeout(() => {
-                this.loadAnchor();
+            if (this.$route.hash) setTimeout(() => {
+                this.scrollAnchor();
             }, 100);
         }
     },
@@ -74,10 +75,19 @@ export default defineComponent({
             setTimeout(() => targetButton.innerHTML = "Share", 1000);
             navigator.clipboard.writeText(window.location.href);
         },
-        loadAnchor(): void {
-            if (this.$route.hash) {
-                const targetElement: HTMLElement | null = document.getElementById(this.$route.hash.slice(1));
-                if (targetElement) targetElement.scrollIntoView({ behavior: "smooth" });
+        /**
+         * Scroll the URL anchor into view.
+         */
+        scrollAnchor(): void {
+            if (typeof this.fileData === "object") {
+                const chapters: Array<string> = this.fileData.chapters;
+                if (!chapters.includes(this.$route.hash)) return;
+                const element: HTMLAnchorElement | null = document.getElementById(this.$route.hash.slice(1)) as HTMLAnchorElement | null;
+                if (element) {
+                    element.scrollIntoView({ behavior: "smooth" });
+                    document.querySelector(".anchored-chapter")?.classList.remove("anchored-chapter");
+                    element.classList.add("anchored-chapter");
+                }
             }
         }
     }
@@ -140,17 +150,14 @@ export default defineComponent({
                     <div class="breadcrumbs-container flex">
                         <RouterLink :to="`/documentation${type === 'Doc' ? '#Documentation' : '#Guides'}`"
                             class="breadcrumb-item breadcrumb-link">
-                            {{ type }}
+                            {{ type === 'Doc' ? 'Documentation' : 'Guides' }}
                         </RouterLink>
-                        <p>/</p>
+                        <p class="breadcrumb-item">/</p>
                         <RouterLink :to="`/documentation/read/${type}/${category}`"
                             class="breadcrumb-item breadcrumb-link">
                             {{ category.replace(/_/g, " ") }}
                         </RouterLink>
-                        <p v-if="page">/</p>
-                        <p v-if="page" class="breadcrumb-item">
-                            {{ page.replace(/_/g, " ") }}
-                        </p>
+                        <p v-if="page" class="breadcrumb-item">/</p>
                     </div>
                     <section class="flex documentation-content-container">
                         <div class="documentation-content-child" v-if="typeof fileData === 'object'"
@@ -159,17 +166,30 @@ export default defineComponent({
                         <div class="documentation-content-child"
                             v-else-if="typeof fileData === 'boolean' && fileData === true">
                             <p>Looks like this page is not available in this language and/or version. Please change them
-                                to
-                                their defaults and try again.</p>
+                                to their defaults and try again.
+                            </p>
                         </div>
                         <div class="documentation-content-child" v-else>
                             <p>Something went wrong while retrieving this page. Please try again later.</p>
                         </div>
                         <aside class="flex-col" v-if="typeof fileData === 'object'">
-                            <strong>On this page</strong>
-                            <a :href="chapter" v-for="chapter of fileData.chapters">
-                                {{ chapter.slice(1).replace(/_/g, " ") }}
-                            </a>
+                            <div class="flex-col aside-item">
+                                <strong>On This Page</strong>
+                                <a :href="chapter" v-for="chapter of fileData.chapters">
+                                    {{ chapter.slice(1).replace(/_/g, " ") }}
+                                </a>
+                            </div>
+                            <div class="flex-col aside-item">
+                                <strong>Featured Products</strong>
+                                <a class="flex featured-product-item">
+                                    <img src="/Apricaria.png" alt="Apricaria">
+                                    <p>Apricaria</p>
+                                </a>
+                                <a class="flex featured-product-item">
+                                    <img>
+                                    <p>Uplink</p>
+                                </a>
+                            </div>
                         </aside>
                     </section>
                 </section>
@@ -230,18 +250,22 @@ nav {
     height: 100%;
     box-sizing: border-box;
     padding-top: 40px;
-    gap: 40px;
 }
 
 .breadcrumbs-container {
-    width: 850px;
+    width: 100%;
+    gap: 10px;
+}
+
+.breadcrumb-item {
+    color: var(--font-light);
 }
 
 .documentation-content-container {
     align-items: flex-start;
     justify-content: center;
     height: 100%;
-    gap: 0;
+    gap: 100px;
 }
 
 .documentation-content-child {
@@ -251,19 +275,40 @@ nav {
 aside {
     position: sticky;
     top: 120px;
-    width: 150px;
-    height: 600px;
+    width: 180px;
+    min-height: 400px;
+    gap: 50px;
+    border-left: 1px solid var(--border);
+    box-sizing: border-box;
+    padding-left: 20px;
+}
+
+aside a {
+    margin-top: 10px;
+}
+
+aside a,
+.featured-product-item p {
+    color: var(--font-light);
+}
+
+.featured-product-item {
+    gap: 10px;
+}
+
+.featured-product-item img {
+    border-radius: 50%;
+    height: 30px;
+    aspect-ratio: 1 / 1;
 }
 
 footer {
     display: flex;
     justify-content: space-between;
-    padding-right: 40px;
+    padding: 80px 40px 0 0;
     box-sizing: border-box;
-}
-
-aside a {
-    margin-top: 10px;
+    margin-top: 80px;
+    border-top: 1px solid var(--border);
 }
 
 @media (width <=1480px) {

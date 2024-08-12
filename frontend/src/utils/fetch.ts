@@ -15,7 +15,6 @@ export async function fetchBase(token: string): Promise<boolean> {
         });
         return response.ok;
     } catch (error) {
-        console.log(error);
         return false;
     }
 }
@@ -40,7 +39,6 @@ export async function fetchLogin(username: string, password: string): Promise<Us
             return await response.json();
         } else return false;
     } catch (error) {
-        console.log(error);
         return false;
     }
 }
@@ -62,7 +60,6 @@ export async function fetchDocumentationRefresh(version: string, language: strin
             return false;
         } else return false;
     } catch (error) {
-        console.log(error);
         return false
     }
 }
@@ -87,7 +84,6 @@ export async function fetchDocumentationPage(folder: string, name: string, versi
             return true;
         } else return false;
     } catch (error) {
-        console.log(error);
         return false
     }
 }
@@ -111,7 +107,6 @@ export async function fetchDocumentationPages(folder: string, version: string, l
             return false;
         } else return false;
     } catch (error) {
-        console.log(error);
         return false
     }
 }
@@ -135,7 +130,6 @@ export async function fetchDocumentationDefault(folder: string, version: string,
             return false;
         } else return false;
     } catch (error) {
-        console.log(error);
         return false
     }
 }
@@ -158,7 +152,6 @@ export async function fetchDocumentationIndex(version: string, language: string,
             return { "index": [{ "category": "Not_Found", "category_icon": "", "children": [] }] };
         } else return false;
     } catch (error) {
-        console.log(error);
         return false;
     }
 }
@@ -180,7 +173,6 @@ export async function fetchRecommendedItems(language: string, type: string): Pro
             return { "recommended_items": [{ "title": "Not_Found", "anchor": "", "category": "", "id": 1, "page": "", "time": 1, "icon": "", "type": "" }] };
         } else return false;
     } catch (error) {
-        console.log(error);
         return false;
     }
 }
@@ -203,7 +195,6 @@ export async function fetchDocumentationCategories(version: string, language: st
             return { "categories": [] };
         } else return false;
     } catch (error) {
-        console.log(error);
         return false;
     }
 }

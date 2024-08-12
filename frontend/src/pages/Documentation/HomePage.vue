@@ -52,19 +52,17 @@ export default defineComponent({
         this.recommendedItems = initialRecommendedItems;
 
         // Anchor Scroll
-        if (this.$route.hash) this.scrollAnchor(this.$route.hash);
+        if (this.$route.hash) this.scrollAnchor();
     },
     methods: {
         /**
          * Scroll the specified anchor into view.
-         * @param type The target anchor type.
          */
-        scrollAnchor(type: string): void {
+        scrollAnchor(): void {
             const anchors: Array<string> = ["#Documentation", "#Guides", "#More"];
-            if (!anchors.includes(type)) return;
-            const element: HTMLHeadingElement = this.$refs[type.slice(1)] as HTMLHeadingElement;
+            if (!anchors.includes(this.$route.hash)) return;
+            const element: HTMLHeadingElement | null = document.getElementById(this.$route.hash.slice(1)) as HTMLHeadingElement | null;
             if (element) element.scrollIntoView({ behavior: "smooth" });
-            this.$router.push(this.$route.path);
         }
     }
 });
@@ -80,9 +78,6 @@ export default defineComponent({
                 </h3>
             </div>
             <div class="hero-right flex">
-                <RouterLink to="/documentation/read/Doc/Products/First_Generation#Ciconia">
-                    <img src="/Ciconia.png" class="hero-bot-image" title="Ciconia, first gen main production bot.">
-                </RouterLink>
                 <RouterLink to="/documentation/read/Doc/Products/Discord_Bots#Interpres">
                     <img src="/Interpres.png" class="hero-bot-image" title="Interpres, GitHub API proxy bot.">
                 </RouterLink>
@@ -97,12 +92,13 @@ export default defineComponent({
                 </RouterLink>
             </div>
         </div>
+        <img class="mesh" src="/Mesh_1.png">
     </section>
     <section class="content-container">
         <div class="content-item recommended-parent">
             <h3 class="banner-content content-splitter-header">Recommended pages</h3>
             <div class="banner-content recommended-item-container flex">
-                <DocumentationRecommendedItem @scrollAnchor="scrollAnchor"
+                <DocumentationRecommendedItem
                     v-if="recommendedItems.length > 0 && recommendedItems[0].title !== 'Not_Found'"
                     v-for="recommendedItem of recommendedItems" :key="recommendedItem.id" :data="recommendedItem">
                 </DocumentationRecommendedItem>
@@ -118,7 +114,7 @@ export default defineComponent({
             </div>
         </div>
         <div class="banner-content flex-col section-title-container">
-            <h2 ref="Documentation">Information</h2>
+            <h2 id="Documentation">Information</h2>
             <p class="light-text">In-depth information about all topics from integrating to
                 managing the SK Platform products.</p>
         </div>
@@ -143,7 +139,7 @@ export default defineComponent({
     </section>
     <section class="content-container last-content-container">
         <div class="banner-content flex-col section-title-container">
-            <h2 ref="Guides">Guides</h2>
+            <h2 id="Guides">Guides</h2>
             <p class="light-text">Step-by-step tutorials on performing a wide variety of actions.</p>
         </div>
         <div class="content-item">
@@ -166,7 +162,7 @@ export default defineComponent({
     </section>
     <section class="content-container last-content-container">
         <div class="banner-content flex-col section-title-container">
-            <h2 ref="More">More</h2>
+            <h2 id="More">More</h2>
             <span class="splitter"></span>
         </div>
         <DocumentationFooter></DocumentationFooter>
@@ -190,6 +186,24 @@ export default defineComponent({
     padding: 40px;
     justify-content: center;
     margin-bottom: 40px;
+    position: relative;
+    overflow: hidden;
+}
+
+.hero-left {
+    position: sticky;
+    z-index: 2;
+}
+
+.mesh {
+    position: absolute;
+    left: -400px;
+    top: -300px;
+    width: 1200px;
+    opacity: 0.2;
+    z-index: 1;
+    user-select: none;
+    filter: blur(50px);
 }
 
 h1 {

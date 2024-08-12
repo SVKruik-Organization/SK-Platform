@@ -4,9 +4,6 @@ import type { RecommendedItem } from '@/assets/customTypes';
 
 export default defineComponent({
     name: "DocumentationRecommendedItem",
-    emits: [
-        "scrollAnchor"
-    ],
     props: {
         "data": { type: Object as PropType<RecommendedItem>, required: true },
     },
@@ -22,10 +19,9 @@ export default defineComponent({
         <article class="recommended-item-right flex-col">
             <p class="recommended-title">{{ data.title }}</p>
             <div class="recommended-sub flex">
-                <RouterLink :to="`/documentation${data.type === 'Doc' ? '#Documentation' : '#Guides'}`"
-                    @click="$emit('scrollAnchor', data.type)" class="recommended-sub-item">
+                <a :href="data.type === 'Doc' ? '#Documentation' : '#Guides'" class="recommended-sub-item">
                     {{ data.type }}
-                </RouterLink>
+                </a>
                 <i class="fa-regular fa-circle-small recommended-sub-item"></i>
                 <RouterLink :to="`/documentation/read/${data.type}/${data.category}`" class="recommended-sub-item">
                     {{ data.category.replace(/_/g, " ") }}
@@ -71,6 +67,8 @@ export default defineComponent({
 .recommended-sub-item {
     color: var(--font-light);
     font-size: small;
+    position: sticky;
+    z-index: 2;
 }
 
 .recommended-sub i {
