@@ -11,7 +11,8 @@ export type DocumentationFile = {
     "size": number,
     "access_time": Date,
     "modification_time": Date,
-    "creation_time": Date
+    "creation_time": Date,
+    "chapters": Array<string>
 }
 
 // Get Files

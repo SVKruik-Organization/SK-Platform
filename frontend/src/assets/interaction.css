@@ -51,13 +51,13 @@
     box-sizing: border-box;
     padding: 5px 10px 5px 10px;
     top: 40px;
-    width: 170px;
+    width: 0;
     opacity: 0;
     height: 0;
     border-radius: var(--border-radius-low);
     background-color: var(--fill);
     border: 1px solid var(--border);
-    transition: height 0.8s, opacity 0.7s;
+    transition: height 0.8s, opacity 0.7s, width 0.8s;
     overflow: hidden;
 }
 
@@ -75,6 +75,8 @@
 
 .dropdown-expand {
     height: 55px;
+    width: 170px;
     opacity: 1;
-    transition: height 0.4s, opacity 0.3s;
+    transition: height 0.4s, opacity 0.3s,
+        width 0.4s;
 }

@@ -49,6 +49,9 @@ export default defineComponent({
         } else {
             if (!this.documentationStore.validatePage(this.category, this.page, this.type)) return this.$router.push(`/documentation/notfound?type=${this.type}&category=${this.category}&page=${this.page}`);
             this.fileData = await fetchDocumentationPage(this.category, this.page, this.documentationStore.version, this.documentationStore.language, this.type);
+            setTimeout(() => {
+                this.loadAnchor();
+            }, 100);
         }
     },
     methods: {
@@ -70,6 +73,12 @@ export default defineComponent({
             targetButton.innerHTML = "Copied!";
             setTimeout(() => targetButton.innerHTML = "Share", 1000);
             navigator.clipboard.writeText(window.location.href);
+        },
+        loadAnchor(): void {
+            if (this.$route.hash) {
+                const targetElement: HTMLElement | null = document.getElementById(this.$route.hash.slice(1));
+                if (targetElement) targetElement.scrollIntoView({ behavior: "smooth" });
+            }
         }
     }
 });
@@ -156,8 +165,11 @@ export default defineComponent({
                         <div class="documentation-content-child" v-else>
                             <p>Something went wrong while retrieving this page. Please try again later.</p>
                         </div>
-                        <aside>
-                            <p>Aside</p>
+                        <aside class="flex-col" v-if="typeof fileData === 'object'">
+                            <strong>On this page</strong>
+                            <a :href="chapter" v-for="chapter of fileData.chapters">
+                                {{ chapter.slice(1).replace(/_/g, " ") }}
+                            </a>
                         </aside>
                     </section>
                 </section>
@@ -190,17 +202,19 @@ nav {
 }
 
 .information-dropdown-menu {
-    width: 320px;
+    width: 0;
 }
 
 .information-dropdown-expand {
     height: 130px;
+    width: 320px;
 }
 
 .menu-item {
     width: 100%;
     justify-content: space-between;
     height: 20px;
+    text-wrap: nowrap;
 }
 
 .documentation-content-wrapper {
@@ -246,6 +260,10 @@ footer {
     justify-content: space-between;
     padding-right: 40px;
     box-sizing: border-box;
+}
+
+aside a {
+    margin-top: 10px;
 }
 
 @media (width <=1480px) {

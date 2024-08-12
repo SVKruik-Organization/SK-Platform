@@ -38,7 +38,8 @@ export type DocumentationFile = {
     "size": number,
     "access_time": string,
     "modification_time": string,
-    "creation_time": string
+    "creation_time": string,
+    "chapters": Array<string>
 }
 
 // Raw File Index/TOC Item Response

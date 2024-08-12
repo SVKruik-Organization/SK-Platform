@@ -220,6 +220,7 @@ function parseDocumentationFile(input: any): DocumentationFile {
         "size": input.file.size,
         "access_time": getDate(input.file.access_time).fullDate,
         "modification_time": getDate(input.file.modification_time).fullDate,
-        "creation_time": getDate(input.file.creation_time).fullDate
+        "creation_time": getDate(input.file.creation_time).fullDate,
+        "chapters": input.file.chapters
     }
 }

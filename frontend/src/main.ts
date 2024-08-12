@@ -1,4 +1,5 @@
 import './assets/interaction.css';
+import './assets/docpage.css';
 import './assets/base.css';
 import { createApp, markRaw } from 'vue';
 import type { Router } from 'vue-router';

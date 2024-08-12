@@ -1,0 +1,20 @@
+.chapter-container {
+    cursor: pointer;
+    position: relative;
+    margin: 10px 0;
+}
+
+.chapter-container i {
+    opacity: 0;
+    transition: opacity 0.5s;
+    position: absolute;
+    left: -30px
+}
+
+.chapter-container:hover h2 {
+    text-decoration: underline;
+}
+
+.chapter-container:hover i {
+    opacity: 1;
+}

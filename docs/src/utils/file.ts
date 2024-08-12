@@ -1,6 +1,7 @@
 import { Dirent, readdirSync, readFileSync, Stats, statSync } from "fs";
 import { logError } from "./logger";
 import { DocumentationFile, FolderItem, IndexItem, RecommendedItem } from "../customTypes";
+import { parse } from "node-html-parser";
 
 /**
  * Fetch a specific Documentation page from the file system.
@@ -21,16 +22,27 @@ export function getFile(folder: string, name: string, version: string, language:
         const rawFile: Array<Dirent> = readdirSync(`${__dirname}/../../data/html/${version}/${language}/${type}/${rawFolders[0].name}`, { withFileTypes: true })
             .filter(entity => entity.isFile() && entity.name !== "00_Default.html" && entity.name.slice(3, -5) === name);
         if (rawFile.length === 0) return 404;
+        const fileContents: string = readFileSync(`${rawFile[0].parentPath}/${rawFile[0].name}`, "utf8");
+
+        // Retrieve Chapters
+        const root = parse(fileContents);
+        const chapters: Array<string> = root.querySelectorAll("a.chapter-container")
+            .reduce((acc: Array<string>, link) => {
+                const href = link.getAttribute("href");
+                if (href) acc.push(href);
+                return acc;
+            }, []);
 
         // Retrieve & Send File
         const metadata: Stats = statSync(`${rawFile[0].parentPath}/${rawFile[0].name}`);
         return {
             "name": rawFile[0].name,
-            "fileContents": readFileSync(`${rawFile[0].parentPath}/${rawFile[0].name}`, "utf8"),
+            "fileContents": fileContents,
             "size": metadata.size,
             "access_time": new Date(metadata.atimeMs),
             "modification_time": new Date(metadata.mtimeMs),
-            "creation_time": new Date(metadata.birthtimeMs)
+            "creation_time": new Date(metadata.birthtimeMs),
+            "chapters": chapters,
         }
     } catch (error: any) {
         if (error.code === "ENOENT") {
@@ -97,7 +109,8 @@ export function getDefaultFile(folder: string, version: string, language: string
             "size": metadata.size,
             "access_time": new Date(metadata.atimeMs),
             "modification_time": new Date(metadata.mtimeMs),
-            "creation_time": new Date(metadata.birthtimeMs)
+            "creation_time": new Date(metadata.birthtimeMs),
+            "chapters": []
         }
     } catch (error: any) {
         if (error.code === "ENOENT") {
