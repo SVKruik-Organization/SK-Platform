@@ -17,7 +17,7 @@ export default defineComponent({
         <nav>
             <section>
                 <RouterLink to="/">
-                    <img alt="Logo" src="/Bot.png" title="Home">
+                    <img alt="Logo" src="/Logo.png" title="Home">
                 </RouterLink>
             </section>
             <section>
@@ -28,7 +28,7 @@ export default defineComponent({
                     <RouterLink class="nav-link" to="/developer">api</RouterLink>
                 </menu>
             </section>
-            <RouterLink class="sign-up-button gradient-button" :title="userStore.user.username ? 'account' : 'login'"
+            <RouterLink class="gradient-button sign-up-button" :title="userStore.user.username ? 'account' : 'login'"
                 :to="userStore.user.username ? '/account' : '/login'">{{ userStore.user.username ? "account" :
                     "login" }}</RouterLink>
         </nav>
@@ -66,6 +66,7 @@ img {
 
 .sign-up-button {
     background-color: var(--font);
+    background-size: 230% auto;
     height: 30px;
     width: 100px;
     border-radius: 25px;
