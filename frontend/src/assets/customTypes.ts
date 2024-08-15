@@ -96,3 +96,10 @@ export enum DropdownStates {
     language = "languageDropdownVisible",
     information = "informationDropdownVisible"
 }
+
+// Documentation Chapter
+export type DocChapterItem = {
+    "title": string,
+    "height": number,
+    "active": boolean
+}

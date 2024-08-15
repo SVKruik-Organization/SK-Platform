@@ -145,12 +145,18 @@ export default defineComponent({
 </template>
 
 <style scoped>
+header {
+    top: 0;
+    position: sticky;
+}
+
 nav {
     justify-content: space-between;
     box-sizing: border-box;
     padding: 10px;
     position: relative;
     border-bottom: 1px solid var(--border);
+    background-color: var(--main);
 }
 
 .gradient-button i {

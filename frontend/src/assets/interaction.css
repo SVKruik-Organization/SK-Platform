@@ -29,9 +29,7 @@
 .navbar-pill-text-expand,
 .navbar-pill-expand p {
     opacity: 1;
-
     width: 85px;
-    transition: width 0.6s, opacity 1s;
 }
 
 .navbar-pill i {
@@ -49,16 +47,19 @@
 .dropdown-menu {
     position: absolute;
     box-sizing: border-box;
-    padding: 5px 10px 5px 10px;
+    padding: 5px 5px 5px 10px;
     top: 40px;
-    width: 0;
+    width: 170px;
     opacity: 0;
     height: 0;
+    right: -2px;
     border-radius: var(--border-radius-low);
     background-color: var(--fill);
     border: 1px solid var(--border);
-    transition: height 0.8s, opacity 0.7s, width 0.8s;
+    transition: height 0.4s, opacity 0.3s;
+    transition-timing-function: ease-in-out;
     overflow: hidden;
+    z-index: 1;
 }
 
 .dropdown-container {
@@ -75,8 +76,5 @@
 
 .dropdown-expand {
     height: 55px;
-    width: 170px;
     opacity: 1;
-    transition: height 0.4s, opacity 0.3s,
-        width 0.4s;
 }

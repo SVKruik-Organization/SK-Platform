@@ -52,7 +52,7 @@ export default defineComponent({
         <div class="flex-col documentation-footer-item">
             <h4>Docs didn't cut it?</h4>
             <p class="light-text small-text documentation-footer-item-description">Seek community help or contact me
-                personally if you need anything. I am happy to chat.</p>
+                personally if you need anything. I am always happy to have a chat.</p>
             <div class="flex-col">
                 <RouterLink to="/documentation/read/Doc/Community/Support" class="flex footer-link">
                     <i class="fa-regular fa-mailbox-flag-up"></i>

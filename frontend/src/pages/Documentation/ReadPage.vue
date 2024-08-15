@@ -1,5 +1,5 @@
 <script lang="ts">
-import { DropdownStates, type DocumentationFile, type DocumentationTypes } from '@/assets/customTypes';
+import { DropdownStates, type DocChapterItem, type DocumentationFile, type DocumentationTypes } from '@/assets/customTypes';
 import { useDocumentationStore } from '@/stores/DocumentationStore';
 import { fetchDocumentationDefault, fetchDocumentationPage } from '@/utils/fetch';
 import { defineComponent, type PropType } from 'vue';
@@ -20,14 +20,15 @@ export default defineComponent({
     ],
     data() {
         return {
-            "fileData": true as DocumentationFile | boolean
+            "fileData": true as DocumentationFile | boolean,
+            "chapterData": [] as Array<DocChapterItem>,
         }
     },
     props: {
         "type": { type: String as PropType<DocumentationTypes>, required: true },
         "category": { type: String, required: true },
         "page": { type: String, required: false },
-        "informationDropdownVisible": { type: Boolean, required: false },
+        "informationDropdownVisible": { type: Boolean, required: false }
     },
     watch: {
         async $route() {
@@ -35,6 +36,9 @@ export default defineComponent({
                 this.fileData = await fetchDocumentationDefault(this.category, this.documentationStore.version, this.documentationStore.language, this.type);
             } else this.fileData = await fetchDocumentationPage(this.category, this.page, this.documentationStore.version, this.documentationStore.language, this.type);
             this.scrollAnchor();
+        },
+        'window.scrollY'(from, to) {
+            console.log(from, to);
         }
     },
     async mounted() {
@@ -48,12 +52,29 @@ export default defineComponent({
 
             // Specific Documentation Page
         } else {
+            // Validate & Load Page
             if (!this.documentationStore.validatePage(this.category, this.page, this.type)) return this.$router.push(`/documentation/notfound?type=${this.type}&category=${this.category}&page=${this.page}`);
             this.fileData = await fetchDocumentationPage(this.category, this.page, this.documentationStore.version, this.documentationStore.language, this.type);
+
+            // Chapter URL Hash
             if (this.$route.hash) setTimeout(() => {
                 this.scrollAnchor();
+            }, 300);
+
+            // Chapter Active
+            setTimeout(() => {
+                if (typeof this.fileData !== "object") return;
+                window.addEventListener('scroll', this.setActiveChapter);
+                for (const chapter of this.fileData.chapters) {
+                    const element: HTMLAnchorElement | null = document.getElementById(chapter.slice(1)) as HTMLAnchorElement | null;
+                    if (!element) continue;
+                    this.chapterData.push({ "title": element.id, "height": element.getBoundingClientRect().top, "active": false });
+                }
             }, 100);
         }
+    },
+    unmounted() {
+        window.removeEventListener('scroll', this.setActiveChapter);
     },
     methods: {
         /**
@@ -83,10 +104,30 @@ export default defineComponent({
                 const chapters: Array<string> = this.fileData.chapters;
                 if (!chapters.includes(this.$route.hash)) return;
                 const element: HTMLAnchorElement | null = document.getElementById(this.$route.hash.slice(1)) as HTMLAnchorElement | null;
-                if (element) {
+                const chapterMarker: HTMLAnchorElement | null = document.getElementById(`${this.$route.hash.slice(1)}_aside`) as HTMLAnchorElement | null;
+                if (element && chapterMarker) {
                     element.scrollIntoView({ behavior: "smooth" });
-                    document.querySelector(".anchored-chapter")?.classList.remove("anchored-chapter");
+                    document.querySelectorAll(".anchored-chapter").forEach((element) => element.classList.remove("anchored-chapter"));
                     element.classList.add("anchored-chapter");
+                    chapterMarker.classList.add("anchored-chapter");
+                }
+            }
+        },
+        /**
+         * Set the active chapter based on the scroll position.
+         */
+        setActiveChapter(): void {
+            let activeChapterFound = false;
+            const offset: number = 130;
+            for (let i = 0; i < this.chapterData.length; i++) {
+                // Setup
+                const chapter: DocChapterItem = this.chapterData[i];
+                chapter.active = false;
+
+                // Not yet found and within bounds.
+                if (!activeChapterFound && chapter.height < window.scrollY + offset && (this.chapterData[i + 1]?.height || Infinity) > window.scrollY + offset) {
+                    chapter.active = true;
+                    activeChapterFound = true;
                 }
             }
         }
@@ -175,8 +216,10 @@ export default defineComponent({
                         <aside class="flex-col" v-if="typeof fileData === 'object'">
                             <div class="flex-col aside-item">
                                 <strong>On This Page</strong>
-                                <a :href="chapter" v-for="chapter of fileData.chapters">
-                                    {{ chapter.slice(1).replace(/_/g, " ") }}
+                                <a :href="`#${chapter.title}`" v-for="(chapter, index) of chapterData"
+                                    :id="`${chapter.title}_aside`"
+                                    :class="{ 'active-chapter': chapterData[index].active, 'anchored-chapter': $route.hash === '#' + chapter.title }">
+                                    {{ chapter.title.replace(/_/g, " ") }}
                                 </a>
                             </div>
                             <div class="flex-col aside-item">
@@ -194,7 +237,19 @@ export default defineComponent({
                     </section>
                 </section>
             </div>
-            <DocumentationFooter></DocumentationFooter>
+            <section class="flex-col recommended-container">
+                <div class="flex-col">
+                    <h3>Also Read</h3>
+                    <p class="light-text">Other popular and related pages that you might find useful as well.</p>
+                </div>
+            </section>
+            <section class="flex-col footer-container">
+                <div class="flex-col">
+                    <h3>More</h3>
+                    <p class="light-text">Leave feedback if you'd like and find links to further assistence.</p>
+                </div>
+                <DocumentationFooter></DocumentationFooter>
+            </section>
         </div>
     </div>
 </template>
@@ -206,8 +261,10 @@ export default defineComponent({
 }
 
 nav {
+    top: 56px;
     height: calc(100vh - 56px);
     align-items: flex-start;
+    position: sticky;
 }
 
 .navigation {
@@ -223,6 +280,7 @@ nav {
 
 .information-dropdown-menu {
     width: 0;
+    transition: height 0.4s, opacity 0.3s, width 0.8s;
 }
 
 .information-dropdown-expand {
@@ -287,6 +345,15 @@ aside a {
     margin-top: 10px;
 }
 
+.active-chapter {
+    color: var(--font);
+}
+
+.active-chapter::before {
+    content: "•";
+    margin-right: 10px;
+}
+
 aside a,
 .featured-product-item p {
     color: var(--font-light);
@@ -302,13 +369,24 @@ aside a,
     aspect-ratio: 1 / 1;
 }
 
+.recommended-container,
+.footer-container {
+    padding-top: 60px;
+    gap: 60px;
+    margin-top: 60px;
+    box-sizing: border-box;
+    border-top: 1px solid var(--border);
+    min-height: 400px;
+    max-width: 1200px;
+}
+
+.recommended-container {
+    height: 500px;
+}
+
 footer {
     display: flex;
     justify-content: space-between;
-    padding: 80px 40px 0 0;
-    box-sizing: border-box;
-    margin-top: 80px;
-    border-top: 1px solid var(--border);
 }
 
 @media (width <=1480px) {
@@ -320,6 +398,13 @@ footer {
 
     .documentation-footer-item {
         width: 100%;
+    }
+}
+
+@media (width <=800px) {
+    nav {
+        top: 96px;
+        height: calc(100vh - 96px);
     }
 }
 </style>
