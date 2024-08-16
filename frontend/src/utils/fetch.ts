@@ -1,5 +1,7 @@
-import type { DocumentationCategoriesResponse, DocumentationFile, DocumentationIndexResponse, DocumentationRecommendedItemsResponse, DocumentationRefreshResponse, UserDataResponse } from "@/assets/customTypes";
+import type { DocumentationCategoriesResponse, DocumentationFile, DocumentationIndexResponse, DocumentationProduct, DocumentationRecommendedItemsResponse, DocumentationRefreshResponse, RecommendedItem, UserDataResponse } from "@/assets/customTypes";
 import { getDate } from "./date";
+import { useDocumentationStore } from '@/stores/DocumentationStore';
+import type { Store } from "pinia";
 
 /**
  * Validates user session.
@@ -202,9 +204,11 @@ export async function fetchDocumentationCategories(version: string, language: st
 /**
  * Convert the API response to a DocumentationFile typed object.
  * @param input Raw documentation file.
+ * @param type Documentation (Doc) or Guides (Guide)
+ * @param folder The name of the folder with underscores instead of spaces. Examples: Get_Started, Community
  * @returns The usable parsed DocumentationFile.
  */
-function parseDocumentationFile(input: any): DocumentationFile {
+async function parseDocumentationFile(input: any): Promise<DocumentationFile> {
     return {
         "name": input.file.name,
         "fileContents": input.file.fileContents,
@@ -212,6 +216,69 @@ function parseDocumentationFile(input: any): DocumentationFile {
         "access_time": getDate(input.file.access_time).fullDate,
         "modification_time": getDate(input.file.modification_time).fullDate,
         "creation_time": getDate(input.file.creation_time).fullDate,
-        "chapters": input.file.chapters
+        "chapters": input.file.chapters,
+        "description": input.meta ? input.meta.description : "",
+        "products": (input.meta && input.meta.products) ? await parseDocumentationProducts(input) : [],
+        "related": parseRelatedItems(input.related)
     }
+}
+
+/**
+ * Convert the API response to a RecommendedItem typed object.
+ * @param input Raw related items from the database.
+ * @returns The processed related items.
+ */
+function parseRelatedItems(input: any): Array<RecommendedItem> {
+    const relatedItems: Array<RecommendedItem> = [];
+    input.forEach((item: any) => {
+        relatedItems.push({
+            "id": item.id,
+            "category": item.category,
+            "page": item.name,
+            "title": item.name,
+            "anchor": null,
+            "icon": item.icon,
+            "time": null,
+            "type": item.type
+        });
+    });
+    return relatedItems;
+}
+
+/**
+ * Convert the API response to a DocumentationProduct typed object.
+ * @param input The raw product string from the database.
+ * @returns The list of products with their documentation URLs.
+ */
+async function parseDocumentationProducts(input: any): Promise<DocumentationProduct[]> {
+    // Setup
+    const rawProducts: Array<string> = input.meta.products.split(",");
+    const parsedProducts: Array<DocumentationProduct> = [];
+    const store = useDocumentationStore();
+    const index = await store.getIndex(false, "Doc");
+
+    // Valid Products
+    const validBots: Array<string> = ["Apricaria", "Stelleri", "Ispidina", "Interpres"];
+    const products: Array<string> = index.find((item) => item.category === "Products")?.children || [];
+    const services: Array<string> = index.find((item) => item.category === "Services")?.children || [];
+
+    rawProducts.forEach((product: string) => {
+        let productURL: string = "/documentation/read/Doc/";
+        let folder: string = "Products";
+        if (validBots.includes(product)) {
+            productURL += `Products/Discord-Bots#${product}`;
+        } else if (products.includes(product)) {
+            productURL += `Products/${product}`;
+        } else if (services.includes(product)) {
+            productURL += `Services/${product}`;
+            folder = "Services";
+        }
+
+        if (!store.validatePage(folder, product, "Doc")) productURL = "#";
+        parsedProducts.push({
+            "name": product,
+            "url": productURL
+        });
+    });
+    return parsedProducts;
 }

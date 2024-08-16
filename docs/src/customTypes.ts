@@ -15,6 +15,13 @@ export type DocumentationFile = {
     "chapters": Array<string>
 }
 
+// Database-Persisted Metadata
+export type DocumentationFileMetadata = {
+    "description": string,
+    "products": string,
+    "related": string
+}
+
 // Get Files
 export type FilesRequest = {
     "folder": string
@@ -39,9 +46,10 @@ export type RecommendedItem = {
     "category": string,
     "page": string,
     "title": string,
-    "anchor": string,
+    "anchor": string | null,
     "icon": string,
-    "time": number
+    "time": number | null,
+    "type": string
 }
 
 // Search All Pages Request

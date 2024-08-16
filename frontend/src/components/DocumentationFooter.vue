@@ -39,8 +39,8 @@ export default defineComponent({
         </form>
         <div class="flex-col documentation-footer-item">
             <h4>Contributing</h4>
-            <p class="light-text small-text documentation-footer-item-description">See room for improvement or is
-                something unclear? You (yes, you!) can help making SK Docs.</p>
+            <p class="light-text small-text documentation-footer-item-description">Do you have simple HTML skills and
+                want to make a difference? Expand SK Docs.</p>
             <div class="flex-col">
                 <RouterLink to="/documentation/read/Doc/Contributing/SK_Docs"
                     class="flex footer-button footer-button-contribute">

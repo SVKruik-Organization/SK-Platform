@@ -39,7 +39,10 @@ export type DocumentationFile = {
     "access_time": string,
     "modification_time": string,
     "creation_time": string,
-    "chapters": Array<string>
+    "chapters": Array<string>,
+    "description": string,
+    "products": Array<DocumentationProduct>,
+    "related": Array<RecommendedItem>
 }
 
 // Raw File Index/TOC Item Response
@@ -76,9 +79,9 @@ export type RecommendedItem = {
     "category": string,
     "page": string,
     "title": string,
-    "anchor": string,
+    "anchor": string | null,
     "icon": string,
-    "time": number,
+    "time": number | null,
     "type": string
 }
 
@@ -94,7 +97,9 @@ export type DocumentationRefreshResponse = {
 export enum DropdownStates {
     version = "versionDropdownVisible",
     language = "languageDropdownVisible",
-    information = "informationDropdownVisible"
+    information = "informationDropdownVisible",
+    product = "productDropdownVisible",
+    navigation = "navigationDropdownVisible"
 }
 
 // Documentation Chapter
@@ -102,4 +107,10 @@ export type DocChapterItem = {
     "title": string,
     "height": number,
     "active": boolean
+}
+
+// Documentation Product
+export type DocumentationProduct = {
+    "name": string,
+    "url": string
 }

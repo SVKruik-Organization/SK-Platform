@@ -4,7 +4,7 @@
         "title": "Getting to know Apricaria",
         "category": "Products",
         "page": "Discord_Bots",
-        "anchor": "#Apricaria",
+        "anchor": "Apricaria",
         "icon": "fa-bird",
         "time": 3,
         "type": "Doc"
@@ -14,7 +14,7 @@
         "title": "Creating & managing your Operator account",
         "category": "Operator",
         "page": "Account",
-        "anchor": "",
+        "anchor": null,
         "icon": "fa-user-crown",
         "time": 5,
         "type": "Doc"

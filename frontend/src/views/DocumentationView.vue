@@ -17,7 +17,9 @@ export default defineComponent({
         return {
             "versionDropdownVisible": false,
             "languageDropdownVisible": false,
-            "informationDropdownVisible": false
+            "informationDropdownVisible": false,
+            "productDropdownVisible": false,
+            "navigationDropdownVisible": false
         }
     },
     methods: {
@@ -35,10 +37,12 @@ export default defineComponent({
         document.addEventListener("click", event => {
             const target: HTMLElement = event.target as HTMLElement;
             if (target.classList.contains("disable-close")) return;
-            if (target.tagName === "MENU") return;
+            if (target.tagName === "MENU" || target.tagName === "SPAN" || target.tagName === "NAV") return;
             this.versionDropdownVisible = false;
             this.languageDropdownVisible = false;
             this.informationDropdownVisible = false;
+            this.productDropdownVisible = false;
+            this.navigationDropdownVisible = false;
         });
     }
 });
@@ -48,7 +52,8 @@ export default defineComponent({
     <DocumentationNavbar @dropdownState="updateDropdownState" :versionDropdownVisible="versionDropdownVisible"
         :languageDropdownVisible="languageDropdownVisible"></DocumentationNavbar>
     <main>
-        <RouterView @dropdownState="updateDropdownState" :informationDropdownVisible="informationDropdownVisible">
+        <RouterView @dropdownState="updateDropdownState" :informationDropdownVisible="informationDropdownVisible"
+            :productDropdownVisible="productDropdownVisible" :navigationDropdownVisible="navigationDropdownVisible">
         </RouterView>
     </main>
 </template>

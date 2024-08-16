@@ -1,7 +1,7 @@
 import express, { Express, Request, Response } from "express";
 import dotenv from "dotenv";
 import cors from "cors";
-import { DocumentationFile, FileRequest, FilesRequest, FolderItem, IndexItem, RecommendedItem, UplinkMessage } from "./customTypes";
+import { DocumentationFile, DocumentationFileMetadata, FileRequest, FilesRequest, FolderItem, IndexItem, RecommendedItem, UplinkMessage } from "./customTypes";
 import { getCategories, getDefaultFile, getFile, getFiles, getIndex, getRecommendedItems } from "./utils/file";
 import { SearchRoutes } from "./routes/searchRoutes";
 import { apiMiddleware, log } from "./utils/logger";
@@ -9,6 +9,7 @@ import { rateLimit } from 'express-rate-limit';
 import { Channel, Message } from "amqplib";
 import shell from "shelljs";
 import { getConnection } from "./utils/connection";
+import mariadb, { Pool } from 'mariadb';
 dotenv.config();
 const app: Express = express();
 app.use(express.json());
@@ -23,17 +24,29 @@ app.use(apiMiddleware);
 
 // Placeholder Recommended Item
 const placeholder: RecommendedItem = {
-    "title": "None_Available",
-    "anchor": "",
-    "category": "",
     "id": 1,
+    "title": "None_Available",
+    "anchor": null,
+    "category": "",
     "page": "",
-    "time": 1,
-    "icon": ""
+    "time": null,
+    "icon": "",
+    "type": ""
 };
 
 // Other Routes
 app.use("/search", SearchRoutes);
+
+// Database Connection
+if (!process.env.DB_HOST || !process.env.DB_PORT) throw new Error("Missing database credentials.");
+const database: Pool = mariadb.createPool({
+    host: process.env.DB_HOST,
+    port: parseInt(process.env.DB_PORT),
+    user: process.env.DB_USERNAME,
+    database: process.env.DB_NAME,
+    password: process.env.DB_PASSWORD,
+    multipleStatements: true
+});
 
 // Base Route
 app.get("/", (_req: Request, res: Response) => {
@@ -78,9 +91,10 @@ app.get("/refresh/:version/:language", refreshLimit, async (req: Request, res: R
 // Get File
 app.get("/getFile/:version/:language/:type", async (req: Request, res: Response) => {
     const searchQuery: FileRequest = req.query as FileRequest;
+    const metadata: Array<DocumentationFileMetadata> = await database.query("SELECT * FROM documentation_page WHERE category = ? AND name = ? UNION ALL SELECT dp.* FROM documentation_page dp JOIN ( SELECT related FROM documentation_page WHERE category = ? AND name = ? ) AS target_related ON FIND_IN_SET(dp.id, target_related.related) > 0;", [searchQuery.folder, searchQuery.name, searchQuery.folder, searchQuery.name]);
     const file: DocumentationFile | number = getFile(searchQuery.folder, searchQuery.name, req.params.version, req.params.language, req.params.type);
     if (typeof file === "number") return res.sendStatus(file);
-    return res.json({ "file": file });
+    return res.json({ "file": file, "meta": metadata ? metadata[0] : null, "related": metadata ? metadata.slice(1) : null });
 });
 
 // Get Files

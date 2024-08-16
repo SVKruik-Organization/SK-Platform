@@ -11,7 +11,8 @@ export default defineComponent({
 </script>
 
 <template>
-    <RouterLink :to="`/documentation/read/${data.type}/${data.category}/${data.page}${data.anchor}`"
+    <RouterLink
+        :to="`/documentation/read/${data.type}/${data.category}/${data.page}${data.anchor ? `#${data.anchor}` : ''}`"
         class="recommended-item flex">
         <section class="recommended-item-left flex">
             <i :class="`fa-regular ${data.icon}`"></i>
@@ -26,8 +27,8 @@ export default defineComponent({
                 <RouterLink :to="`/documentation/read/${data.type}/${data.category}`" class="recommended-sub-item">
                     {{ data.category.replace(/_/g, " ") }}
                 </RouterLink>
-                <i class="fa-regular fa-circle-small recommended-sub-item"></i>
-                <p class="recommended-sub-item">{{ data.time }} min read</p>
+                <i class="fa-regular fa-circle-small recommended-sub-item" v-if="typeof data.time === 'number'"></i>
+                <p class="recommended-sub-item" v-if="typeof data.time === 'number'">{{ data.time }} min read</p>
             </div>
         </article>
     </RouterLink>

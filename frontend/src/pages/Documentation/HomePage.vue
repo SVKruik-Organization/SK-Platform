@@ -79,16 +79,20 @@ export default defineComponent({
             </div>
             <div class="hero-right flex">
                 <RouterLink to="/documentation/read/Doc/Products/Discord_Bots#Interpres">
-                    <img src="/Interpres.png" class="hero-bot-image" title="Interpres, GitHub API proxy bot.">
+                    <img src="https://files.stefankruik.com/Products/Interpres.png" class="hero-bot-image"
+                        title="Interpres, GitHub API proxy bot.">
                 </RouterLink>
                 <RouterLink to="/documentation/read/Doc/Products/Discord_Bots#Ispidina">
-                    <img src="/Ispidina.png" class="hero-bot-image" title="Ispidina, TypeScript pioneer bot.">
+                    <img src="https://files.stefankruik.com/Products/Ispidina.png" class="hero-bot-image"
+                        title="Ispidina, TypeScript pioneer bot.">
                 </RouterLink>
                 <RouterLink to="/documentation/read/Doc/Products/Discord_Bots#Stelleri">
-                    <img src="/Stelleri.png" class="hero-bot-image" title="Stelleri, early-access features bot.">
+                    <img src="https://files.stefankruik.com/Products/Stelleri.png" class="hero-bot-image"
+                        title="Stelleri, early-access features bot.">
                 </RouterLink>
                 <RouterLink to="/documentation/read/Doc/Products/Discord_Bots#Apricaria">
-                    <img src="/Apricaria.png" class="hero-bot-image" title="Apricaria, second gen main production bot.">
+                    <img src="https://files.stefankruik.com/Products/Apricaria.png" class="hero-bot-image"
+                        title="Apricaria, second gen main production bot.">
                 </RouterLink>
             </div>
         </div>
@@ -263,12 +267,6 @@ h1 {
 .recommended-item-container {
     flex-wrap: wrap;
     gap: 20px;
-}
-
-.splitter {
-    width: 100%;
-    height: 2px;
-    background-color: var(--fill);
 }
 
 .footer-note {

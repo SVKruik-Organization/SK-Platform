@@ -63,7 +63,7 @@ export default defineComponent({
 
 <template>
     <header>
-        <nav class="flex">
+        <nav class="flex glass">
             <section class="left-nav flex">
                 <RouterLink to="/documentation">
                     <h2>SK Docs</h2>
@@ -102,10 +102,10 @@ export default defineComponent({
                         <p>Home</p>
                         <i class="fa-regular fa-house"></i>
                     </RouterLink>
-                    <a title="Read the release notes." class="flex navbar-pill" href="#">
+                    <RouterLink title="Read the release notes." class="flex navbar-pill" to="/documentation">
                         <p>News</p>
                         <i class="fa-regular fa-newspaper"></i>
-                    </a>
+                    </RouterLink>
                     <button
                         :title="refreshDisabled ? 'Re-fetch is rate-limited for less than 2 minutes to prevent spam.' : 'Re-fetch the documentation.'"
                         class="flex justify-center navbar-pill" type="button" @click="reloadDocumentation()"
@@ -148,6 +148,7 @@ export default defineComponent({
 header {
     top: 0;
     position: sticky;
+    z-index: 3;
 }
 
 nav {
@@ -155,8 +156,6 @@ nav {
     box-sizing: border-box;
     padding: 10px;
     position: relative;
-    border-bottom: 1px solid var(--border);
-    background-color: var(--main);
 }
 
 .gradient-button i {

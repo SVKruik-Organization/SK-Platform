@@ -1,10 +1,10 @@
 [
     {
-        "id": 1,
+        "id": 3,
         "title": "Configure Apricaria to work in your server",
         "category": "Managment",
-        "page": "Setup",
-        "anchor": "",
+        "page": "Server_Setup",
+        "anchor": null,
         "icon": "fa-code-pull-request",
         "time": 2,
         "type": "Guide"
