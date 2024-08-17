@@ -43,7 +43,7 @@ export default defineComponent({
 }
 
 .related-description {
-    width: 450px;
+    width: 95%;
     font-size: 14px;
 }
 
@@ -74,7 +74,9 @@ export default defineComponent({
 
 .related-item-right img {
     position: absolute;
-    left: 400px;
+    left: 80%;
+    height: 500px;
+    aspect-ratio: 1 / 1;
     filter: blur(150px) saturate(300%) contrast(150%);
     top: 30px;
     transition: left 0.5s;
@@ -83,7 +85,7 @@ export default defineComponent({
 }
 
 .related-item:hover .related-item-right img {
-    left: 300px;
+    left: 60%;
 }
 
 .related-sub-item {
@@ -97,35 +99,9 @@ export default defineComponent({
     font-size: 10px;
 }
 
-@media (width <=1500px) {
-    .related-item-right img {
-        left: 250px;
-    }
-
-    .related-item:hover .related-item-right img {
-        left: 150px;
-    }
-
-    .related-description {
-        width: 270px;
-    }
-}
-
 @media (width <=990px) {
     .related-item {
         width: 100%;
-    }
-
-    .related-item-right img {
-        left: 500px;
-    }
-
-    .related-item:hover .related-item-right img {
-        left: 400px;
-    }
-
-    .related-description {
-        width: 620px;
     }
 }
 </style>

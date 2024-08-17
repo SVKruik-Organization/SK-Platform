@@ -15,8 +15,9 @@ const app: Express = express();
 app.use(express.json());
 
 // CORS Config
+if (!process.env.CORS) throw new Error("Missing CORS configuration.");
 const corsOptions = {
-    origin: ["http://localhost:3002", "https://platform.stefankruik.com"],
+    origin: process.env.CORS.split(","),
     optionsSuccessStatus: 200
 }
 app.use(cors(corsOptions));
@@ -136,8 +137,8 @@ app.get("/getCategories/:version/:language/:type", async (req: Request, res: Res
 });
 
 // Start
-const PORT: string | number = process.env.PORT || 3001;
-app.listen(PORT, async () => {
+const PORT: number = parseInt(process.env.PORT as string) || 3002;
+app.listen(PORT, "0.0.0.0", async () => {
     // Setup
     const channel: Channel | null = await getConnection();
     if (!channel) throw new Error("Uplink connection missing.");

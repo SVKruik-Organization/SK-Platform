@@ -236,7 +236,7 @@ function parseRelatedItems(input: any): Array<RelatedItem> {
         if (item.products !== "") {
             const parsedProducts: Array<string> = item.products.split(",");
             const randomProduct: string = parsedProducts[Math.floor(Math.random() * parsedProducts.length)];
-            imageUrl = `https://files.stefankruik.com/Products/${randomProduct}.png`;
+            imageUrl = `https://files.stefankruik.com/Products/100/${randomProduct}.png`;
         }
 
         relatedItems.push({

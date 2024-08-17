@@ -38,7 +38,13 @@ export default defineComponent({
     },
     watch: {
         async $route(from: RouteLocation, to: RouteLocation) {
-            if (from.path !== to.path) await this.loadContent();
+            if (from.path !== to.path) {
+                await this.loadContent();
+                window.scrollTo({
+                    top: 0,
+                    behavior: "smooth"
+                });
+            }
         }
     },
     async mounted() {
@@ -209,7 +215,8 @@ export default defineComponent({
                 <section class="flex-col responsive-nav" :class="{ 'disable-close': navigationDropdownVisible }"
                     v-if="typeof fileData === 'object' && (chapterData.length || fileData.products.length)">
                     <span class="splitter"></span>
-                    <div class="flex-col responsive-nav-item" :class="{ 'disable-close': navigationDropdownVisible }">
+                    <div v-if="chapterData.length" class="flex-col responsive-nav-item"
+                        :class="{ 'disable-close': navigationDropdownVisible }">
                         <strong :class="{ 'disable-close': navigationDropdownVisible }">On This Page</strong>
                         <a :href="`#${chapter.title}`" v-for="(chapter, index) of chapterData"
                             :id="`${chapter.title}_aside`" class="responsive-nav-item-link"
@@ -217,7 +224,7 @@ export default defineComponent({
                             {{ chapter.title.replace(/_/g, " ") }}
                         </a>
                     </div>
-                    <span class="splitter"></span>
+                    <span v-if="chapterData.length" class="splitter"></span>
                     <div class="flex-col responsive-nav-item" v-if="fileData.products.length"
                         :class="{ 'disable-close': navigationDropdownVisible }">
                         <div class="flex featured-product-title-container"
@@ -230,8 +237,8 @@ export default defineComponent({
                         </div>
                         <RouterLink class="flex featured-product-item" v-for="product of fileData.products"
                             :to="product.url">
-                            <img :src="`https://files.stefankruik.com/Products/${product.name}.png`" alt="Prod Img">
-                            <p>{{ product.name }}</p>
+                            <img :src="`https://files.stefankruik.com/Products/100/${product.name}.png`" alt="Prod Img">
+                            <p>{{ product.name.replace(/_/g, " ") }}</p>
                         </RouterLink>
                     </div>
                 </section>
@@ -307,12 +314,14 @@ export default defineComponent({
                     </div>
                     <div class="documentation-content-child"
                         v-else-if="typeof fileData === 'boolean' && fileData === true">
-                        <p>Looks like this page is not available in this language and/or version. Please change them
+                        <p class="error-message">Looks like this page is not available in this language and/or version.
+                            Please change them
                             to their defaults and try again.
                         </p>
                     </div>
                     <div class="documentation-content-child" v-else>
-                        <p>Something went wrong while retrieving this page. Please try again later.</p>
+                        <p class="error-message">Something went wrong while retrieving this page. Please try again
+                            later.</p>
                     </div>
                     <aside class="flex-col"
                         v-if="typeof fileData === 'object' && (chapterData.length || fileData.products.length)">
@@ -332,8 +341,9 @@ export default defineComponent({
                             </div>
                             <RouterLink class="flex featured-product-item" v-for="product of fileData.products"
                                 :to="product.url">
-                                <img :src="`https://files.stefankruik.com/Products/${product.name}.png`" alt="Prod Img">
-                                <p>{{ product.name }}</p>
+                                <img :src="`https://files.stefankruik.com/Products/100/${product.name}.png`"
+                                    alt="Prod Img">
+                                <p>{{ product.name.replace(/_/g, " ") }}</p>
                             </RouterLink>
                         </div>
                     </aside>
@@ -362,6 +372,10 @@ export default defineComponent({
 </template>
 
 <style scoped>
+.error-message {
+    width: 95%;
+}
+
 .navigation-overlay {
     position: fixed;
     top: 0;
