@@ -22,20 +22,6 @@ const corsOptions = {
 }
 app.use(cors(corsOptions));
 app.use(apiMiddleware);
-
-// Placeholder Recommended Item
-const placeholder: RecommendedItem = {
-    "id": 1,
-    "title": "None_Available",
-    "anchor": null,
-    "category": "",
-    "page": "",
-    "time": null,
-    "icon": "",
-    "type": ""
-};
-
-// Other Routes
 app.use("/search", SearchRoutes);
 
 // Database Connection
@@ -76,10 +62,8 @@ app.get("/refresh/:version/:language", refreshLimit, async (req: Request, res: R
     // Recommended Items
     const recommendedDocItems: Array<RecommendedItem> | number = getRecommendedItems(req.params.language, "Doc");
     if (typeof recommendedDocItems === "number") return res.sendStatus(recommendedDocItems);
-    if (recommendedDocItems.length === 0) recommendedDocItems.push(placeholder);
     const recommendedGuideItems: Array<RecommendedItem> | number = getRecommendedItems(req.params.language, "Guide");
     if (typeof recommendedGuideItems === "number") return res.sendStatus(recommendedGuideItems);
-    if (recommendedGuideItems.length === 0) recommendedGuideItems.push(placeholder);
 
     return res.json({
         "docIndex": docIndex,
@@ -125,7 +109,6 @@ app.get("/getIndex/:version/:language/:type", async (req: Request, res: Response
 app.get("/getRecommendedItems/:language/:type", async (req: Request, res: Response) => {
     const data: Array<RecommendedItem> | number = getRecommendedItems(req.params.language, req.params.type);
     if (typeof data === "number") return res.sendStatus(data);
-    if (data.length === 0) data.push(placeholder);
     return res.json({ "recommended_items": data });
 });
 

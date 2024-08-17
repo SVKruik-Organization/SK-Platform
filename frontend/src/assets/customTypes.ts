@@ -105,6 +105,23 @@ export type DocumentationRefreshResponse = {
     "recommendedGuideItems": Array<RecommendedItem>
 }
 
+// Raw Search Response
+export type DocumentationSearchResponse = {
+    "results": Array<SearchResultItem>,
+    "count": number,
+    "duration_ms": number,
+    "query": string
+}
+
+// Search Result Item
+export type SearchResultItem = {
+    "id": number,
+    "type": string,
+    "category": string,
+    "content": string,
+    "page": string,
+}
+
 // Vue Dropdowns Toggle State
 export enum DropdownStates {
     version = "versionDropdownVisible",
@@ -126,3 +143,20 @@ export type DocumentationProduct = {
     "name": string,
     "url": string
 }
+
+export const IndexPlaceholder: Array<DocumentationIndexItem> = [{
+    "category_icon": "",
+    "category": "None_Available",
+    "children": []
+}]
+
+export const RecommendedPlaceholder: Array<RecommendedItem> = [{
+    "id": 1,
+    "title": "None_Available",
+    "anchor": null,
+    "category": "",
+    "page": "",
+    "time": null,
+    "icon": "",
+    "type": ""
+}];

@@ -1,6 +1,7 @@
 <script lang="ts">
-import { DropdownStates } from '@/assets/customTypes';
+import { DropdownStates, type DocumentationSearchResponse } from '@/assets/customTypes';
 import { useDocumentationStore } from '@/stores/DocumentationStore';
+import { fetchSearchDocumentation } from '@/utils/fetch';
 import { defineComponent } from 'vue';
 
 export default defineComponent({
@@ -20,7 +21,11 @@ export default defineComponent({
     data() {
         return {
             "refreshDisabled": false,
-            "refreshHover": false
+            "refreshHover": false,
+            "searchMode": "global",
+            "searchQuery": "",
+            "searchInterval": null as null | number,
+            "searchResults": null as DocumentationSearchResponse | null
         }
     },
     methods: {
@@ -56,6 +61,26 @@ export default defineComponent({
                 refreshButton.disabled = false;
                 this.refreshDisabled = false;
             }, 2 * 60 * 1000);
+        },
+        searchFocusHandler(): void {
+            const searchbar: HTMLInputElement = this.$refs["searchbar"] as HTMLInputElement;
+            this.searchInterval = setInterval(async () => {
+                if (searchbar.value === this.searchQuery) return;
+                if (!searchbar.value.replace(/ /g, "").length) return;
+                const searchValue = searchbar.value.trim();
+                this.searchQuery = searchValue;
+                const data = await fetchSearchDocumentation(this.documentationStore.version, this.documentationStore.language, searchValue, 5, 0);
+                console.log("Searching for: ", searchValue);
+                if (typeof data === "object") return this.searchResults = data;
+                // TODO: Handle error.
+                // TODO: Loading indicator.
+            }, 1500);
+        },
+        searchBlurHandler(): void {
+            if (this.searchInterval) {
+                clearTimeout(this.searchInterval);
+                this.searchInterval = null;
+            }
         }
     }
 });
@@ -74,7 +99,30 @@ export default defineComponent({
                     <button title="Search through the documentation." class="input-container flex navbar-pill"
                         @click="($refs['searchbar'] as HTMLInputElement).focus()" type="button">
                         <i class="fa-regular fa-magnifying-glass"></i>
-                        <input ref="searchbar" type="text" placeholder="Search through everything">
+                        <input ref="searchbar" @focus="searchFocusHandler" type="text" @blur="searchBlurHandler"
+                            maxlength="60" placeholder="Search through everything">
+                        <section class="flex-col input-results-container">
+                            <small class="light-text">Search Mode</small>
+                            <div class="flex search-mode-container">
+                                <button class="flex" :class="{ 'active-search-mode': searchMode === 'global' }"
+                                    title="Search anywhere." @click="searchMode = 'global'">
+                                    <i class="fa-regular fa-earth-americas"></i>
+                                    <p>Globally</p>
+                                </button>
+                                <button class="flex" :class="{ 'active-search-mode': searchMode === 'title' }"
+                                    title="Search through page titles." @click="searchMode = 'title'">
+                                    <i class="fa-regular fa-font"></i>
+                                    <p>Page Titles</p>
+                                </button>
+                            </div>
+                            <div class="results flex-col" v-if="searchResults && searchResults.count > 0">
+                                <p v-for="searchResult of searchResults.results">{{ `${searchResult.id}
+                                    ${searchResult.page}` }}</p>
+                            </div>
+                            <p v-if="searchResults && searchResults.count === 0">
+                                No results found.
+                            </p>
+                        </section>
                     </button>
                     <button title="Change the version of the documentation." type="button"
                         class="flex dropdown-container navbar-pill disable-close"
@@ -177,11 +225,70 @@ nav {
     padding-left: 10px;
 }
 
-.input-container:hover {
+.input-results-container {
+    top: 40px;
+    position: absolute;
+    margin-left: -4px;
+    height: 0;
     width: 300px;
+    transition: height 0.5s, width 0.5s, opacity 0.4s, padding 0.5s;
+    border: 1px solid var(--border);
+    box-sizing: border-box;
+    border-radius: var(--border-radius-low);
+    z-index: 4;
+    background-color: var(--fill);
+    opacity: 0;
+    overflow: hidden;
+    align-items: flex-start;
 }
 
-.version-select {
+.input-container:hover,
+.input-container:hover .input-results-container {
+    width: 400px;
+}
+
+.input-container:focus-within {
+    width: 500px;
+    background-color: var(--border);
+}
+
+.input-container:focus-within input::placeholder {
+    color: var(--font);
+}
+
+.input-container:focus-within .input-results-container {
+    height: 200px;
+    opacity: 1;
+    width: 500px;
+    padding: 10px;
+}
+
+.search-mode-container {
+    width: 100%;
+    gap: 10px;
+}
+
+.search-mode-container button {
+    width: 100%;
+    height: 40px;
+    border-radius: var(--border-radius-low);
+    border: 1px solid var(--border);
+    box-sizing: border-box;
+    padding: 10px;
+    gap: 10px;
+    transition: background-color 0.4s;
+}
+
+.search-mode-container button:hover,
+.active-search-mode {
+    background-color: var(--border);
+}
+
+.search-mode-container button i {
+    color: var(--font-light);
+}
+
+.input-container:focus-within .version-select {
     width: min-content;
     box-sizing: border-box;
     padding: 0 10px;
@@ -206,7 +313,7 @@ input::placeholder {
     opacity: 0;
 }
 
-@media (width <=800px) {
+@media (width <=895px) {
     nav {
         align-items: flex-start;
         height: 96px;

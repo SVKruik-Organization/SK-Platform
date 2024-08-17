@@ -1,10 +1,11 @@
-import type { DocumentationCategoriesResponse, DocumentationFile, DocumentationIndexResponse, DocumentationProduct, DocumentationRecommendedItemsResponse, DocumentationRefreshResponse, RecommendedItem, RelatedItem, UserDataResponse } from "@/assets/customTypes";
+import type { DocumentationCategoriesResponse, DocumentationFile, DocumentationIndexResponse, DocumentationProduct, DocumentationRecommendedItemsResponse, DocumentationRefreshResponse, DocumentationSearchResponse, RelatedItem, UserDataResponse } from "@/assets/customTypes";
 import { getDate } from "./date";
 import { useDocumentationStore } from '@/stores/DocumentationStore';
 
 /**
  * Validates user session.
  * @returns True if still valid, false if not.
+ * @deprecated
  */
 export async function fetchBase(token: string): Promise<boolean> {
     try {
@@ -23,6 +24,7 @@ export async function fetchBase(token: string): Promise<boolean> {
 /**
  * Fetch a JWT token if credentials are correct.
  * @returns Data or false on error.
+ * @deprecated
  */
 export async function fetchLogin(username: string, password: string): Promise<UserDataResponse | boolean> {
     try {
@@ -57,8 +59,6 @@ export async function fetchDocumentationRefresh(version: string, language: strin
         });
         if (response.ok) {
             return await response.json();
-        } else if (response.status === 404) {
-            return false;
         } else return false;
     } catch (error) {
         return false
@@ -81,8 +81,6 @@ export async function fetchDocumentationPage(folder: string, name: string, versi
         });
         if (response.ok) {
             return parseDocumentationFile(await response.json());
-        } else if (response.status === 404) {
-            return true;
         } else return false;
     } catch (error) {
         return false
@@ -95,7 +93,8 @@ export async function fetchDocumentationPage(folder: string, name: string, versi
  * @param version The version number of the index. Examples: v1, v2
  * @param language The language of the documentation. Examples: en-US, nl-NL
  * @param type Documentation (Doc) or Guides (Guide)
- * @returns List of pages for the category or status code on error.
+ * @returns List of pages for the category or false on error.
+ * @deprecated
  */
 export async function fetchDocumentationPages(folder: string, version: string, language: string, type: string): Promise<DocumentationFile | boolean> {
     try {
@@ -104,8 +103,6 @@ export async function fetchDocumentationPages(folder: string, version: string, l
         });
         if (response.ok) {
             return parseDocumentationFile(await response.json());
-        } else if (response.status === 404) {
-            return false;
         } else return false;
     } catch (error) {
         return false
@@ -127,8 +124,6 @@ export async function fetchDocumentationDefault(folder: string, version: string,
         });
         if (response.ok) {
             return parseDocumentationFile(await response.json());
-        } else if (response.status === 404) {
-            return false;
         } else return false;
     } catch (error) {
         return false
@@ -149,8 +144,6 @@ export async function fetchDocumentationIndex(version: string, language: string,
         });
         if (response.ok) {
             return await response.json();
-        } else if (response.status === 404) {
-            return { "index": [{ "category": "Not_Found", "category_icon": "", "children": [] }] };
         } else return false;
     } catch (error) {
         return false;
@@ -170,8 +163,6 @@ export async function fetchRecommendedItems(language: string, type: string): Pro
         });
         if (response.ok) {
             return await response.json();
-        } else if (response.status === 404) {
-            return { "recommended_items": [{ "title": "Not_Found", "anchor": "", "category": "", "id": 1, "page": "", "time": 1, "icon": "", "type": "" }] };
         } else return false;
     } catch (error) {
         return false;
@@ -183,7 +174,8 @@ export async function fetchRecommendedItems(language: string, type: string): Pro
  * @param version The version number of the index. Examples: v1, v2
  * @param language The language of the documentation. Examples: en-US, nl-NL
  * @param type Documentation (Doc) or Guides (Guide)
- * @returns Data or status code on error.
+ * @returns Data or false on error.
+ * @deprecated
  */
 export async function fetchDocumentationCategories(version: string, language: string, type: string): Promise<DocumentationCategoriesResponse | boolean> {
     try {
@@ -192,8 +184,28 @@ export async function fetchDocumentationCategories(version: string, language: st
         });
         if (response.ok) {
             return await response.json();
-        } else if (response.status === 404) {
-            return { "categories": [] };
+        } return false;
+    } catch (error) {
+        return false;
+    }
+}
+
+/**
+ * Search the documentation for a specific query.
+ * @param version The version number of the index. Examples: v1, v2
+ * @param language The language of the documentation. Examples: en-US, nl-NL
+ * @param type Documentation (Doc) or Guides (Guide)
+ * @param limit The maximum amount of results to return.
+ * @param offset Offset for pagination.
+ * @returns Data or false on error.
+ */
+export async function fetchSearchDocumentation(version: string, language: string, query: string, limit: number, offset: number): Promise<DocumentationSearchResponse | boolean> {
+    try {
+        const response = await fetch(`${import.meta.env.VITE_DOCS_API_BASE}/search/all/${version}/${language}?query=${query}&limit=${limit}&offset=${offset}`, {
+            method: "GET"
+        });
+        if (response.ok) {
+            return await response.json();
         } else return false;
     } catch (error) {
         return false;

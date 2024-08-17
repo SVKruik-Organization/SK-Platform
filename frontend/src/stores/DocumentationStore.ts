@@ -1,6 +1,6 @@
 import { defineStore } from "pinia";
 import { useSessionStorage, useLocalStorage } from "@vueuse/core";
-import type { DocumentationIndexItem, RecommendedItem } from "@/assets/customTypes";
+import { IndexPlaceholder, RecommendedPlaceholder, type DocumentationIndexItem, type RecommendedItem } from "@/assets/customTypes";
 import { fetchDocumentationIndex, fetchDocumentationRefresh, fetchRecommendedItems } from "@/utils/fetch";
 
 export const useDocumentationStore = defineStore("DocumentationStore", {
@@ -20,20 +20,24 @@ export const useDocumentationStore = defineStore("DocumentationStore", {
          * @param newLanguage The new version to set to.
          * @returns Void, return if invalid.
          */
-        setVersion(newVersion: string): void {
+        async setVersion(newVersion: string): Promise<void> {
+            if (newVersion === this.version) return;
             const validVersions: Array<string> = ["v1"];
             if (!validVersions.includes(newVersion)) return;
             this.version = newVersion;
+            await this.refresh();
         },
         /**
          * Change the documentation language.
          * @param newLanguage The new language to set to.
          * @returns Void, return if invalid.
          */
-        setLanguage(newLanguage: string): void {
+        async setLanguage(newLanguage: string): Promise<void> {
+            if (newLanguage === this.language) return;
             const validLanguages: Array<string> = ["en-US"];
             if (!validLanguages.includes(newLanguage)) return;
             this.language = newLanguage;
+            await this.refresh();
         },
         /**
          * Retrieve the index/table of contents.
@@ -49,8 +53,13 @@ export const useDocumentationStore = defineStore("DocumentationStore", {
             if (this[convertedType].length === 0 || force) {
                 const data = await fetchDocumentationIndex(this.version, this.language, type);
                 if (typeof data === "boolean") return this[convertedType];
-                this[convertedType] = data.index;
-                return data.index;
+                if (data.index.length === 0) {
+                    this[convertedType] = IndexPlaceholder;
+                    return IndexPlaceholder;
+                } else {
+                    this[convertedType] = data.index;
+                    return data.index;
+                }
             } else return this[convertedType];
         },
         /**
@@ -67,8 +76,13 @@ export const useDocumentationStore = defineStore("DocumentationStore", {
             if (this[convertedType].length === 0 || force) {
                 const data = await fetchRecommendedItems(this.language, type);
                 if (typeof data === "boolean") return this[convertedType];
-                this[convertedType] = data.recommended_items;
-                return data.recommended_items;
+                if (data.recommended_items.length === 0) {
+                    this[convertedType] = RecommendedPlaceholder;
+                    return RecommendedPlaceholder;
+                } else {
+                    this[convertedType] = data.recommended_items;
+                    return data.recommended_items;
+                }
             } else return this[convertedType];
         },
         /**
@@ -105,10 +119,20 @@ export const useDocumentationStore = defineStore("DocumentationStore", {
         async refresh(): Promise<void> {
             const data = await fetchDocumentationRefresh(this.version, this.language);
             if (typeof data === "boolean") return;
-            this.docIndex = data.docIndex;
-            this.guideIndex = data.guideIndex;
-            this.recommendedDocItems = data.recommendedDocItems;
-            this.recommendedGuideItems = data.recommendedGuideItems;
+
+            if (data.docIndex.length === 0) {
+                this.docIndex = IndexPlaceholder;
+            } else this.docIndex = data.docIndex;
+            if (data.guideIndex.length === 0) {
+                this.guideIndex = IndexPlaceholder;
+            } else this.guideIndex = data.guideIndex;
+
+            if (data.recommendedDocItems.length === 0) {
+                this.recommendedDocItems = RecommendedPlaceholder;
+            } else this.recommendedDocItems = data.recommendedDocItems;
+            if (data.recommendedGuideItems.length === 0) {
+                this.recommendedGuideItems = RecommendedPlaceholder;
+            } else this.recommendedGuideItems = data.recommendedGuideItems;
         },
         /**
          * Retrieve all child items of a category.

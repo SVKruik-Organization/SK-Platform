@@ -1,12 +1,22 @@
 [
     {
-        "id": 3,
-        "title": "Configure Apricaria to work in your server",
+        "id": 2,
+        "title": "Configuring Apricaria to work in your server",
         "category": "Managment",
         "page": "Server_Setup",
         "anchor": null,
         "icon": "fa-code-pull-request",
         "time": 2,
+        "type": "Guide"
+    },
+    {
+        "id": 3,
+        "title": "Creating & managing your Operator account",
+        "category": "Operator",
+        "page": "Account",
+        "anchor": null,
+        "icon": "fa-user-crown",
+        "time": 5,
         "type": "Guide"
     }
 ]

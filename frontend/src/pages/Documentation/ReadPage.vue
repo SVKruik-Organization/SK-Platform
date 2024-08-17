@@ -381,7 +381,7 @@ export default defineComponent({
     top: 0;
     height: 100vh;
     width: 100vw;
-    z-index: 4;
+    z-index: 5;
 }
 
 .content-wrapper {
@@ -572,6 +572,7 @@ aside a,
     height: 0;
     border-radius: var(--border-radius-low);
     margin-left: -2px;
+    pointer-events: none;
 }
 
 .featured-product-title-container span::before {
@@ -834,7 +835,7 @@ footer {
         background-color: var(--fill);
         display: none;
         width: 0;
-        z-index: 5;
+        z-index: 6;
     }
 
     .splitter {
@@ -868,12 +869,13 @@ footer {
     }
 }
 
-@media (width <=800px) {
+@media (width <=895px) {
     .documentation-content {
         gap: 20px;
     }
 
     .navigation-button {
+        top: 101px;
         position: unset;
         z-index: 2;
     }

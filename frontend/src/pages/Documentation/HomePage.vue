@@ -105,14 +105,15 @@ export default defineComponent({
             <h3 class="banner-content content-splitter-header">Recommended pages</h3>
             <div class="banner-content recommended-item-container flex">
                 <DocumentationRecommendedItem
-                    v-if="recommendedItems.length > 0 && recommendedItems[0].title !== 'Not_Found'"
+                    v-if="recommendedItems.length > 0 && recommendedItems[0].title !== 'None_Available'"
                     v-for="recommendedItem of recommendedItems" :key="recommendedItem.id" :data="recommendedItem">
                 </DocumentationRecommendedItem>
-                <article v-else-if="recommendedItems.length > 0 && recommendedItems[0].category === 'Not_Found'"
-                    class="flex-col">
-                    <p>Looks like there aren't any recommended items available right now. This is likely due to your
-                        language and/or version settings.</p>
-                    <p>Please change them to their defaults and try again.</p>
+                <article v-else-if="recommendedItems.length > 0 && recommendedItems[0].title === 'None_Available'"
+                    class="flex-col error-message">
+                    <p>Looks like there aren't any recommended items available in your language and version at this
+                        time.</p>
+                    <p>I am working hard on versioning and localization. In the meantime, please revert any
+                        changes to their default settings.</p>
                 </article>
                 <div class="error-message" v-else>Something went wrong while retrieving the recommended items. Please
                     try again later.
@@ -127,15 +128,16 @@ export default defineComponent({
         <div class="content-item">
             <div class="banner-content category-container-parent flex">
                 <div class="banner-content category-container"
-                    v-if="docIndexItems.length > 0 && docIndexItems[0].category !== 'Not_Found'">
+                    v-if="docIndexItems.length > 0 && docIndexItems[0].category !== 'None_Available'">
                     <DocumentationCategoryItem v-for="docIndexItem of docIndexItems" :data="docIndexItem" type="Doc"
                         :key="docIndexItem.category"></DocumentationCategoryItem>
                 </div>
-                <article v-else-if="docIndexItems.length > 0 && docIndexItems[0].category === 'Not_Found'"
-                    class="flex-col">
-                    <p>Looks like there aren't any docs available right now. This is likely due to your language
-                        and/or version settings.</p>
-                    <p>Please change them to their defaults and try again.</p>
+                <article v-else-if="docIndexItems.length > 0 && docIndexItems[0].category === 'None_Available'"
+                    class="flex-col error-message">
+                    <p>Looks like there aren't any Docs available in your language and version at this
+                        time.</p>
+                    <p>I am working hard on versioning and localization. In the meantime, please revert any
+                        changes to their default settings.</p>
                 </article>
                 <div class="error-message" v-else>Something went wrong while retrieving the documentation index. Please
                     try again later.
@@ -151,16 +153,16 @@ export default defineComponent({
         <div class="content-item">
             <div class="banner-content category-container-parent flex">
                 <div class="banner-content category-container"
-                    v-if="guideIndexItems.length > 0 && guideIndexItems[0].category !== 'Not_Found'">
+                    v-if="guideIndexItems.length > 0 && guideIndexItems[0].category !== 'None_Available'">
                     <DocumentationCategoryItem v-for="guideIndexItem of guideIndexItems" :key="guideIndexItem.category"
                         :data="guideIndexItem" type="Guide">
                     </DocumentationCategoryItem>
                 </div>
-                <article v-else-if="docIndexItems.length > 0 && docIndexItems[0].category === 'Not_Found'"
-                    class="flex-col">
-                    <p>Looks like there aren't any guides available right now. This is likely due to your language
-                        and/or version settings.</p>
-                    <p>Please change them to their defaults and try again.</p>
+                <article v-else-if="docIndexItems.length > 0 && docIndexItems[0].category === 'None_Available'"
+                    class="flex-col error-message">
+                    <p>Looks like there aren't any Guides available in your language and version at this time.</p>
+                    <p>I am working hard on versioning and localization. In the meantime, please revert any
+                        changes to their default settings.</p>
                 </article>
                 <p class="error-message" v-else>Something went wrong while retrieving the guide index. Please try again
                     later.</p>
@@ -208,7 +210,6 @@ export default defineComponent({
     top: -300px;
     width: 1200px;
     opacity: 0.2;
-    z-index: 1;
     user-select: none;
     filter: blur(50px);
 }

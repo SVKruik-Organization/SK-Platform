@@ -8,15 +8,5 @@
         "icon": "fa-bird",
         "time": 3,
         "type": "Doc"
-    },
-    {
-        "id": 2,
-        "title": "Creating & managing your Operator account",
-        "category": "Operator",
-        "page": "Account",
-        "anchor": null,
-        "icon": "fa-user-crown",
-        "time": 5,
-        "type": "Doc"
     }
 ]

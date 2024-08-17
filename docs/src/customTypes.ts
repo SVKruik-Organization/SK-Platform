@@ -54,7 +54,6 @@ export type RecommendedItem = {
 
 // Search All Pages Request
 export type SearchAllRequest = {
-    "index": string,
     "query": string,
     "limit": string | undefined,
     "offset": string | undefined,
@@ -62,7 +61,6 @@ export type SearchAllRequest = {
 
 // Search Specific Page Request
 export type SearchPageRequest = {
-    "index": string,
     "query": string,
     "type": string,
     "category": string,
