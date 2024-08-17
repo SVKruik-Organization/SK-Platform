@@ -1,17 +1,17 @@
 <script lang="ts">
-import { DropdownStates, type DocChapterItem, type DocumentationFile, type DocumentationTypes, type RecommendedItem } from '@/assets/customTypes';
+import { DropdownStates, type DocChapterItem, type DocumentationFile, type DocumentationTypes, type RelatedItem } from '@/assets/customTypes';
 import { useDocumentationStore } from '@/stores/DocumentationStore';
 import { fetchDocumentationDefault, fetchDocumentationPage } from '@/utils/fetch';
 import { defineComponent, type PropType } from 'vue';
 import DocumentationFooter from '@/components/DocumentationFooter.vue';
 import type { NavigationFailure, RouteLocation } from 'vue-router';
-import DocumentationRecommendedItem from '@/components/DocumentationRecommendedItem.vue';
+import DocumentationRelatedItem from '@/components/DocumentationRelatedItem.vue';
 
 export default defineComponent({
     name: "ReadPage",
     components: {
         DocumentationFooter,
-        DocumentationRecommendedItem
+        DocumentationRelatedItem
     },
     setup() {
         return {
@@ -25,7 +25,7 @@ export default defineComponent({
         return {
             "fileData": true as DocumentationFile | boolean,
             "chapterData": [] as Array<DocChapterItem>,
-            "relatedItems": [] as Array<RecommendedItem>
+            "relatedItems": [] as Array<RelatedItem>
         }
     },
     props: {
@@ -54,6 +54,8 @@ export default defineComponent({
         async loadContent(): Promise<void | NavigationFailure | undefined> {
             if (!this.type || !this.category) return;
             if (!this.documentationStore.docIndex.length || !this.documentationStore.guideIndex.length) await this.documentationStore.refresh();
+            this.chapterData = [];
+            this.relatedItems = [];
 
             // Category Landing Page
             if (!this.page) {
@@ -64,7 +66,6 @@ export default defineComponent({
             } else {
                 if (!this.documentationStore.validatePage(this.category, this.page, this.type)) return this.$router.push(`/documentation/notfound?type=${this.type}&category=${this.category}&page=${this.page}`);
                 this.fileData = await fetchDocumentationPage(this.category, this.page, this.documentationStore.version, this.documentationStore.language, this.type);
-                this.chapterData = [];
                 if (typeof this.fileData !== "object") return;
                 this.relatedItems = this.fileData.related;
 
@@ -184,19 +185,21 @@ export default defineComponent({
 <template>
     <div class="content-wrapper flex">
         <div class="navigation-overlay glass" v-if="navigationDropdownVisible"></div>
-        <button type="button" class="navigation-button navbar-pill disable-close" @click="toggleNavigationBar($event)"
-            title="Open the navigation bar.">
-            <i class="fa-regular fa-arrow-right-from-line disable-close"></i>
-        </button>
-        <nav class="flex" :class="{ 'navigation-expand': navigationDropdownVisible }">
-            <section class="navigation flex-col" :class="{ 'disable-close': navigationDropdownVisible }">
+        <nav class="flex scrollbar" :class="{ 'navigation-expand': navigationDropdownVisible }">
+            <section class="navigation scrollbar flex-col" :class="{ 'disable-close': navigationDropdownVisible }">
                 <div class="flex category-title" :class="{ 'disable-close': navigationDropdownVisible }">
-                    <RouterLink to="/documentation" title="Go back to the documentation home page.">
-                        <i class="fa-regular fa-arrow-left"></i>
-                    </RouterLink>
-                    <RouterLink :to="`/documentation/Read/${type}/${category}`" class="category-title"
-                        title="Go to the category home page.">{{ category }}
-                    </RouterLink>
+                    <div class="flex">
+                        <RouterLink to="/documentation" title="Go back to the documentation home page.">
+                            <i class="fa-regular fa-arrow-left"></i>
+                        </RouterLink>
+                        <RouterLink :to="`/documentation/Read/${type}/${category}`"
+                            title="Go to the category home page.">{{ category }}
+                        </RouterLink>
+                    </div>
+                    <button type="button" class="navigation-button navigation-close navbar-pill"
+                        title="Close the navigation bar.">
+                        <i class="fa-regular fa-xmark"></i>
+                    </button>
                 </div>
                 <RouterLink :to="`/documentation/read/${type}/${category}/${link}`" class="navigation-link"
                     :class="{ 'active-navigation-link': link === page }"
@@ -209,7 +212,7 @@ export default defineComponent({
                     <div class="flex-col responsive-nav-item" :class="{ 'disable-close': navigationDropdownVisible }">
                         <strong :class="{ 'disable-close': navigationDropdownVisible }">On This Page</strong>
                         <a :href="`#${chapter.title}`" v-for="(chapter, index) of chapterData"
-                            :id="`${chapter.title}_aside`"
+                            :id="`${chapter.title}_aside`" class="responsive-nav-item-link"
                             :class="{ 'active-chapter': chapterData[index].active, 'anchored-chapter': $route.hash === '#' + chapter.title }">
                             {{ chapter.title.replace(/_/g, " ") }}
                         </a>
@@ -233,50 +236,61 @@ export default defineComponent({
                     </div>
                 </section>
             </section>
-            <span class="splitter responsive-nav-splitter"></span>
-            <section class="controls flex-col" :class="{ 'disable-close': navigationDropdownVisible }">
-                <button title="Share this article." class="flex navbar-pill control-pill" type="button"
-                    @click="share()">
-                    <p ref="shareButtonContents">Share</p>
-                    <i class="fa-regular fa-share"></i>
-                </button>
-                <button title="View page information." type="button" v-if="typeof fileData === 'object'"
-                    class="flex dropdown-container justify-center navbar-pill disable-close"
-                    :class="{ 'navbar-pill-expand': informationDropdownVisible }"
-                    @click="toggleInformationMenu($event)">
-                    <p class="disable-close" :class="{ 'navbar-pill-text-expand': informationDropdownVisible }">
-                        Information</p>
-                    <i class="fa-regular fa-circle-info disable-close"></i>
-                    <menu
-                        :class="{ 'dropdown-expand': informationDropdownVisible, 'information-dropdown-expand': informationDropdownVisible }"
-                        class="dropdown-menu dropdown-menu-right information-dropdown-menu flex-col disable-close">
-                        <div class="menu-item flex">
-                            <label class="light-text">Name</label>
-                            <label>{{ fileData.name }}</label>
-                        </div>
-                        <div class="menu-item flex">
-                            <label class="light-text">Size</label>
-                            <label>{{ Math.round(fileData.size / 1024) }} kB</label>
-                        </div>
-                        <div class="menu-item flex">
-                            <label class="light-text">Last Read</label>
-                            <label>{{ fileData.access_time }}</label>
-                        </div>
-                        <div class="menu-item flex">
-                            <label class="light-text">Last Modification</label>
-                            <label>{{ fileData.modification_time }}</label>
-                        </div>
-                        <div class="menu-item flex">
-                            <label class="light-text">Created On</label>
-                            <label>{{ fileData.creation_time }}</label>
-                        </div>
-                    </menu>
-                </button>
+            <div class="splitter-container">
+                <span class="splitter responsive-nav-splitter"></span>
+            </div>
+            <section class="controls flex" :class="{ 'disable-close': navigationDropdownVisible }">
+                <strong class="responsive-nav-title"
+                    :class="{ 'disable-close': navigationDropdownVisible }">Options</strong>
+                <div class="flex-col">
+                    <button title="Share this article." class="flex navbar-pill control-pill" type="button"
+                        :class="{ 'disable-close': navigationDropdownVisible }" @click="share()">
+                        <p :class="{ 'disable-close': navigationDropdownVisible }" ref="shareButtonContents">Share</p>
+                        <i :class="{ 'disable-close': navigationDropdownVisible }" class="fa-regular fa-share"></i>
+                    </button>
+                    <button title="View page information." type="button" v-if="typeof fileData === 'object'"
+                        class="flex dropdown-container justify-center navbar-pill disable-close"
+                        @click="toggleInformationMenu($event)"
+                        :class="{ 'navbar-pill-expand': informationDropdownVisible, 'disable-close': navigationDropdownVisible }">
+                        <p class="disable-close" :class="{ 'navbar-pill-text-expand': informationDropdownVisible }">
+                            Information</p>
+                        <i class="fa-regular fa-circle-info disable-close"></i>
+                        <menu
+                            :class="{ 'dropdown-expand': informationDropdownVisible, 'information-dropdown-expand': informationDropdownVisible }"
+                            class="dropdown-menu dropdown-menu-right information-dropdown-menu flex-col disable-close">
+                            <div class="menu-item flex">
+                                <label class="light-text">Name</label>
+                                <label>{{ fileData.name }}</label>
+                            </div>
+                            <div class="menu-item flex">
+                                <label class="light-text">Size</label>
+                                <label>{{ fileData.size < 1024 ? `${fileData.size} bytes` : `${Math.round(fileData.size
+                                    / 1024)} kB` }}</label>
+                            </div>
+                            <div class="menu-item flex">
+                                <label class="light-text">Last Read</label>
+                                <label>{{ fileData.access_time }}</label>
+                            </div>
+                            <div class="menu-item flex">
+                                <label class="light-text">Last Modification</label>
+                                <label>{{ fileData.modification_time }}</label>
+                            </div>
+                            <div class="menu-item flex">
+                                <label class="light-text">Created On</label>
+                                <label>{{ fileData.creation_time }}</label>
+                            </div>
+                        </menu>
+                    </button>
+                </div>
             </section>
         </nav>
         <div class="flex-col documentation-content-parent">
             <div class="flex-col documentation-content">
                 <div class="breadcrumbs-container flex">
+                    <button type="button" class="navigation-button navbar-pill disable-close"
+                        @click="toggleNavigationBar($event)" title="Open the navigation bar.">
+                        <i class="fa-regular fa-arrow-right-from-line disable-close"></i>
+                    </button>
                     <RouterLink :to="`/documentation${type === 'Doc' ? '#Documentation' : '#Guides'}`"
                         class="breadcrumb-item breadcrumb-link">
                         {{ type === 'Doc' ? 'Documentation' : 'Guides' }}
@@ -325,16 +339,19 @@ export default defineComponent({
                     </aside>
                 </section>
             </div>
-            <section class="flex-col recommended-container">
-                <div class="flex-col">
+            <section v-if="page" class="flex-col related-container">
+                <div class="flex-col section-title-container">
                     <h3>Also Read</h3>
                     <p class="light-text">Other popular and related pages that you might find useful as well.</p>
                 </div>
-                <DocumentationRecommendedItem v-for="item of relatedItems" :key="item.id" :data="item">
-                </DocumentationRecommendedItem>
+                <div class="flex related-item-container">
+                    <DocumentationRelatedItem v-for="item of relatedItems" :key="item.id" :data="item">
+                    </DocumentationRelatedItem>
+                    <p v-if="!relatedItems.length" class="light-text">No related Docs or Guides for this page.</p>
+                </div>
             </section>
             <section class="flex-col footer-container">
-                <div class="flex-col">
+                <div class="flex-col section-title-container">
                     <h3>More</h3>
                     <p class="light-text">Leave feedback if you'd like and find links to further assistence.</p>
                 </div>
@@ -367,6 +384,15 @@ nav {
     z-index: 2;
 }
 
+.splitter-container {
+    display: none;
+    width: 100%;
+}
+
+.responsive-nav-title {
+    display: none;
+}
+
 .navigation-button {
     display: none;
 }
@@ -381,14 +407,20 @@ nav {
 }
 
 .category-title {
+    justify-content: space-between;
+    gap: 0;
+    width: 100%;
+}
+
+.category-title > div {
     gap: 10px;
 }
 
-.category-title:first-child {
+.category-title > div a:first-of-type {
     font-weight: bold;
 }
 
-.category-title:last-child {
+.category-title > div a:last-of-type {
     font-size: x-large;
     font-weight: bold;
 }
@@ -443,11 +475,13 @@ nav {
     width: 100%;
     max-width: 1050px;
     align-items: flex-start;
+    margin-left: -250px;
 }
 
 .documentation-content {
     align-items: center;
     padding-top: 40px;
+    min-height: 350px;
 }
 
 .breadcrumbs-container {
@@ -516,10 +550,14 @@ aside a,
     border: 1px solid var(--border);
     box-sizing: border-box;
     padding: 10px;
-    width: max-content;
     background-color: var(--fill);
     opacity: 0;
-    transition: opacity 0.3s;
+    transition: opacity 0.3s, height 0.4s;
+    width: 310px;
+    overflow: hidden;
+    height: 0;
+    border-radius: var(--border-radius-low);
+    margin-left: -2px;
 }
 
 .featured-product-title-container span::before {
@@ -527,15 +565,15 @@ aside a,
     position: absolute;
     top: 100%;
     left: 50%;
-    border: solid transparent;
+    border: 5px solid transparent;
     border-top-color: var(--border);
-    border-width: 5px;
     margin-left: -5px;
 }
 
 .featured-product-title-container i:hover + span {
     opacity: 1;
-    border-radius: var(--border-radius-low);
+    height: 42px;
+    overflow: unset;
 }
 
 .featured-product-item {
@@ -552,7 +590,7 @@ aside a,
     aspect-ratio: 1 / 1;
 }
 
-.recommended-container,
+.related-container,
 .footer-container {
     padding-top: 60px;
     gap: 40px;
@@ -562,27 +600,30 @@ aside a,
     max-width: 1200px;
 }
 
-.recommended-container {
-    height: 200px;
+.related-container {
+    min-height: 200px;
+}
+
+.related-item-container {
+    width: 100%;
+    height: 100%;
+    flex-wrap: wrap;
 }
 
 footer {
     display: flex;
     justify-content: space-between;
+    margin-bottom: 70px;
 }
 
 .responsive-nav,
 .responsive-nav-item {
     width: 100%;
-    gap: 40px;
+    gap: 20px;
 }
 
 .navigation > a:last-of-type {
     margin-bottom: 20px;
-}
-
-.responsive-nav-item {
-    gap: 10px;
 }
 
 .responsive-nav-splitter {
@@ -591,7 +632,32 @@ footer {
 
 @media (width <=1650px) {
     .featured-product-title-container span {
-        width: 230px;
+        right: 170px;
+        bottom: -10px;
+        transition: opacity 0.3s, width 0.1s;
+        width: 0;
+        height: 42px;
+        margin-left: unset;
+    }
+
+    .featured-product-title-container span::before {
+        top: 40%;
+        left: 100%;
+        border: 5px solid transparent;
+        border-left-color: var(--border);
+        margin-left: unset;
+    }
+
+    .featured-product-title-container i:hover + span {
+        width: 310px;
+    }
+}
+
+@media (width <=1600px) {
+
+    .documentation-content-parent > div,
+    .documentation-content-parent > section {
+        margin-left: unset;
     }
 }
 
@@ -600,8 +666,30 @@ footer {
         display: none;
     }
 
+    .featured-product-title-container span,
+    .featured-product-title-container i {
+        display: none;
+    }
+
+    .navigation {
+        overflow-y: scroll;
+        overflow-x: hidden;
+    }
+
     .responsive-nav {
         display: flex;
+    }
+
+    .navigation > a:last-of-type {
+        margin-bottom: 0;
+    }
+
+    .responsive-nav-item-link {
+        color: var(--font-light);
+    }
+
+    .active-chapter {
+        color: var(--font);
     }
 
     .featured-product-item p {
@@ -622,7 +710,8 @@ footer {
         flex-direction: row;
         align-items: center;
         justify-content: center;
-        row-gap: 60px;
+        gap: 10px;
+        row-gap: 50px;
     }
 
     .documentation-footer-item {
@@ -635,6 +724,10 @@ footer {
         max-width: 280px;
         text-align: center;
     }
+
+    .related-item {
+        max-width: unset
+    }
 }
 
 @media (width <=1180px) {
@@ -646,13 +739,25 @@ footer {
         padding-top: 20px;
     }
 
+    .responsive-nav-title {
+        display: block;
+    }
+
     nav {
         flex-direction: column;
         border-right: 1px solid var(--border);
         box-sizing: border-box;
         padding: 20px;
         width: 250px;
-        gap: 40px;
+        gap: 20px;
+        overflow-y: auto;
+        overflow-x: hidden;
+        left: 0;
+        bottom: 0;
+    }
+
+    .splitter-container {
+        display: block;
     }
 
     .navigation {
@@ -661,10 +766,26 @@ footer {
         border: unset;
         box-sizing: unset;
         padding: unset;
+        overflow-y: unset;
+        overflow-x: unset;
     }
 
     .controls {
-        flex-direction: row;
+        flex-direction: column;
+        align-items: flex-start;
+        margin-top: unset;
+        width: 100%;
+        gap: 20px;
+        height: 200px;
+    }
+
+    .controls div {
+        flex-direction: column;
+        width: 100%;
+    }
+
+    .controls div button:last-of-type {
+        display: none;
     }
 
     .responsive-nav-splitter {
@@ -683,6 +804,10 @@ footer {
         z-index: 3;
     }
 
+    .navigation-close {
+        position: unset;
+    }
+
     .navigation-button i {
         margin-right: unset;
     }
@@ -690,7 +815,7 @@ footer {
     nav {
         position: fixed;
         top: 0;
-        left: 0;
+        bottom: 0;
         height: 100vh;
         background-color: var(--fill);
         display: none;
@@ -698,23 +823,55 @@ footer {
         z-index: 5;
     }
 
+    .splitter {
+        background-color: var(--border);
+    }
+
     .navigation-expand {
         display: flex;
         width: 300px;
+    }
+
+    .section-title-container {
+        width: 100%;
+        align-items: center;
+        text-align: center;
+    }
+
+    .related-container,
+    .footer-container {
+        padding-top: 30px;
+    }
+
+    .related-item-container {
+        flex-direction: column;
+        gap: 10px;
+    }
+
+    .information-dropdown-expand {
+        top: -96px;
+        left: 124px;
     }
 }
 
 @media (width <=800px) {
     .documentation-content {
-        padding-top: 40px;
+        gap: 20px;
     }
 
     .navigation-button {
-        top: 101px;
+        position: unset;
+        z-index: 2;
     }
 
-    .documentation-content-child {
+    .content-wrapper {
+        align-items: center;
+        justify-content: center;
+    }
+
+    .documentation-content-parent {
         width: 95%;
+        flex: unset;
     }
 }
 </style>

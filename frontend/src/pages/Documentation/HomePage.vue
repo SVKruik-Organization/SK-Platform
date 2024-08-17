@@ -31,6 +31,8 @@ export default defineComponent({
     },
     props: {
         "informationDropdownVisible": { type: Boolean, required: false },
+        "productDropdownVisible": { type: Boolean, required: false },
+        "navigationDropdownVisible": { type: Boolean, required: false }
     },
     async mounted() {
         // Pinia Watcher

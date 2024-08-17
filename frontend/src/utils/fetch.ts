@@ -1,7 +1,6 @@
-import type { DocumentationCategoriesResponse, DocumentationFile, DocumentationIndexResponse, DocumentationProduct, DocumentationRecommendedItemsResponse, DocumentationRefreshResponse, RecommendedItem, UserDataResponse } from "@/assets/customTypes";
+import type { DocumentationCategoriesResponse, DocumentationFile, DocumentationIndexResponse, DocumentationProduct, DocumentationRecommendedItemsResponse, DocumentationRefreshResponse, RecommendedItem, RelatedItem, UserDataResponse } from "@/assets/customTypes";
 import { getDate } from "./date";
 import { useDocumentationStore } from '@/stores/DocumentationStore';
-import type { Store } from "pinia";
 
 /**
  * Validates user session.
@@ -228,18 +227,27 @@ async function parseDocumentationFile(input: any): Promise<DocumentationFile> {
  * @param input Raw related items from the database.
  * @returns The processed related items.
  */
-function parseRelatedItems(input: any): Array<RecommendedItem> {
-    const relatedItems: Array<RecommendedItem> = [];
+function parseRelatedItems(input: any): Array<RelatedItem> {
+    if (!input) return [];
+    const relatedItems: Array<RelatedItem> = [];
     input.forEach((item: any) => {
+        // Random Product Image
+        let imageUrl: string | null = null;
+        if (item.products !== "") {
+            const parsedProducts: Array<string> = item.products.split(",");
+            const randomProduct: string = parsedProducts[Math.floor(Math.random() * parsedProducts.length)];
+            imageUrl = `https://files.stefankruik.com/Products/${randomProduct}.png`;
+        }
+
         relatedItems.push({
             "id": item.id,
             "category": item.category,
             "page": item.name,
             "title": item.name,
-            "anchor": null,
             "icon": item.icon,
-            "time": null,
-            "type": item.type
+            "type": item.type,
+            "description": item.description,
+            "image_url": imageUrl
         });
     });
     return relatedItems;

@@ -37,6 +37,10 @@ body {
     background-color: var(--fill);
 }
 
+.full-width {
+    width: 100%;
+}
+
 .click-item {
     width: 100%;
     height: 100%;
@@ -153,4 +157,21 @@ button {
 
 img {
     background-color: var(--fill-light);
+}
+
+/* Scrollbar */
+.scrollbar::-webkit-scrollbar {
+    width: 7px;
+}
+
+.scrollbar::-webkit-scrollbar-track {
+    box-shadow: var(--main);
+}
+
+.scrollbar::-webkit-scrollbar-thumb {
+    background: var(--font-light);
+}
+
+.scrollbar::-webkit-scrollbar-thumb:hover {
+    background: var(--font);
 }

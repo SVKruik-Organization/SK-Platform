@@ -42,7 +42,7 @@ export type DocumentationFile = {
     "chapters": Array<string>,
     "description": string,
     "products": Array<DocumentationProduct>,
-    "related": Array<RecommendedItem>
+    "related": Array<RelatedItem>
 }
 
 // Raw File Index/TOC Item Response
@@ -83,6 +83,18 @@ export type RecommendedItem = {
     "icon": string,
     "time": number | null,
     "type": string
+}
+
+// Documentation Readpage Related
+export type RelatedItem = {
+    "id": number,
+    "category": string,
+    "page": string,
+    "title": string,
+    "icon": string,
+    "type": string,
+    "description": string,
+    "image_url": string | null
 }
 
 // Raw Full Refresh Response
