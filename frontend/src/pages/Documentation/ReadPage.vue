@@ -38,13 +38,7 @@ export default defineComponent({
     },
     watch: {
         async $route(from: RouteLocation, to: RouteLocation) {
-            if (from.path !== to.path) {
-                await this.loadContent();
-                window.scrollTo({
-                    top: 0,
-                    behavior: "smooth"
-                });
-            }
+            if (from.path !== to.path) await this.loadContent();
         }
     },
     async mounted() {

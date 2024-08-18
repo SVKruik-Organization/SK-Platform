@@ -49,7 +49,7 @@ export async function fetchLogin(username: string, password: string): Promise<Us
 /**
  * Refresh both indices & recommended items in one fetch.
  * @param name The name of the specific HTML file to retrieve, without `.html`. Examples: Introduction, Collaborating
- * @param version The version number of the index. Examples: v1, v2
+ * @param version The version number of the index. Examples: 'v1', 'v2'
  * @returns Data or false on error.
  */
 export async function fetchDocumentationRefresh(version: string, language: string): Promise<DocumentationRefreshResponse | boolean> {
@@ -69,8 +69,8 @@ export async function fetchDocumentationRefresh(version: string, language: strin
  * Fetch a specific Documentation page.
  * @param folder The name of the folder with underscores instead of spaces. Examples: Get_Started, Community
  * @param name The name of the specific HTML file to retrieve, without `.html`. Examples: Introduction, Collaborating
- * @param version The version number of the index. Examples: v1, v2
- * @param language The language of the documentation. Examples: en-US, nl-NL
+ * @param version The version number of the index. Examples: 'v1', 'v2'
+ * @param language The language of the documentation. Examples: 'en-US', 'nl-NL'
  * @param type Documentation (Doc) or Guides (Guide)
  * @returns HTML data as string or false on error.
  */
@@ -90,8 +90,8 @@ export async function fetchDocumentationPage(folder: string, name: string, versi
 /**
  * Fetch all pages for a specific category.
  * @param folder The name of the folder with underscores instead of spaces. Examples: Get_Started, Community
- * @param version The version number of the index. Examples: v1, v2
- * @param language The language of the documentation. Examples: en-US, nl-NL
+ * @param version The version number of the index. Examples: 'v1', 'v2'
+ * @param language The language of the documentation. Examples: 'en-US', 'nl-NL'
  * @param type Documentation (Doc) or Guides (Guide)
  * @returns List of pages for the category or false on error.
  * @deprecated
@@ -112,8 +112,8 @@ export async function fetchDocumentationPages(folder: string, version: string, l
 /**
  * Fetch the landing page for a specific category.
  * @param folder The name of the folder with underscores instead of spaces. Examples: Get_Started, Community
- * @param version The version number of the index. Examples: v1, v2
- * @param language The language of the documentation. Examples: en-US, nl-NL
+ * @param version The version number of the index. Examples: 'v1', 'v2'
+ * @param language The language of the documentation. Examples: 'en-US', 'nl-NL'
  * @param type Documentation (Doc) or Guides (Guide)
  * @returns HTML data as string or false on error.
  */
@@ -132,8 +132,8 @@ export async function fetchDocumentationDefault(folder: string, version: string,
 
 /**
  * Fetch the index/table of contents.
- * @param version The version number of the index. Examples: v1, v2
- * @param language The language of the documentation. Examples: en-US, nl-NL
+ * @param version The version number of the index. Examples: 'v1', 'v2'
+ * @param language The language of the documentation. Examples: 'en-US', 'nl-NL'
  * @param type Documentation (Doc) or Guides (Guide)
  * @returns Data or false on error.
  */
@@ -152,7 +152,7 @@ export async function fetchDocumentationIndex(version: string, language: string,
 
 /**
  * Fetch the current recommended items.
- * @param language The language of the documentation. Examples: en-US, nl-NL
+ * @param language The language of the documentation. Examples: 'en-US', 'nl-NL'
  * @param type Documentation (Doc) or Guides (Guide)
  * @returns Data or false on error.
  */
@@ -171,8 +171,8 @@ export async function fetchRecommendedItems(language: string, type: string): Pro
 
 /**
  * Fetch the icons and names of the categories.
- * @param version The version number of the index. Examples: v1, v2
- * @param language The language of the documentation. Examples: en-US, nl-NL
+ * @param version The version number of the index. Examples: 'v1', 'v2'
+ * @param language The language of the documentation. Examples: 'en-US', 'nl-NL'
  * @param type Documentation (Doc) or Guides (Guide)
  * @returns Data or false on error.
  * @deprecated
@@ -192,16 +192,17 @@ export async function fetchDocumentationCategories(version: string, language: st
 
 /**
  * Search the documentation for a specific query.
- * @param version The version number of the index. Examples: v1, v2
- * @param language The language of the documentation. Examples: en-US, nl-NL
+ * @param version The version number of the index. Examples: 'v1', 'v2'
+ * @param language The language of the documentation. Examples: 'en-US', 'nl-NL'
  * @param type Documentation (Doc) or Guides (Guide)
  * @param limit The maximum amount of results to return.
  * @param offset Offset for pagination.
+ * @param scope The scope of the search. Choose between 'global' and 'titles'
  * @returns Data or false on error.
  */
-export async function fetchSearchDocumentation(version: string, language: string, query: string, limit: number, offset: number): Promise<DocumentationSearchResponse | boolean> {
+export async function fetchSearchDocumentation(version: string, language: string, query: string, limit: number, offset: number, scope: string): Promise<DocumentationSearchResponse | boolean> {
     try {
-        const response = await fetch(`${import.meta.env.VITE_DOCS_API_BASE}/search/all/${version}/${language}?query=${query}&limit=${limit}&offset=${offset}`, {
+        const response = await fetch(`${import.meta.env.VITE_DOCS_API_BASE}/search/all/${version}/${language}?query=${query}&limit=${limit}&offset=${offset}&scope=${scope}`, {
             method: "GET"
         });
         if (response.ok) {

@@ -2,6 +2,7 @@
 import { defineComponent, type PropType } from 'vue';
 import DocumentationNavbar from '../components/DocumentationNavbar.vue'
 import type { DocumentationTypes, DropdownStates } from '@/assets/customTypes';
+import type { RouteLocation } from 'vue-router';
 
 export default defineComponent({
     name: "DocumentationView",
@@ -30,6 +31,14 @@ export default defineComponent({
          */
         updateDropdownState(name: DropdownStates, newValue: boolean) {
             this[name] = newValue;
+        }
+    },
+    watch: {
+        $route(from: RouteLocation, to: RouteLocation) {
+            if (from.path !== to.path) window.scrollTo({
+                top: 0,
+                behavior: "smooth"
+            });
         }
     },
     mounted() {

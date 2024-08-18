@@ -57,6 +57,7 @@ export type SearchAllRequest = {
     "query": string,
     "limit": string | undefined,
     "offset": string | undefined,
+    "scope": string
 }
 
 // Search Specific Page Request

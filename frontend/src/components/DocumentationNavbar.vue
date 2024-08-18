@@ -62,25 +62,69 @@ export default defineComponent({
                 this.refreshDisabled = false;
             }, 2 * 60 * 1000);
         },
+        /**
+         * Handle search input focus, also triggering the search interval.
+         */
         searchFocusHandler(): void {
             const searchbar: HTMLInputElement = this.$refs["searchbar"] as HTMLInputElement;
             this.searchInterval = setInterval(async () => {
-                if (searchbar.value === this.searchQuery) return;
-                if (!searchbar.value.replace(/ /g, "").length) return;
-                const searchValue = searchbar.value.trim();
-                this.searchQuery = searchValue;
-                const data = await fetchSearchDocumentation(this.documentationStore.version, this.documentationStore.language, searchValue, 5, 0);
-                console.log("Searching for: ", searchValue);
-                if (typeof data === "object") return this.searchResults = data;
-                // TODO: Handle error.
-                // TODO: Loading indicator.
+                if (!searchbar.value.length) {
+                    this.searchQuery = "";
+                    this.searchResults = null;
+                    return;
+                };
+                await this.search(searchbar, false);
             }, 1500);
         },
+        /**
+         * Handle search input blur, also clearing the search interval.
+         */
         searchBlurHandler(): void {
+            const searchbar: HTMLInputElement = this.$refs["searchbar"] as HTMLInputElement;
             if (this.searchInterval) {
-                clearTimeout(this.searchInterval);
+                clearInterval(this.searchInterval);
                 this.searchInterval = null;
+                if (!searchbar.value.length) {
+                    this.searchQuery = "";
+                    this.searchResults = null;
+                }
             }
+        },
+        /**
+         * Toggle the search mode (scope).
+         * @param mode The search mode to switch to.
+         */
+        async switchSearchMode(mode: string): Promise<void> {
+            if (mode === this.searchMode) return;
+            const validScopes: Array<string> = ["global", "titles"];
+            if (!validScopes.includes(mode)) return;
+            const searchbar: HTMLInputElement = this.$refs["searchbar"] as HTMLInputElement;
+            this.searchMode = mode;
+            await this.search(searchbar, true);
+        },
+        /**
+         * Get a random subject to suggest when no search results are found.
+         */
+        getRandomSubject(): string {
+            const randomSubjects: Array<string> = ["Operator", "Apricaria", "Stelleri", "Bots", "Support", "FAQ", "Uplink", "API", "Integrating", "Authenticating", "Introduction", "Links", "Overway", "Commander", "Administrator", "Setup", "Roles"];
+            return randomSubjects[Math.floor(Math.random() * randomSubjects.length)];
+        },
+        /**
+         * Query the search engine.
+         * @param searchbar The HTML input element.
+         * @param force Overwrite the same search query check.
+         */
+        async search(searchbar: HTMLInputElement, force: boolean): Promise<void | DocumentationSearchResponse> {
+            if (searchbar.value === this.searchQuery && !force) return;
+            if (!searchbar.value.replace(/ /g, "").length) return;
+            const searchValue = searchbar.value.trim();
+            this.searchQuery = searchValue;
+            console.log("Searching for:", searchValue);
+            const data = await fetchSearchDocumentation(this.documentationStore.version, this.documentationStore.language, searchValue, 5, 0, this.searchMode);
+            if (typeof data === "object") return this.searchResults = data;
+            // TODO: Handle error.
+            // TODO: Loading indicator.
+            // TODO: Smooth height transition.
         }
     }
 });
@@ -101,28 +145,48 @@ export default defineComponent({
                         <i class="fa-regular fa-magnifying-glass"></i>
                         <input ref="searchbar" @focus="searchFocusHandler" type="text" @blur="searchBlurHandler"
                             maxlength="60" placeholder="Search through everything">
-                        <section class="flex-col input-results-container">
-                            <small class="light-text">Search Mode</small>
-                            <div class="flex search-mode-container">
-                                <button class="flex" :class="{ 'active-search-mode': searchMode === 'global' }"
-                                    title="Search anywhere." @click="searchMode = 'global'">
-                                    <i class="fa-regular fa-earth-americas"></i>
-                                    <p>Globally</p>
-                                </button>
-                                <button class="flex" :class="{ 'active-search-mode': searchMode === 'title' }"
-                                    title="Search through page titles." @click="searchMode = 'title'">
-                                    <i class="fa-regular fa-font"></i>
-                                    <p>Page Titles</p>
-                                </button>
+                        <menu class="flex-col input-results-container">
+                            <div class="flex-col full-width">
+                                <small class="light-text">Search Mode</small>
+                                <div class="flex search-mode-container">
+                                    <button class="flex" :class="{ 'active-search-mode': searchMode === 'global' }"
+                                        title="Search anywhere." @click="switchSearchMode('global')">
+                                        <i class="fa-regular fa-earth-americas"></i>
+                                        <p>Globally</p>
+                                    </button>
+                                    <button class="flex" :class="{ 'active-search-mode': searchMode === 'titles' }"
+                                        title="Search through page titles." @click="switchSearchMode('titles')">
+                                        <i class="fa-regular fa-font"></i>
+                                        <p>Pages</p>
+                                    </button>
+                                </div>
                             </div>
-                            <div class="results flex-col" v-if="searchResults && searchResults.count > 0">
-                                <p v-for="searchResult of searchResults.results">{{ `${searchResult.id}
-                                    ${searchResult.page}` }}</p>
+                            <div class="flex-col full-width">
+                                <small class="light-text">Results</small>
+                                <section class="results full-width flex-col">
+                                    <RouterLink v-if="searchResults && searchResults.count > 0"
+                                        class="flex-col search-result-item"
+                                        :to="`/documentation/read/${searchResult.type}/${searchResult.category}/${searchResult.page}`"
+                                        v-for="searchResult of searchResults.results">
+                                        <strong>{{ searchResult.page }}</strong>
+                                        <div class="flex search-results-meta">
+                                            <p>{{ searchResult.type }}</p>
+                                            <i class="fa-regular fa-circle-small"></i>
+                                            <p>{{ searchResult.category }}</p>
+                                        </div>
+                                    </RouterLink>
+                                    <p v-else-if="searchResults && searchResults.count === 0">
+                                        No results found. Maybe try searching for {{ getRandomSubject() }}?
+                                    </p>
+                                    <p v-else>
+                                        Type in the search bar above, and results will appear here.
+                                    </p>
+                                </section>
+                                <small class="light-text" v-if="searchResults">Found {{ searchResults.count }} results
+                                    in {{
+                                        searchResults.duration_ms }} ms</small>
                             </div>
-                            <p v-if="searchResults && searchResults.count === 0">
-                                No results found.
-                            </p>
-                        </section>
+                        </menu>
                     </button>
                     <button title="Change the version of the documentation." type="button"
                         class="flex dropdown-container navbar-pill disable-close"
@@ -229,9 +293,9 @@ nav {
     top: 40px;
     position: absolute;
     margin-left: -4px;
-    height: 0;
+    max-height: 0;
     width: 300px;
-    transition: height 0.5s, width 0.5s, opacity 0.4s, padding 0.5s;
+    transition: max-height 0.5s ease, width 0.5s, opacity 0.4s, padding 0.5s;
     border: 1px solid var(--border);
     box-sizing: border-box;
     border-radius: var(--border-radius-low);
@@ -240,6 +304,7 @@ nav {
     opacity: 0;
     overflow: hidden;
     align-items: flex-start;
+    gap: 15px;
 }
 
 .input-container:hover,
@@ -257,7 +322,7 @@ nav {
 }
 
 .input-container:focus-within .input-results-container {
-    height: 200px;
+    max-height: 490px;
     opacity: 1;
     width: 500px;
     padding: 10px;
@@ -302,6 +367,34 @@ nav {
 
 input::placeholder {
     color: var(--font-light);
+}
+
+.results > p {
+    margin-top: 10px;
+}
+
+.search-result-item {
+    gap: 10px;
+    width: 100%;
+    box-sizing: border-box;
+    padding: 10px;
+    border: 1px solid var(--border);
+    border-radius: var(--border-radius-low);
+    transition: background-color 0.4s;
+}
+
+.search-result-item:hover {
+    background-color: var(--border);
+}
+
+.search-results-meta p,
+.search-results-meta i {
+    color: var(--font-light);
+    font-size: small;
+}
+
+.search-results-meta i {
+    font-size: 10px;
 }
 
 .menu-item {
