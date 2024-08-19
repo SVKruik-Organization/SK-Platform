@@ -66,6 +66,7 @@ body {
 }
 
 .no-select {
+    -webkit-user-select: none;
     user-select: none;
 }
 
@@ -123,6 +124,7 @@ a,
 p,
 button {
     font-size: 16px;
+    font-weight: 400;
 }
 
 ul,

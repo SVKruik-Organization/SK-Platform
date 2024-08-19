@@ -31,18 +31,28 @@ export default defineComponent({
             "loadingIndicator": null as null | HTMLElement,
             "emptyMessage": "Type in the search bar above, and results will appear here.",
             "resultsPerPage": 5 as number,
-            "offset": 0 as number
+            "offset": 0 as number,
+            "inputFocus": false as boolean
         }
     },
     watch: {
         $route(from: RouteLocation, to: RouteLocation) {
             if (from.path === to.path) return;
             if (this.searchInput) this.searchInput.blur();
+            this.inputFocus = false;
         }
     },
     mounted() {
+        // Load Re-Used Elements
         this.searchInput = this.$refs["searchInput"] as HTMLInputElement;
         this.loadingIndicator = this.$refs["loadingIndicator"] as HTMLElement;
+
+        // Nav Search Close
+        document.addEventListener("click", (event) => {
+            const target: HTMLElement = event.target as HTMLElement;
+            if (target.classList.contains("disable-nav-close")) return;
+            this.inputFocus = false;
+        });
     },
     methods: {
         /**
@@ -82,6 +92,7 @@ export default defineComponent({
          * Handle search input focus, also triggering the search interval.
          */
         searchFocusHandler(): void {
+            this.inputFocus = true;
             this.searchInterval = setInterval(async () => {
                 if (!this.searchInput) return;
                 if (!this.searchInput.value.length) {
@@ -93,6 +104,7 @@ export default defineComponent({
         },
         /**
          * Handle search input blur, also clearing the search interval.
+         * @param event The blur event.
          */
         searchBlurHandler(): void {
             if (!this.searchInput) return;
@@ -111,7 +123,6 @@ export default defineComponent({
          */
         async switchSearchMode(mode: string): Promise<void> {
             if (!this.searchInput) return;
-            this.searchInput.focus();
             if (mode === this.searchMode) return;
             const validScopes: Array<string> = ["global", "titles"];
             if (!validScopes.includes(mode)) return;
@@ -132,9 +143,9 @@ export default defineComponent({
          */
         async search(force: boolean, newOffset: number): Promise<void | DocumentationSearchResponse> {
             // Setup
+            if (!this.searchInput) return;
             if (!this.searchInputChecks(force, newOffset)) return;
             this.offset = newOffset;
-            if (!this.searchInput) return;
             const searchValue = this.searchInput.value.trim();
             this.searchQuery = searchValue;
 
@@ -142,6 +153,7 @@ export default defineComponent({
             const data = await fetchSearchDocumentation(this.documentationStore.version, this.documentationStore.language, searchValue, this.resultsPerPage, this.offset, this.searchMode);
             if (this.loadingIndicator) this.loadingIndicator.classList.remove("visible");
             if (typeof data === "object") {
+                if (data.results.length === 0 && this.offset > 0) return this.search(false, 0);
                 this.emptyMessage = "Type in the search bar above, and results will appear here.";
                 return this.searchResults = data;
             } else if (!data) this.emptyMessage = "An error occurred while fetching the search results.";
@@ -156,10 +168,10 @@ export default defineComponent({
          * @param force Overwrite the same search query check.
          * @param newOffset The offset to start the search from.
          */
-        searchInputChecks(force: boolean, newOffset: number | null): boolean {
+        searchInputChecks(force: boolean, newOffset: number): boolean {
             if (!this.searchInput) return false;
             // Same Value
-            if (this.searchInput.value === this.searchQuery && !force && this.offset === newOffset) return false;
+            if (this.searchInput.value === this.searchQuery && !force && newOffset === this.offset) return false;
             // Zero results, and typing more
             if (this.searchResults && this.searchResults.count === 0 && this.searchInput.value.length > this.searchQuery.length) return false;
             // One result, and typing more
@@ -182,63 +194,70 @@ export default defineComponent({
             </section>
             <section class="right-nav flex">
                 <div class="flex middle-nav">
-                    <button title="Search through the documentation." class="input-container flex navbar-pill"
-                        @click.self="($refs['searchInput'] as HTMLInputElement).focus()" type="button">
-                        <i class="fa-regular fa-magnifying-glass"></i>
-                        <input ref="searchInput" @focus="searchFocusHandler" type="text" @blur="searchBlurHandler"
-                            maxlength="60" placeholder="Search through everything" @keyup="handleInput">
-                        <menu class="flex-col input-results-container">
-                            <div class="flex-col full-width">
-                                <small class="light-text">Search Mode</small>
-                                <div class="flex search-mode-container">
-                                    <button class="flex" :class="{ 'active-search-mode': searchMode === 'global' }"
-                                        title="Search for page titles and content." @click="switchSearchMode('global')">
-                                        <i class="fa-regular fa-earth-americas"></i>
-                                        <p>Globally</p>
+                    <button title="Search through the documentation."
+                        class="input-container flex navbar-pill disable-nav-close" @click.self="searchInput?.focus()"
+                        type="button" :class="{ 'input-container-focused': inputFocus }">
+                        <i class="fa-regular disable-nav-close fa-magnifying-glass" @click="searchInput?.focus()"></i>
+                        <input class=" disable-nav-close" ref="searchInput" @focus="searchFocusHandler" type="text"
+                            @blur="searchBlurHandler" maxlength="60" placeholder="Search through everything"
+                            @keyup="handleInput">
+                        <menu class="flex-col input-results-container disable-nav-close">
+                            <div class="flex-col full-width disable-nav-close">
+                                <small class="light-text disable-nav-close">Search Mode</small>
+                                <div class="flex search-mode-container disable-nav-close">
+                                    <button class="flex disable-nav-close"
+                                        :class="{ 'active-search-mode': searchMode === 'global' }"
+                                        title="Search for page titles and content." type="button"
+                                        @click="switchSearchMode('global')">
+                                        <i class="fa-regular fa-earth-americas disable-nav-close"></i>
+                                        <p class="disable-nav-close">Globally</p>
                                     </button>
-                                    <button class="flex" :class="{ 'active-search-mode': searchMode === 'titles' }"
-                                        title="Search for page titles." @click="switchSearchMode('titles')">
-                                        <i class="fa-regular fa-font"></i>
-                                        <p>Pages</p>
+                                    <button class="flex disable-nav-close"
+                                        :class="{ 'active-search-mode': searchMode === 'titles' }"
+                                        title="Search for page titles." type="button"
+                                        @click="switchSearchMode('titles')">
+                                        <i class="fa-regular fa-font disable-nav-close"></i>
+                                        <p class="disable-nav-close">Pages</p>
                                     </button>
                                 </div>
                             </div>
-                            <div class="flex-col full-width">
-                                <div class="flex">
-                                    <small class="light-text">Results</small>
-                                    <i class="fa-solid fa-circle-notch fa-spin loading-indicator"
+                            <div class="flex-col full-width disable-nav-close">
+                                <div class="flex disable-nav-close">
+                                    <small class="light-text disable-nav-close">Results</small>
+                                    <i class="fa-solid fa-circle-notch fa-spin loading-indicator disable-nav-close"
                                         ref="loadingIndicator"></i>
                                 </div>
-                                <section class="results full-width flex-col">
+                                <section class="results full-width flex-col disable-nav-close">
                                     <RouterLink v-if="searchResults && searchResults.count > 0"
-                                        class="flex-col search-result-item"
+                                        class="flex-col search-result-item disable-nav-close"
                                         :title="`Visit ${searchResult.type} ${searchResult.page} in ${searchResult.category}`"
                                         :to="`/documentation/read/${searchResult.type}/${searchResult.category.replace(/ /g, '_')}${searchResult.page === 'Default' ? '' : `/${searchResult.page.replace(/ /g, '_')}`}`"
                                         v-for="searchResult of searchResults.results">
                                         <strong>{{ searchResult.page }}</strong>
-                                        <div class="flex search-results-meta">
+                                        <div class="flex search-results-meta disable-nav-close">
                                             <p>{{ searchResult.type }}</p>
                                             <i class="fa-regular fa-circle-small"></i>
                                             <p>{{ searchResult.category }}</p>
                                         </div>
                                     </RouterLink>
-                                    <p v-else-if="searchResults && searchResults.count === 0">
+                                    <p class="disable-nav-close" v-else-if="searchResults && searchResults.count === 0">
                                         No results found. Maybe try searching for {{ getRandomSubject() }}?
                                     </p>
-                                    <p v-else>
-                                        {{ emptyMessage }}
-                                    </p>
+                                    <p class="disable-nav-close" v-else> {{ emptyMessage }} </p>
                                 </section>
-                                <div class="flex pagination-container"
+                                <div class="flex pagination-container disable-nav-close"
                                     v-if="searchResults && searchResults.count > resultsPerPage">
-                                    <button v-if="searchResults"
-                                        :class="{ 'active-pagination': i * resultsPerPage - resultsPerPage === offset }"
+                                    <button v-if="searchResults" title="Visit result pagination tab."
+                                        class="disable-nav-close"
                                         @click="search(false, i * resultsPerPage - resultsPerPage)"
+                                        :class="{ 'active-pagination': i * resultsPerPage - resultsPerPage === offset }"
                                         v-for="i in Math.ceil(searchResults.count / resultsPerPage)">
-                                        <p>{{ i }}</p>
+                                        <p class="disable-nav-close">{{ i }}</p>
                                     </button>
                                 </div>
-                                <small class="light-text" v-if="searchResults">Found {{ searchResults.count }} results
+                                <small class="light-text disable-nav-close"
+                                    v-if="searchResults && searchResults.count">Found {{
+                                        searchResults.count }} results
                                     in {{ searchResults.duration_ms }} ms</small>
                             </div>
                         </menu>
@@ -367,22 +386,26 @@ nav {
     width: 400px;
 }
 
-.input-container:has(input:focus),
-.input-container:has(button:focus) {
+.input-container.input-container-focused,
+.input-container.input-container-focused .input-results-container {
     width: 500px;
+}
+
+.input-container.input-container-focused {
     background-color: var(--border);
 }
 
 input::placeholder {
     color: var(--font-light);
+    transition: color 0.4s;
+    font-weight: normal;
 }
 
-.input-container:has(input:focus) input::placeholder {
+.input-container.input-container-focused input::placeholder {
     color: var(--font);
 }
 
-.input-container:has(input:focus) .input-results-container,
-.input-container:has(button:focus) .input-results-container {
+.input-container.input-container-focused > .input-results-container {
     max-height: 525px;
     opacity: 1;
     width: 500px;
@@ -431,10 +454,11 @@ input::placeholder {
     margin-top: 10px;
     text-wrap: nowrap;
     width: 100%;
+    color: var(--font-light);
+    cursor: default;
 }
 
-.input-container:has(input:focus) .results > p,
-.input-container:has(button:focus) .results > p {
+.input-container-focused .results > p {
     text-wrap: wrap;
     text-align: center;
 }
@@ -553,7 +577,7 @@ input::placeholder {
 
     .input-container:has(input:focus) .input-results-container,
     .input-container:has(button:focus) .input-results-container {
-        max-height: 575px;
+        max-height: 650px;
     }
 }
 </style>

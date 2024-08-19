@@ -19,7 +19,7 @@ const MeiliSearchClient: MeiliSearch = new MeiliSearch({
 // Global & Titles
 const searchLimit = rateLimit({
     windowMs: 900,
-    limit: 2,
+    limit: 3,
     standardHeaders: true,
     legacyHeaders: false
 });

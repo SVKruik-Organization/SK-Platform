@@ -175,13 +175,13 @@ export default defineComponent({
             <span class="splitter"></span>
         </div>
         <DocumentationFooter></DocumentationFooter>
-        <a href="https://github.com/SVKruik" target="_blank"
+        <a href="https://github.com/SVKruik-Organization/SK-Platform" target="_blank"
             class="banner-content last-content-container footer-note flex">
             <p class="disabled-text">Stefan Kruik</p>
             <i class="fa-regular fa-circle-small disabled-text"></i>
             <p class="disabled-text">{{ new Date().getFullYear() }}</p>
             <i class="fa-regular fa-circle-small disabled-text"></i>
-            <p class="disabled-text">v1_dev_alpha</p>
+            <p class="disabled-text">v1_dev_beta</p>
         </a>
     </section>
 </template>
@@ -213,6 +213,7 @@ export default defineComponent({
     top: -400px;
     width: 1200px;
     opacity: 0.2;
+    -webkit-user-select: none;
     user-select: none;
     filter: blur(50px);
 }
@@ -264,6 +265,7 @@ h1 {
     height: 150px;
     object-fit: cover;
     margin-left: -75px;
+    -webkit-user-select: none;
     user-select: none;
 }
 

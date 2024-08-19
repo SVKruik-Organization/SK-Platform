@@ -67,7 +67,7 @@ export default defineComponent({
 }
 
 .recommended-item:hover .recommended-item-right {
-    background-color: var(--border);
+    background-color: var(--fill-light);
 }
 
 .recommended-sub-item {

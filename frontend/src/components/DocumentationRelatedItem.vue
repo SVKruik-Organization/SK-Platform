@@ -74,18 +74,21 @@ export default defineComponent({
 
 .related-item-right img {
     position: absolute;
-    left: 80%;
+    left: 50%;
     height: 500px;
     aspect-ratio: 1 / 1;
-    filter: blur(150px) saturate(300%) contrast(150%);
+    filter: blur(100px) saturate(300%) contrast(150%);
     top: 30px;
-    transition: left 0.5s;
+    transition: transform 0.5s, left 0.5s;
+    -webkit-user-select: none;
     user-select: none;
     border-radius: 50%;
+    will-change: transform, left;
+    transform: translateX(20%);
 }
 
 .related-item:hover .related-item-right img {
-    left: 60%;
+    transform: translateX(0);
 }
 
 .related-sub-item {

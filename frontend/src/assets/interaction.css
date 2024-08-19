@@ -55,12 +55,12 @@
     border-radius: var(--border-radius-low);
     background-color: var(--fill);
     border: 1px solid var(--border);
-    transition: height 0.4s, opacity 0.3s, padding 0.4s;
-    transition-timing-function: ease-in-out;
+    transition: height 0.3s ease-in, opacity 0.3s ease-in-out;
     overflow: hidden;
     z-index: 3;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
     pointer-events: none;
+    padding: 5px 5px 5px 10px;
 }
 
 .dropdown-container {
@@ -78,5 +78,4 @@
 .dropdown-expand {
     height: 55px;
     opacity: 1;
-    padding: 5px 5px 5px 10px;
 }
