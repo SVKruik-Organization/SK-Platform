@@ -174,6 +174,23 @@ footer {
 
     .documentation-footer-item {
         width: 100%;
+
+    }
+}
+
+@media (width <=310px) {
+    footer {
+        justify-content: center;
+    }
+
+    .documentation-footer-item {
+        width: 95%;
+    }
+
+    .documentation-footer-item > div {
+        flex-wrap: wrap;
+        align-items: center;
+        justify-content: center;
     }
 }
 </style>

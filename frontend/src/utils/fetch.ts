@@ -207,7 +207,8 @@ export async function fetchSearchDocumentation(version: string, language: string
         });
         if (response.ok) {
             return await response.json();
-        } else return false;
+        } else if (response.status !== 429) return false;
+        return true;
     } catch (error) {
         return false;
     }

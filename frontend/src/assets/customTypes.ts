@@ -110,7 +110,8 @@ export type DocumentationSearchResponse = {
     "results": Array<SearchResultItem>,
     "count": number,
     "duration_ms": number,
-    "query": string
+    "query": string,
+    "offset": number
 }
 
 // Search Result Item

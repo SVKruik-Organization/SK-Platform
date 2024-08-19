@@ -863,7 +863,7 @@ footer {
     }
 }
 
-@media (width <=895px) {
+@media (width <=980px) {
     .documentation-content {
         gap: 20px;
     }

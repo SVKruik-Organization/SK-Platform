@@ -3,6 +3,7 @@ import { DropdownStates, type DocumentationSearchResponse } from '@/assets/custo
 import { useDocumentationStore } from '@/stores/DocumentationStore';
 import { fetchSearchDocumentation } from '@/utils/fetch';
 import { defineComponent } from 'vue';
+import type { RouteLocation } from 'vue-router';
 
 export default defineComponent({
     name: "DocumentationNavbar",
@@ -25,8 +26,23 @@ export default defineComponent({
             "searchMode": "global",
             "searchQuery": "",
             "searchInterval": null as null | number,
-            "searchResults": null as DocumentationSearchResponse | null
+            "searchResults": null as DocumentationSearchResponse | null,
+            "searchInput": null as null | HTMLInputElement,
+            "loadingIndicator": null as null | HTMLElement,
+            "emptyMessage": "Type in the search bar above, and results will appear here.",
+            "resultsPerPage": 5 as number,
+            "offset": 0 as number
         }
+    },
+    watch: {
+        $route(from: RouteLocation, to: RouteLocation) {
+            if (from.path === to.path) return;
+            if (this.searchInput) this.searchInput.blur();
+        }
+    },
+    mounted() {
+        this.searchInput = this.$refs["searchInput"] as HTMLInputElement;
+        this.loadingIndicator = this.$refs["loadingIndicator"] as HTMLElement;
     },
     methods: {
         /**
@@ -66,25 +82,24 @@ export default defineComponent({
          * Handle search input focus, also triggering the search interval.
          */
         searchFocusHandler(): void {
-            const searchbar: HTMLInputElement = this.$refs["searchbar"] as HTMLInputElement;
             this.searchInterval = setInterval(async () => {
-                if (!searchbar.value.length) {
+                if (!this.searchInput) return;
+                if (!this.searchInput.value.length) {
                     this.searchQuery = "";
-                    this.searchResults = null;
-                    return;
+                    return this.searchResults = null;
                 };
-                await this.search(searchbar, false);
+                await this.search(false, this.offset);
             }, 1500);
         },
         /**
          * Handle search input blur, also clearing the search interval.
          */
         searchBlurHandler(): void {
-            const searchbar: HTMLInputElement = this.$refs["searchbar"] as HTMLInputElement;
+            if (!this.searchInput) return;
             if (this.searchInterval) {
                 clearInterval(this.searchInterval);
                 this.searchInterval = null;
-                if (!searchbar.value.length) {
+                if (!this.searchInput.value.length) {
                     this.searchQuery = "";
                     this.searchResults = null;
                 }
@@ -95,12 +110,13 @@ export default defineComponent({
          * @param mode The search mode to switch to.
          */
         async switchSearchMode(mode: string): Promise<void> {
+            if (!this.searchInput) return;
+            this.searchInput.focus();
             if (mode === this.searchMode) return;
             const validScopes: Array<string> = ["global", "titles"];
             if (!validScopes.includes(mode)) return;
-            const searchbar: HTMLInputElement = this.$refs["searchbar"] as HTMLInputElement;
             this.searchMode = mode;
-            await this.search(searchbar, true);
+            await this.search(true, this.offset);
         },
         /**
          * Get a random subject to suggest when no search results are found.
@@ -111,20 +127,46 @@ export default defineComponent({
         },
         /**
          * Query the search engine.
-         * @param searchbar The HTML input element.
          * @param force Overwrite the same search query check.
+         * @param newOffset The offset to start the search from.
          */
-        async search(searchbar: HTMLInputElement, force: boolean): Promise<void | DocumentationSearchResponse> {
-            if (searchbar.value === this.searchQuery && !force) return;
-            if (!searchbar.value.replace(/ /g, "").length) return;
-            const searchValue = searchbar.value.trim();
+        async search(force: boolean, newOffset: number): Promise<void | DocumentationSearchResponse> {
+            // Setup
+            if (!this.searchInputChecks(force, newOffset)) return;
+            this.offset = newOffset;
+            if (!this.searchInput) return;
+            const searchValue = this.searchInput.value.trim();
             this.searchQuery = searchValue;
-            console.log("Searching for:", searchValue);
-            const data = await fetchSearchDocumentation(this.documentationStore.version, this.documentationStore.language, searchValue, 5, 0, this.searchMode);
-            if (typeof data === "object") return this.searchResults = data;
-            // TODO: Handle error.
-            // TODO: Loading indicator.
-            // TODO: Smooth height transition.
+
+            // Fetch
+            const data = await fetchSearchDocumentation(this.documentationStore.version, this.documentationStore.language, searchValue, this.resultsPerPage, this.offset, this.searchMode);
+            if (this.loadingIndicator) this.loadingIndicator.classList.remove("visible");
+            if (typeof data === "object") {
+                this.emptyMessage = "Type in the search bar above, and results will appear here.";
+                return this.searchResults = data;
+            } else if (!data) this.emptyMessage = "An error occurred while fetching the search results.";
+        },
+        handleInput(): void {
+            if (!this.loadingIndicator) return;
+            if (!this.searchInputChecks(false, this.offset)) return;
+            this.loadingIndicator.classList.add("visible");
+        },
+        /**
+         * Perform several checks before querying the search engine to prevent unnecessary requests.
+         * @param force Overwrite the same search query check.
+         * @param newOffset The offset to start the search from.
+         */
+        searchInputChecks(force: boolean, newOffset: number | null): boolean {
+            if (!this.searchInput) return false;
+            // Same Value
+            if (this.searchInput.value === this.searchQuery && !force && this.offset === newOffset) return false;
+            // Zero results, and typing more
+            if (this.searchResults && this.searchResults.count === 0 && this.searchInput.value.length > this.searchQuery.length) return false;
+            // One result, and typing more
+            if (this.searchResults && this.searchResults.count === 1 && this.searchResults.results[0].page.includes(this.searchInput.value) && this.searchInput.value.length > this.searchQuery.length) return false;
+            // Empty search
+            if (!this.searchInput.value.replace(/ /g, "").length) return false;
+            return true;
         }
     }
 });
@@ -141,32 +183,37 @@ export default defineComponent({
             <section class="right-nav flex">
                 <div class="flex middle-nav">
                     <button title="Search through the documentation." class="input-container flex navbar-pill"
-                        @click="($refs['searchbar'] as HTMLInputElement).focus()" type="button">
+                        @click.self="($refs['searchInput'] as HTMLInputElement).focus()" type="button">
                         <i class="fa-regular fa-magnifying-glass"></i>
-                        <input ref="searchbar" @focus="searchFocusHandler" type="text" @blur="searchBlurHandler"
-                            maxlength="60" placeholder="Search through everything">
+                        <input ref="searchInput" @focus="searchFocusHandler" type="text" @blur="searchBlurHandler"
+                            maxlength="60" placeholder="Search through everything" @keyup="handleInput">
                         <menu class="flex-col input-results-container">
                             <div class="flex-col full-width">
                                 <small class="light-text">Search Mode</small>
                                 <div class="flex search-mode-container">
                                     <button class="flex" :class="{ 'active-search-mode': searchMode === 'global' }"
-                                        title="Search anywhere." @click="switchSearchMode('global')">
+                                        title="Search for page titles and content." @click="switchSearchMode('global')">
                                         <i class="fa-regular fa-earth-americas"></i>
                                         <p>Globally</p>
                                     </button>
                                     <button class="flex" :class="{ 'active-search-mode': searchMode === 'titles' }"
-                                        title="Search through page titles." @click="switchSearchMode('titles')">
+                                        title="Search for page titles." @click="switchSearchMode('titles')">
                                         <i class="fa-regular fa-font"></i>
                                         <p>Pages</p>
                                     </button>
                                 </div>
                             </div>
                             <div class="flex-col full-width">
-                                <small class="light-text">Results</small>
+                                <div class="flex">
+                                    <small class="light-text">Results</small>
+                                    <i class="fa-solid fa-circle-notch fa-spin loading-indicator"
+                                        ref="loadingIndicator"></i>
+                                </div>
                                 <section class="results full-width flex-col">
                                     <RouterLink v-if="searchResults && searchResults.count > 0"
                                         class="flex-col search-result-item"
-                                        :to="`/documentation/read/${searchResult.type}/${searchResult.category}/${searchResult.page}`"
+                                        :title="`Visit ${searchResult.type} ${searchResult.page} in ${searchResult.category}`"
+                                        :to="`/documentation/read/${searchResult.type}/${searchResult.category.replace(/ /g, '_')}${searchResult.page === 'Default' ? '' : `/${searchResult.page.replace(/ /g, '_')}`}`"
                                         v-for="searchResult of searchResults.results">
                                         <strong>{{ searchResult.page }}</strong>
                                         <div class="flex search-results-meta">
@@ -179,12 +226,20 @@ export default defineComponent({
                                         No results found. Maybe try searching for {{ getRandomSubject() }}?
                                     </p>
                                     <p v-else>
-                                        Type in the search bar above, and results will appear here.
+                                        {{ emptyMessage }}
                                     </p>
                                 </section>
+                                <div class="flex pagination-container"
+                                    v-if="searchResults && searchResults.count > resultsPerPage">
+                                    <button v-if="searchResults"
+                                        :class="{ 'active-pagination': i * resultsPerPage - resultsPerPage === offset }"
+                                        @click="search(false, i * resultsPerPage - resultsPerPage)"
+                                        v-for="i in Math.ceil(searchResults.count / resultsPerPage)">
+                                        <p>{{ i }}</p>
+                                    </button>
+                                </div>
                                 <small class="light-text" v-if="searchResults">Found {{ searchResults.count }} results
-                                    in {{
-                                        searchResults.duration_ms }} ms</small>
+                                    in {{ searchResults.duration_ms }} ms</small>
                             </div>
                         </menu>
                     </button>
@@ -312,17 +367,23 @@ nav {
     width: 400px;
 }
 
-.input-container:focus-within {
+.input-container:has(input:focus),
+.input-container:has(button:focus) {
     width: 500px;
     background-color: var(--border);
 }
 
-.input-container:focus-within input::placeholder {
+input::placeholder {
+    color: var(--font-light);
+}
+
+.input-container:has(input:focus) input::placeholder {
     color: var(--font);
 }
 
-.input-container:focus-within .input-results-container {
-    max-height: 490px;
+.input-container:has(input:focus) .input-results-container,
+.input-container:has(button:focus) .input-results-container {
+    max-height: 525px;
     opacity: 1;
     width: 500px;
     padding: 10px;
@@ -342,6 +403,7 @@ nav {
     padding: 10px;
     gap: 10px;
     transition: background-color 0.4s;
+    min-width: 100px;
 }
 
 .search-mode-container button:hover,
@@ -353,11 +415,11 @@ nav {
     color: var(--font-light);
 }
 
-.input-container:focus-within .version-select {
-    width: min-content;
-    box-sizing: border-box;
-    padding: 0 10px;
+.loading-indicator {
+    opacity: 0;
     color: var(--font-light);
+    font-size: 13px;
+    transition: opacity 0.2s;
 }
 
 .input-container input {
@@ -365,12 +427,23 @@ nav {
     width: 100%;
 }
 
-input::placeholder {
-    color: var(--font-light);
-}
-
 .results > p {
     margin-top: 10px;
+    text-wrap: nowrap;
+    width: 100%;
+}
+
+.input-container:has(input:focus) .results > p,
+.input-container:has(button:focus) .results > p {
+    text-wrap: wrap;
+    text-align: center;
+}
+
+.input-results-container,
+.input-results-container div,
+.input-results-container small,
+.input-results-container > p {
+    cursor: default;
 }
 
 .search-result-item {
@@ -397,6 +470,20 @@ input::placeholder {
     font-size: 10px;
 }
 
+.pagination-container button {
+    box-sizing: border-box;
+    padding: 5px;
+    border-radius: var(--border-radius-low);
+    height: 30px;
+    width: 30px;
+    border: 1px solid var(--border);
+}
+
+.pagination-container button:hover,
+.active-pagination {
+    background-color: var(--border);
+}
+
 .menu-item {
     gap: 10px;
     width: 100%;
@@ -406,7 +493,7 @@ input::placeholder {
     opacity: 0;
 }
 
-@media (width <=895px) {
+@media (width <=980px) {
     nav {
         align-items: flex-start;
         height: 96px;
@@ -431,6 +518,42 @@ input::placeholder {
 
     .input-container {
         flex: 1;
+    }
+
+
+    .input-results-container {
+        top: 90px;
+        left: 0;
+        right: 0;
+        margin-left: auto;
+        margin-right: auto;
+    }
+}
+
+@media (width <=535px) {
+    .input-results-container {
+        top: 90px;
+    }
+
+    .input-results-container,
+    .input-container:hover .input-results-container {
+        width: 100%;
+    }
+
+    .input-container:has(input:focus) .input-results-container,
+    .input-container:has(button:focus) .input-results-container {
+        width: calc(100% - 20px);
+    }
+}
+
+@media (width <=270px) {
+    .search-mode-container {
+        flex-wrap: wrap;
+    }
+
+    .input-container:has(input:focus) .input-results-container,
+    .input-container:has(button:focus) .input-results-container {
+        max-height: 575px;
     }
 }
 </style>

@@ -18,7 +18,7 @@ export default defineComponent({
             <i :class="`fa-regular ${data.icon}`"></i>
         </section>
         <article class="recommended-item-right flex-col">
-            <p class="recommended-title">{{ data.title }}</p>
+            <p class="recommended-title ellipsis">{{ data.title }}</p>
             <div class="recommended-sub flex">
                 <a :href="data.type === 'Doc' ? '#Documentation' : '#Guides'" class="recommended-sub-item">
                     {{ data.type }}
@@ -44,6 +44,10 @@ export default defineComponent({
     gap: 0;
 }
 
+.recommended-title {
+    width: 95%;
+}
+
 .recommended-item-left {
     height: 100%;
     width: 40px;
@@ -55,10 +59,11 @@ export default defineComponent({
     height: 100%;
     justify-content: center;
     flex: 1;
-    padding: 0 0 0 15px;
+    padding-left: 15px;
     border-top-right-radius: var(--border-radius-low);
     border-bottom-right-radius: var(--border-radius-low);
     transition: background-color 0.5s;
+    overflow: hidden;
 }
 
 .recommended-item:hover .recommended-item-right {
@@ -80,6 +85,20 @@ export default defineComponent({
     .recommended-item {
         width: 100%;
         max-width: 500px;
+    }
+}
+
+@media (width <=310px) {
+    .recommended-item-left {
+        width: 30px;
+    }
+
+    .recommended-item-right {
+        padding-left: 5px;
+    }
+
+    .recommended-sub {
+        gap: 2px;
     }
 }
 </style>

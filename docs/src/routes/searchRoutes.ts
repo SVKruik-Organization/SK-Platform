@@ -18,8 +18,8 @@ const MeiliSearchClient: MeiliSearch = new MeiliSearch({
 
 // Global & Titles
 const searchLimit = rateLimit({
-    windowMs: 1300,
-    limit: 1,
+    windowMs: 900,
+    limit: 2,
     standardHeaders: true,
     legacyHeaders: false
 });
@@ -39,15 +39,16 @@ router.get("/all/:version/:language", searchLimit, async (req: Request, res: Res
         } else if (searchParams.scope === "titles") scope = ["page"];
 
         // Search
+        const offset: number = searchParams.offset ? parseInt(searchParams.offset) : 0;
         const index: Index = MeiliSearchClient.index(`documentation_${req.params.version}_${req.params.language}`);
         const search = await index.search(searchParams.query, {
-            "hitsPerPage": searchParams.limit ? parseInt(searchParams.limit) : 5,
+            "limit": searchParams.limit ? parseInt(searchParams.limit) : 5,
             "attributesToSearchOn": scope,
-            "offset": searchParams.offset ? parseInt(searchParams.offset) : 0
+            "offset": offset
         });
 
         // Return
-        return res.json({ "results": search.hits, "count": search.totalHits, "duration_ms": search.processingTimeMs, "query": searchParams.query });
+        return res.json({ "results": search.hits, "count": search.estimatedTotalHits, "duration_ms": search.processingTimeMs, "query": searchParams.query, "offset": offset });
     } catch (error: any) {
         const userErrorCodes: Array<string> = ["index_not_found", "invalid_search_limit"];
         if (error.toString().includes("fetch failed")) return res.sendStatus(503);
@@ -65,16 +66,17 @@ router.get("/page/:version/:language", async (req: Request, res: Response) => {
         if (!searchParams.query || !searchParams.type || !searchParams.category || !searchParams.page) return res.sendStatus(400);
 
         // Search
+        const offset: number = searchParams.offset ? parseInt(searchParams.offset) : 0;
         const index: Index = MeiliSearchClient.index(`documentation_${req.params.version}_${req.params.language}`);
         const search = await index.search(searchParams.query, {
             "filter": `type = '${searchParams.type}' AND category = '${searchParams.category}' AND page = '${searchParams.page}'`,
-            "hitsPerPage": searchParams.limit ? parseInt(searchParams.limit) : 5,
+            "limit": searchParams.limit ? parseInt(searchParams.limit) : 5,
             "attributesToSearchOn": ["content"],
-            "offset": searchParams.offset ? parseInt(searchParams.offset) : 0
+            "offset": offset
         });
 
         // Return
-        return res.json({ "results": search.hits, "count": search.totalHits, "duration_ms": search.processingTimeMs, "query": searchParams.query });
+        return res.json({ "results": search.hits, "count": search.estimatedTotalHits, "duration_ms": search.processingTimeMs, "query": searchParams.query, "offset": offset });
     } catch (error: any) {
         const userErrorCodes: Array<string> = ["index_not_found", "invalid_search_limit"];
         if (error.toString().includes("fetch failed")) return res.sendStatus(503);

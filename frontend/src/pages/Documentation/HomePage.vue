@@ -78,6 +78,7 @@ export default defineComponent({
                 <h3 class="content-splitter-header light-text ">Explore information about SK Platform
                     and related product lines.
                 </h3>
+                <img class="mesh" src="/Mesh_1.png">
             </div>
             <div class="hero-right flex">
                 <RouterLink to="/documentation/read/Doc/Products/Discord_Bots#Interpres">
@@ -98,7 +99,6 @@ export default defineComponent({
                 </RouterLink>
             </div>
         </div>
-        <img class="mesh" src="/Mesh_1.png">
     </section>
     <section class="content-container">
         <div class="content-item recommended-parent">
@@ -195,19 +195,22 @@ export default defineComponent({
     padding: 40px;
     justify-content: center;
     margin-bottom: 40px;
-    position: relative;
     overflow: hidden;
 }
 
 .hero-left {
-    position: sticky;
-    z-index: 2;
+    position: relative;
+}
+
+.hero-left h1,
+.hero-left h3 {
+    z-index: 1;
 }
 
 .mesh {
     position: absolute;
-    left: -400px;
-    top: -300px;
+    left: -550px;
+    top: -400px;
     width: 1200px;
     opacity: 0.2;
     user-select: none;
@@ -374,6 +377,11 @@ h1 {
     .hero-bot-image {
         height: 70px;
         margin-left: -35px;
+    }
+
+    .mesh {
+        left: 50%;
+        transform: translateX(-50%);
     }
 }
 

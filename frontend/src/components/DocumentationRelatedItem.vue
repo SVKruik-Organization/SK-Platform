@@ -59,7 +59,7 @@ export default defineComponent({
     height: 100%;
     justify-content: center;
     flex: 1;
-    padding: 0 0 0 15px;
+    padding-left: 15px;
     border-top-right-radius: var(--border-radius-low);
     border-bottom-right-radius: var(--border-radius-low);
     overflow: hidden;
