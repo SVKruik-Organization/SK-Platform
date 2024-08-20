@@ -122,25 +122,30 @@ app.get("/getCategories/:version/:language/:type", async (req: Request, res: Res
 // Start
 const PORT: number = parseInt(process.env.PORT as string) || 3002;
 app.listen(PORT, "0.0.0.0", async () => {
-    // Setup
-    const channel: Channel | null = await getConnection();
-    if (!channel) throw new Error("Uplink connection missing.");
-    channel.assertExchange("platform", "direct", { durable: false });
-    const queue = await channel.assertQueue("", { exclusive: true });
-    await channel.bindQueue(queue.queue, "platform", "server");
+    // Uplink Connection
+    try {
+        const channel: Channel | null = await getConnection();
+        if (!channel) throw new Error("Uplink connection missing. Starting server without Uplink connection.");
+        channel.assertExchange("platform", "direct", { durable: false });
+        const queue = await channel.assertQueue("", { exclusive: true });
+        await channel.bindQueue(queue.queue, "platform", "server");
 
-    // Listen
-    channel.consume(queue.queue, (message: Message | null) => {
-        if (message) {
-            const messageContent: UplinkMessage = JSON.parse(message.content.toString());
-            channel.ack(message);
-            if (messageContent.task === "Deploy" && process.platform === "linux") {
-                log(`Received new deploy task from ${messageContent.sender}. Running Documentation deployment script.`, "info");
-                shell.exec("bash deploy.sh");
+        // Listen
+        log(`Uplink consumer listening on exchange 'platform' binded to 'server'.`, "info");
+        channel.consume(queue.queue, (message: Message | null) => {
+            if (message) {
+                const messageContent: UplinkMessage = JSON.parse(message.content.toString());
+                if (messageContent.task === "Deploy" && process.platform === "linux") {
+                    log(`Received new deploy task from ${messageContent.sender}. Running Documentation deployment script.`, "info");
+                    shell.exec("bash deploy.sh");
+                    channel.ack(message);
+                }
             }
-        }
-    }, {
-        noAck: false
-    });
+        }, {
+            noAck: false
+        });
+    } catch (error: any) {
+        log(`Error connecting to Uplink: ${error.message}`, "error");
+    }
     log(`Documentation server listening on port ${PORT}`, "info");
 });

@@ -559,13 +559,8 @@ input::placeholder {
         top: 90px;
     }
 
-    .input-results-container,
-    .input-container:hover .input-results-container {
-        width: 100%;
-    }
-
-    .input-container:has(input:focus) .input-results-container,
-    .input-container:has(button:focus) .input-results-container {
+    .input-container.input-container-focused,
+    .input-container.input-container-focused .input-results-container {
         width: calc(100% - 20px);
     }
 }
@@ -575,8 +570,7 @@ input::placeholder {
         flex-wrap: wrap;
     }
 
-    .input-container:has(input:focus) .input-results-container,
-    .input-container:has(button:focus) .input-results-container {
+    .input-container.input-container-focused > .input-results-container {
         max-height: 650px;
     }
 }

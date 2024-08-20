@@ -42,6 +42,8 @@ export default defineComponent({
             <input ref="passwordInput" minlength="8" placeholder="Password" type="password">
             <button type="submit" @click="login($event)">Submit</button>
         </form>
+        <strong style="color: red; margin-top: 30px;">Authentication server is offline.</strong>
+        <RouterLink to="/" style="color: red; text-decoration: underline; font-weight: bold;">Go back home</RouterLink>
     </main>
 </template>
 
