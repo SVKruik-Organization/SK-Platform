@@ -570,8 +570,9 @@ input::placeholder {
         flex-wrap: wrap;
     }
 
-    .input-container.input-container-focused > .input-results-container {
-        max-height: 650px;
+    .input-container.input-container-focused,
+    .input-container.input-container-focused .input-results-container {
+        max-height: 700px;
     }
 }
 </style>
