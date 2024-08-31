@@ -11,5 +11,5 @@ jobs:
           curl -X POST \
                -H "Content-Type: application/json" \
                -H "Authorization: Bearer ${{ secrets.DEPLOYMENT_PASSWORD }}" \
-               -d '{"type":"release","repository":"SK-Platform", "payload":${{ toJson(github.event.release) }}}' \
+               -d '{"type":"release","repository":"SK-Platform", "payload":${{ github.event.release }}}' \
                ${{ secrets.DEPLOYMENT_ENDPOINT }}

@@ -38,9 +38,10 @@ app.listen(port, async () => {
     try {
         const channel: Channel | null = await getConnection();
         if (!channel) throw new Error("Uplink connection missing.");
-        channel.assertExchange("platform", "direct", { durable: false });
+        channel.assertExchange("unicast-products", "direct", { durable: false });
         const queue: Replies.AssertQueue = await channel.assertQueue("", { exclusive: true });
-        await channel.bindQueue(queue.queue, "platform", "server");
+        await channel.bindQueue(queue.queue, "unicast-products", "platform");
+        console.log("Uplink consumer listening on exchange 'unicast-products' binded to 'platform'.");
 
         // Listen
         channel.consume(queue.queue, (message: Message | null) => {
