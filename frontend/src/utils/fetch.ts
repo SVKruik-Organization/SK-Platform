@@ -281,6 +281,7 @@ async function parseDocumentationProducts(input: any): Promise<DocumentationProd
 
     // Valid Products
     const validBots: Array<string> = ["Apricaria", "Stelleri", "Ispidina", "Interpres"];
+    const vOneValidBots: Array<string> = ["Luscinia", "Ciconia"];
     const products: Array<string> = index.find((item) => item.category === "Products")?.children || [];
     const services: Array<string> = index.find((item) => item.category === "Services")?.children || [];
 
@@ -288,7 +289,9 @@ async function parseDocumentationProducts(input: any): Promise<DocumentationProd
         let productURL: string = "/documentation/read/Doc/";
         let folder: string = "Products";
         if (validBots.includes(product)) {
-            productURL += `Products/Discord-Bots#${product}`;
+            productURL += `Products/Bots#${product}`;
+        } else if (vOneValidBots.includes(product)) {
+            productURL += `More/V_One#${product}`;
         } else if (products.includes(product)) {
             productURL += `Products/${product}`;
         } else if (services.includes(product)) {

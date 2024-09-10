@@ -89,10 +89,6 @@ export default defineComponent({
                         window.scrollTo(0, 0);
                         this.setActiveChapter();
                     }
-
-                    // Description
-                    const description: HTMLHeadingElement | null = document.querySelector(".page-description");
-                    if (description) description.innerHTML = this.fileData.description;
                 }, 300);
             }
         },

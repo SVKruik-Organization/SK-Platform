@@ -93,6 +93,10 @@ body {
     font-size: 14px;
 }
 
+.link-text {
+    text-decoration: underline;
+}
+
 .gradient-button {
     background-image: url("/Mesh_1.png");
     background-size: 400% auto;

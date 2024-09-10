@@ -56,11 +56,11 @@ export default defineComponent({
             <div class="flex-col">
                 <RouterLink to="/documentation/read/Doc/Community/Support" class="flex footer-link">
                     <i class="fa-regular fa-mailbox-flag-up"></i>
-                    <p>Contact support</p>
+                    <p class="link-text">Contact support</p>
                 </RouterLink>
                 <RouterLink to="/documentation/read/Doc/Community/Links#Discord" class="flex footer-link">
                     <i class="fa-brands fa-discord"></i>
-                    <p>Join the Discord</p>
+                    <p class="link-text">Join the Discord</p>
                 </RouterLink>
             </div>
         </div>
@@ -140,10 +140,6 @@ footer {
 .footer-link {
     gap: 10px;
     padding: 5px;
-}
-
-.footer-link p {
-    text-decoration: underline;
 }
 
 @media (width <=1280px) {

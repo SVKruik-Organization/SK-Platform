@@ -16,7 +16,7 @@ export default defineComponent({
             <RouterLink class="back-link" :to="$route.redirectedFrom?.fullPath || '/documentation'">Go back</RouterLink>
             <div class="flex">
                 <p class="light-text">Do think this is a mistake? Contact support</p>
-                <RouterLink to="/documentation/read/Doc/Community/Support">here</RouterLink>
+                <RouterLink to="/documentation/read/Doc/Community/Support" class="link-text">here</RouterLink>
             </div>
         </article>
     </div>
@@ -39,10 +39,6 @@ article {
 
 .back-link {
     margin: 20px 0;
-}
-
-a {
-    text-decoration: underline;
 }
 
 @media (width <=700px) {
