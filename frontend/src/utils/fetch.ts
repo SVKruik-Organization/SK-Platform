@@ -215,6 +215,55 @@ export async function fetchSearchDocumentation(version: string, language: string
 }
 
 /**
+ * Cast a vote on a specific documentation page. Support null values for home page.
+ * @param version The version number of the index. Examples: 'v1', 'v2'
+ * @param language The language of the documentation. Examples: 'en-US', 'nl-NL'
+ * @param value If the vote is positive or negative.
+ * @param type Documentation (Doc) or Guides (Guide)
+ * @param category The documentation category.
+ * @param page The specific documentation page.
+ * @param ticket An unique identifier for the vote.
+ * @returns Status of the vote submission.
+ */
+export async function fetchDocumentationVote(version: string, language: string, value: boolean, type: string | null, category: string | null, page: string | null, ticket: string): Promise<boolean> {
+    try {
+        const response = await fetch(`${import.meta.env.VITE_DOCS_API_BASE}/votes/new/${version}/${language}?value=${value}&type=${type}&category=${category}&page=${page}&ticket=${ticket}`, {
+            method: "POST"
+        });
+        if (response.ok) {
+            return true;
+        } else return false;
+    } catch (error) {
+        return false;
+    }
+}
+
+/**
+ * Add a comment to an existing vote.
+ * @param ticket An unique identifier for the vote.
+ * @param comment The comment data payload.
+ * @returns Status of the comment submission.
+ */
+export async function fetchDocumentationComment(ticket: string, comment: string): Promise<boolean> {
+    try {
+        const response = await fetch(`${import.meta.env.VITE_DOCS_API_BASE}/votes/comment?ticket=${ticket}`, {
+            method: "PUT",
+            headers: {
+                "Content-Type": "application/json",
+            },
+            body: JSON.stringify({
+                "comment": comment
+            })
+        });
+        if (response.ok) {
+            return true;
+        } else return false;
+    } catch (error) {
+        return false;
+    }
+}
+
+/**
  * Convert the API response to a DocumentationFile typed object.
  * @param input Raw documentation file.
  * @param type Documentation (Doc) or Guides (Guide)

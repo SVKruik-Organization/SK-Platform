@@ -129,7 +129,8 @@ export enum DropdownStates {
     language = "languageDropdownVisible",
     information = "informationDropdownVisible",
     product = "productDropdownVisible",
-    navigation = "navigationDropdownVisible"
+    navigation = "navigationDropdownVisible",
+    comment = "commentOverlayVisible",
 }
 
 // Documentation Chapter

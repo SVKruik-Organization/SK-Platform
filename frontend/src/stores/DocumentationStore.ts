@@ -6,12 +6,13 @@ import { fetchDocumentationIndex, fetchDocumentationRefresh, fetchRecommendedIte
 export const useDocumentationStore = defineStore("DocumentationStore", {
     state: () => {
         return {
-            docIndex: useLocalStorage("docIndex", [] as Array<DocumentationIndexItem>),
-            guideIndex: useLocalStorage("guideIndex", [] as Array<DocumentationIndexItem>),
-            recommendedDocItems: useSessionStorage("recommendedDocItems", [] as Array<RecommendedItem>),
-            recommendedGuideItems: useSessionStorage("recommendedGuideItems", [] as Array<RecommendedItem>),
+            docIndex: useSessionStorage("docIndex", [] as Array<DocumentationIndexItem>),
+            guideIndex: useSessionStorage("guideIndex", [] as Array<DocumentationIndexItem>),
+            recommendedDocItems: useLocalStorage("recommendedDocItems", [] as Array<RecommendedItem>),
+            recommendedGuideItems: useLocalStorage("recommendedGuideItems", [] as Array<RecommendedItem>),
             version: useLocalStorage("documentationVersion", "v1" as string),
-            language: useLocalStorage("language", "en-US" as string)
+            language: useLocalStorage("language", "en-US" as string),
+            voteCast: useSessionStorage("voteCast", "" as string)
         }
     },
     actions: {

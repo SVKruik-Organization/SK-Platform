@@ -10,6 +10,7 @@ import { Channel, Message } from "amqplib";
 import shell from "shelljs";
 import { getConnection } from "./utils/connection";
 import mariadb, { Pool } from 'mariadb';
+import { VoteRoutes } from "./routes/voteRoutes";
 dotenv.config();
 const app: Express = express();
 app.use(express.json());
@@ -22,7 +23,7 @@ const corsOptions = {
 }
 app.use(cors(corsOptions));
 app.use(apiMiddleware);
-app.use("/search", SearchRoutes);
+
 
 // Database Connection
 if (!process.env.DB_HOST || !process.env.DB_PORT) throw new Error("Missing database credentials.");
@@ -34,6 +35,9 @@ const database: Pool = mariadb.createPool({
     password: process.env.DB_PASSWORD,
     multipleStatements: true
 });
+export { database };
+app.use("/search", SearchRoutes);
+app.use("/votes", VoteRoutes);
 
 // Base Route
 app.get("/", (_req: Request, res: Response) => {

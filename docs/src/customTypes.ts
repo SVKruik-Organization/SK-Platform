@@ -4,6 +4,21 @@ export type FileRequest = {
     "name": string
 }
 
+// Cast Vote
+export type VoteRequest = {
+    "ticket": string,
+    "value": boolean,
+    "type": string | null,
+    "category": string | null,
+    "page": string | null
+}
+
+// Add Comment
+export type CommentRequest = {
+    "ticket": string,
+    "commment": string
+}
+
 // Single Documentation File
 export type DocumentationFile = {
     "name": string,

@@ -20,7 +20,8 @@ export default defineComponent({
             "languageDropdownVisible": false,
             "informationDropdownVisible": false,
             "productDropdownVisible": false,
-            "navigationDropdownVisible": false
+            "navigationDropdownVisible": false,
+            "commentOverlayVisible": false
         }
     },
     methods: {
@@ -35,10 +36,12 @@ export default defineComponent({
     },
     watch: {
         $route(from: RouteLocation, to: RouteLocation) {
-            if (from.path !== to.path) window.scrollTo({
-                top: 0,
-                behavior: "smooth"
-            });
+            setTimeout(() => {
+                if (from.path !== to.path) window.scrollTo({
+                    top: 0,
+                    behavior: "smooth"
+                });
+            }, 300);
         }
     },
     mounted() {
@@ -52,6 +55,7 @@ export default defineComponent({
             this.informationDropdownVisible = false;
             this.productDropdownVisible = false;
             this.navigationDropdownVisible = false;
+            this.commentOverlayVisible = false;
         });
     }
 });
@@ -62,7 +66,8 @@ export default defineComponent({
         :languageDropdownVisible="languageDropdownVisible"></DocumentationNavbar>
     <main>
         <RouterView @dropdownState="updateDropdownState" :informationDropdownVisible="informationDropdownVisible"
-            :productDropdownVisible="productDropdownVisible" :navigationDropdownVisible="navigationDropdownVisible">
+            :productDropdownVisible="productDropdownVisible" :navigationDropdownVisible="navigationDropdownVisible"
+            :commentOverlayVisible="commentOverlayVisible">
         </RouterView>
     </main>
 </template>

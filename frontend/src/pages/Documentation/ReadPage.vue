@@ -34,7 +34,8 @@ export default defineComponent({
         "page": { type: String, required: false },
         "informationDropdownVisible": { type: Boolean, required: false },
         "productDropdownVisible": { type: Boolean, required: false },
-        "navigationDropdownVisible": { type: Boolean, required: false }
+        "navigationDropdownVisible": { type: Boolean, required: false },
+        "commentOverlayVisible": { type: Boolean, required: true },
     },
     watch: {
         async $route(from: RouteLocation, to: RouteLocation) {
@@ -173,6 +174,14 @@ export default defineComponent({
                     activeChapterFound = true;
                 }
             }
+        },
+        /**
+         * Open or close the vote comment overlay.
+         * @param _type Dropdown type, ignored.
+         * @param value Overlay visibility.
+         */
+        commentDocumentationVote(_type: string, value: boolean): void {
+            this.$emit("dropdownState", DropdownStates.comment, value);
         }
     }
 });
@@ -180,7 +189,6 @@ export default defineComponent({
 
 <template>
     <div class="content-wrapper flex">
-        <div class="navigation-overlay glass" v-if="navigationDropdownVisible"></div>
         <nav class="flex scrollbar" :class="{ 'navigation-expand': navigationDropdownVisible }">
             <section class="navigation scrollbar flex-col" :class="{ 'disable-close': navigationDropdownVisible }">
                 <div class="flex category-title" :class="{ 'disable-close': navigationDropdownVisible }">
@@ -355,7 +363,9 @@ export default defineComponent({
                     <h3>More</h3>
                     <p class="light-text">Leave feedback if you'd like and find links to further assistence.</p>
                 </div>
-                <DocumentationFooter></DocumentationFooter>
+                <DocumentationFooter @dropdownState="commentDocumentationVote"
+                    :comment-overlay-visible="commentOverlayVisible" :type="type" :category="category" :page="page">
+                </DocumentationFooter>
             </section>
         </div>
     </div>
@@ -364,14 +374,6 @@ export default defineComponent({
 <style scoped>
 .error-message {
     width: 95%;
-}
-
-.navigation-overlay {
-    position: fixed;
-    top: 0;
-    height: 100vh;
-    width: 100vw;
-    z-index: 5;
 }
 
 .content-wrapper {

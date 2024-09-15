@@ -85,6 +85,18 @@ body {
     opacity: 0.3;
 }
 
+.disabled-button {
+    cursor: not-allowed;
+    opacity: 0.5;
+    pointer-events: none;
+}
+
+.disabled-button p,
+.disabled-button i {
+    color: var(--font-light);
+    pointer-events: none;
+}
+
 .light-text {
     color: var(--font-light);
 }

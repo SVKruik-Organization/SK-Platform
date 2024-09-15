@@ -1,5 +1,5 @@
 <script lang="ts">
-import type { DocumentationIndexItem, RecommendedItem } from '@/assets/customTypes';
+import { DropdownStates, type DocumentationIndexItem, type RecommendedItem } from '@/assets/customTypes';
 import DocumentationCategoryItem from '@/components/DocumentationCategoryItem.vue';
 import DocumentationRecommendedItem from '@/components/DocumentationRecommendedItem.vue';
 import DocumentationFooter from '@/components/DocumentationFooter.vue';
@@ -32,7 +32,8 @@ export default defineComponent({
     props: {
         "informationDropdownVisible": { type: Boolean, required: false },
         "productDropdownVisible": { type: Boolean, required: false },
-        "navigationDropdownVisible": { type: Boolean, required: false }
+        "navigationDropdownVisible": { type: Boolean, required: false },
+        "commentOverlayVisible": { type: Boolean, required: true },
     },
     async mounted() {
         // Pinia Watcher
@@ -65,6 +66,14 @@ export default defineComponent({
             if (!anchors.includes(this.$route.hash)) return;
             const element: HTMLHeadingElement | null = document.getElementById(this.$route.hash.slice(1)) as HTMLHeadingElement | null;
             if (element) element.scrollIntoView({ behavior: "smooth" });
+        },
+        /**
+         * Open or close the vote comment overlay.
+         * @param _type Dropdown type, ignored.
+         * @param value Overlay visibility.
+         */
+        commentDocumentationVote(_type: string, value: boolean): void {
+            this.$emit("dropdownState", DropdownStates.comment, value);
         }
     }
 });
@@ -174,7 +183,8 @@ export default defineComponent({
             <h2 id="More">More</h2>
             <span class="splitter"></span>
         </div>
-        <DocumentationFooter></DocumentationFooter>
+        <DocumentationFooter @dropdownState="commentDocumentationVote" :comment-overlay-visible="commentOverlayVisible"
+            :type="undefined" :category="undefined" :page="undefined"></DocumentationFooter>
         <a href="https://github.com/SVKruik-Organization/SK-Platform" target="_blank"
             class="banner-content last-content-container footer-note flex">
             <p class="disabled-text">Stefan Kruik</p>
