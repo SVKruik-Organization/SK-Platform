@@ -1,0 +1,23 @@
+services:
+  frontend:
+    build:
+      context: ./frontend
+    ports:
+      - "9081:9081"
+    volumes:
+      - ./frontend:/src
+      - /src/node_modules
+    command: npx vite --port 9081
+    environment:
+      NODE_ENV: local
+
+  docs:
+    build:
+      context: ./docs
+    ports:
+      - "9083:9083"
+    volumes:
+      - ./docs:/src
+    command: npm run dev
+    environment:
+      NODE_ENV: development

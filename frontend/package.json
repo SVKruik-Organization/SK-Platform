@@ -13,8 +13,11 @@
     "homepage": "https://github.com/SVKruik-Organization/SK-Platform#readme",
     "type": "module",
     "scripts": {
-        "dev": "vite --port 3002",
+        "dev": "vite",
         "build": "vite build"
+    },
+    "optionalDependencies": {
+        "@rollup/rollup-linux-arm64-gnu": "4.9.5"
     },
     "dependencies": {
         "@vueuse/core": "^10.9.0",

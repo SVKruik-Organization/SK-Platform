@@ -1,0 +1,8 @@
+node_modules
+package-lock.json
+data.ms
+dist
+dumps
+exports
+logs
+meilisearch
