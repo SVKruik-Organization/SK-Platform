@@ -7,6 +7,7 @@ services:
     volumes:
       - ./frontend:/src
       - /src/node_modules
+    restart: always
     command: npx vite --port 9081
     environment:
       NODE_ENV: local
@@ -18,6 +19,7 @@ services:
       - "9083:9083"
     volumes:
       - ./docs:/src
+    restart: always
     command: npm run dev
     environment:
       NODE_ENV: development
