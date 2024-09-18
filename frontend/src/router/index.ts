@@ -14,7 +14,6 @@ const LandingView = () => import('@/views/LandingView.vue');
 const LoginView = () => import('@/views/LoginView.vue');
 const PlansView = () => import('@/views/PlansView.vue');
 const ProductView = () => import('@/views/ProductView.vue');
-const TemporaryView = () => import('@/views/TemporaryView.vue');
 
 // Pages
 const DocumentationHomePage = () => import('@/pages/Documentation/HomePage.vue');
@@ -58,7 +57,7 @@ const router = createRouter({
 });
 
 // Authorization Check
-async function authValidation() {
+async function authValidation(): Promise<string | undefined> {
     // Initial Validation
     const userStore = useUserStore();
 

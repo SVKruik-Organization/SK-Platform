@@ -111,3 +111,9 @@ export type UplinkMessage = {
     "content": string,
     "timestamp": Date
 }
+
+// Sitemap Export Item
+export type SitemapFile = {
+    "url": string,
+    "modificationDate": string
+}
