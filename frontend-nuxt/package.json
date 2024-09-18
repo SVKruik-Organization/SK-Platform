@@ -1,0 +1,29 @@
+{
+    "name": "sk-platform-frontend",
+    "description": "SK Platform Frontend",
+    "version": "1.0.0",
+    "author": "Stefan Kruik",
+    "repository": {
+        "type": "git",
+        "url": "git+https://github.com/SVKruik-Organization/SK-Platform.git"
+    },
+    "bugs": {
+        "url": "https://github.com/SVKruik-Organization/SK-Platform/issues"
+    },
+    "homepage": "https://github.com/SVKruik-Organization/SK-Platform#readme",
+    "type": "module",
+    "scripts": {
+        "build": "nuxt build",
+        "dev": "nuxt dev --port 9082",
+        "generate": "nuxt generate",
+        "preview": "nuxt preview",
+        "postinstall": "nuxt prepare"
+    },
+    "dependencies": {
+        "@pinia/nuxt": "^0.5.4",
+        "pinia": "2.2.2",
+        "nuxt": "^3.13.0",
+        "vue": "latest",
+        "vue-router": "latest"
+    }
+}
