@@ -1,17 +1,26 @@
 import { defineStore } from "pinia";
+import { useSessionStorage, useLocalStorage } from "@vueuse/core";
 import { IndexPlaceholder, RecommendedPlaceholder, type DocumentationIndexItem, type RecommendedItem } from "@/assets/customTypes";
-import { fetchDocumentationIndex, fetchDocumentationRefresh, fetchRecommendedItems } from "@/utils/fetch";
 
 export const useDocumentationStore = defineStore("documentationStore", {
     state: () => ({
-        docIndex: [] as Array<DocumentationIndexItem>,
-        guideIndex: [] as Array<DocumentationIndexItem>,
-        recommendedDocItems: [] as Array<RecommendedItem>,
-        recommendedGuideItems: [] as Array<RecommendedItem>,
-        version: "v1" as string,
-        language: "en-US" as string,
-        voteCast: "" as string
+        docIndex: useLocalStorage("docIndex", [] as Array<DocumentationIndexItem>),
+        guideIndex: useLocalStorage("guideIndex", [] as Array<DocumentationIndexItem>),
+        recommendedDocItems: useLocalStorage("recommendedDocItems", [] as Array<RecommendedItem>),
+        recommendedGuideItems: useLocalStorage("recommendedGuideItems", [] as Array<RecommendedItem>),
+        version: useLocalStorage("documentationVersion", "v1" as string),
+        language: useLocalStorage("language", "en-US" as string),
+        voteCast: useSessionStorage("voteCast", "" as string)
     }),
+    hydrate(state) {
+        state.docIndex = useLocalStorage("docIndex", []);
+        state.guideIndex = useLocalStorage("guideIndex", []);
+        state.recommendedDocItems = useLocalStorage("recommendedDocItems", []);
+        state.recommendedGuideItems = useLocalStorage("recommendedGuideItems", []);
+        state.version = useLocalStorage("documentationVersion", "v1");
+        state.language = useLocalStorage("language", "en-US");
+        state.voteCast = useSessionStorage("voteCast", "");
+    },
     actions: {
         /**
          * Change the documentation version.
@@ -49,7 +58,7 @@ export const useDocumentationStore = defineStore("documentationStore", {
             if (type === "Guide") convertedType = "guideIndex";
 
             if (this[convertedType].length === 0 || force) {
-                const data = await fetchDocumentationIndex(this.version, this.language, type);
+                const data = await useFetchDocumentationIndex(this.version, this.language, type).value;
                 if (typeof data === "boolean") return this[convertedType];
                 if (data.index.length === 0) {
                     this[convertedType] = IndexPlaceholder;
@@ -72,7 +81,7 @@ export const useDocumentationStore = defineStore("documentationStore", {
             if (type === "Guide") convertedType = "recommendedGuideItems";
 
             if (this[convertedType].length === 0 || force) {
-                const data = await fetchRecommendedItems(this.language, type);
+                const data = await useFetchDocumentationRecommendedItems(this.language, type).value;
                 if (typeof data === "boolean") return this[convertedType];
                 if (data.recommended_items.length === 0) {
                     this[convertedType] = RecommendedPlaceholder;
@@ -95,7 +104,7 @@ export const useDocumentationStore = defineStore("documentationStore", {
             if (type === "Guide") convertedType = "guideIndex";
 
             if (!folder) return;
-            return this[convertedType].filter(indexItem => indexItem.category === folder)[0];
+            return this[convertedType].filter((indexItem: DocumentationIndexItem) => indexItem.category === folder)[0];
         },
         /**
          * Check if a string is a valid category item.
@@ -115,7 +124,7 @@ export const useDocumentationStore = defineStore("documentationStore", {
          * @returns Void, return on error.
          */
         async refresh(): Promise<void> {
-            const data = await fetchDocumentationRefresh(this.version, this.language);
+            const data = await useFetchDocumentationRefresh(this.version, this.language).value
             if (typeof data === "boolean") return;
 
             if (data.docIndex.length === 0) {
@@ -141,7 +150,7 @@ export const useDocumentationStore = defineStore("documentationStore", {
         getCategoryList(type: string, categoryName: string): Array<string> {
             let convertedType: "docIndex" | "guideIndex" = "docIndex";
             if (type === "Guide") convertedType = "guideIndex";
-            return this[convertedType].filter(indexItem => indexItem.category === categoryName)[0]?.children;
+            return this[convertedType].filter((indexItem: DocumentationIndexItem) => indexItem.category === categoryName)[0]?.children;
         }
     }
 });

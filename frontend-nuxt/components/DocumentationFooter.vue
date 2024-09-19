@@ -1,98 +1,95 @@
-<script lang="ts">
+<script setup lang="ts">
 import { DropdownStates, type DocumentationTypes } from '@/assets/customTypes';
 import { useDocumentationStore } from '@/stores/DocumentationStore';
-import { fetchDocumentationComment, fetchDocumentationVote } from '@/utils/fetch';
 import { createTicket } from '@/utils/ticket';
-import { defineComponent, type PropType } from 'vue';
+import { type PropType } from 'vue';
 
-export default defineComponent({
-    name: "DocumentationFooter",
-    setup() {
-        return {
-            documentationStore: useDocumentationStore()
-        }
-    },
-    emits: [
-        "dropdownState"
-    ],
-    props: {
-        "commentOverlayVisible": { type: Boolean, required: true },
-        "type": { type: String as PropType<DocumentationTypes>, required: false },
-        "category": { type: String, required: false },
-        "page": { type: String, required: false }
-    },
-    data() {
-        return {
-            "pressedButton": "" as string,
-            "commentData": "" as string,
-            "submissionType": "voting" as string,
-            "voteTicket": "" as string
-        }
-    },
-    mounted() {
-        if (this.documentationStore.voteCast.length) {
-            this.voteTicket = this.documentationStore.voteCast.slice(0, 8);
-        }
-    },
-    methods: {
-        /**
-         * Submit a vote for the current documentation page.
-         * @param value If the vote is positive or negative.
-         */
-        async castDocumentationVote(value: boolean) {
-            // Prevent Double Vote
-            if (value && this.pressedButton === "like") return;
-            if (!value && this.pressedButton === "dislike") return;
-            if (this.voteCastCurrentPage) return;
-            this.voteTicket = createTicket();
+// Setup
+const documentationStore = useDocumentationStore();
+const emit = defineEmits(["dropdownState"]);
 
-            // Set Button
-            if (value) {
-                this.pressedButton = "like";
-            } else this.pressedButton = "dislike";
+// Props
+const props = defineProps({
+    "commentOverlayVisible": { type: Boolean, required: true },
+    "type": { type: String as PropType<DocumentationTypes>, required: false },
+    "category": { type: String, required: false },
+    "page": { type: String, required: false }
+});
 
-            // Cast Vote
-            await fetchDocumentationVote(this.documentationStore.version, this.documentationStore.language, value, this.type || null, this.category || null, this.page || null, this.voteTicket);
-            this.documentationStore.voteCast = `${this.voteTicket}-${this.type}/${this.category}/${this.page}`;
+// Reactive Data
+const pressedButton: Ref<string> = ref("");
+const commentData: Ref<string> = ref("");
+const submissionType: Ref<string> = ref("voting");
+const voteTicket: Ref<string> = ref("");
 
-            // Confirmation Message
-            const element = this.$refs["confirmationMessage"] as HTMLParagraphElement;
-            if (!element) return;
-            this.submissionType = "voting";
-            element.classList.add("visible");
-            setTimeout(() => {
-                element.classList.remove("visible");
-            }, 2000);
-        },
-        /**
-         * Open the comment overlay.
-         */
-        commentDocumentationVote() {
-            if (this.voteCastCurrentPage && this.commentData.length > 0) return;
-            this.$emit("dropdownState", DropdownStates.comment, true);
-        },
-        /**
-         * Submit additional comment for the vote.
-         */
-        async submitCommentDocumentationVote() {
-            await fetchDocumentationComment(this.voteTicket, this.commentData.slice(0, 255));
+// HTML Elements
+const confirmationMessage: Ref<HTMLParagraphElement | null> = ref(null);
 
-            // Confirmation Message
-            const element = this.$refs["confirmationMessage"] as HTMLParagraphElement;
-            if (!element) return;
-            this.submissionType = "commenting";
-            element.classList.add("visible");
-            setTimeout(() => {
-                element.classList.remove("visible");
-            }, 2000);
-        }
-    },
-    computed: {
-        voteCastCurrentPage() {
-            if (!this.documentationStore.voteCast.length) return false;
-            return this.documentationStore.voteCast.slice(9) === `${this.type}/${this.category}/${this.page}`;
-        }
+onMounted(() => {
+    if (documentationStore.voteCast.length) {
+        voteTicket.value = documentationStore.voteCast.slice(0, 8);
     }
+});
+
+// Methods
+
+/**
+ * Cast a vote for the documentation page.
+ * @param value The value of the vote.
+ */
+async function castDocumentationVote(value: boolean) {
+    // Prevent Double Vote
+    if (value && pressedButton.value === "like") return;
+    if (!value && pressedButton.value === "dislike") return;
+    if (voteCastCurrentPage.value) return;
+    voteTicket.value = createTicket();
+
+    // Set Button
+    if (value) {
+        pressedButton.value = "like";
+    } else pressedButton.value = "dislike";
+
+    // Cast Vote
+    await useFetchDocumentationVote(documentationStore.version, documentationStore.language, value, props.type || null, props.category || null, props.page || null, voteTicket.value).value;
+    documentationStore.voteCast = `${voteTicket}-${props.type}/${props.category}/${props.page}`;
+
+    // Confirmation Message
+    const element = confirmationMessage.value;
+    if (!element) return;
+    submissionType.value = "voting";
+    element.classList.add("visible");
+    setTimeout(() => {
+        element.classList.remove("visible");
+    }, 2000);
+}
+
+/**
+ * Open the comment overlay.
+ */
+function commentDocumentationVote() {
+    if (voteCastCurrentPage.value && commentData.value.length > 0) return;
+    emit("dropdownState", DropdownStates.comment, true);
+}
+
+/**
+ * Submit additional comment for the vote.
+ */
+async function submitCommentDocumentationVote() {
+    await useFetchDocumentationComment(voteTicket.value, commentData.value.slice(0, 255)).value;
+
+    // Confirmation Message
+    const element = confirmationMessage.value;
+    if (!element) return;
+    submissionType.value = "commenting";
+    element.classList.add("visible");
+    setTimeout(() => {
+        element.classList.remove("visible");
+    }, 2000);
+}
+
+const voteCastCurrentPage = computed<boolean>(() => {
+    if (!documentationStore.voteCast.length) return false;
+    return documentationStore.voteCast.slice(9) === `${props.type}/${props.category}/${props.page}`;
 });
 </script>
 

@@ -1,12 +1,10 @@
-<script lang="ts">
-import { defineComponent, type PropType } from 'vue';
+<script setup lang="ts">
+import { type PropType } from 'vue';
 import type { RelatedItem } from '@/assets/customTypes';
 
-export default defineComponent({
-    name: "DocumentationRelatedItem",
-    props: {
-        "data": { type: Object as PropType<RelatedItem>, required: true },
-    }
+// Props
+defineProps({
+    "data": { type: Object as PropType<RelatedItem>, required: true },
 });
 </script>
 

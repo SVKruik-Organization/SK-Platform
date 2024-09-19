@@ -1,13 +1,11 @@
-<script lang="ts">
-import { defineComponent, type PropType } from 'vue';
+<script setup lang="ts">
+import { type PropType } from 'vue';
 import type { DocumentationIndexItem } from '@/assets/customTypes';
 
-export default defineComponent({
-    name: "DocumentationCategoryItem",
-    props: {
-        "type": { type: String, required: true },
-        "data": { type: Object as PropType<DocumentationIndexItem>, required: true },
-    }
+// Props
+defineProps({
+    data: { type: Object as PropType<DocumentationIndexItem>, required: true },
+    type: { type: String as PropType<string>, required: true }
 });
 </script>
 

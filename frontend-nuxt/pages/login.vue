@@ -1,37 +1,28 @@
-<script lang="ts">
-import { defineComponent } from 'vue';
+<script setup lang="ts">
 import { useUserStore } from '@/stores/UserStore';
-import { fetchLogin } from '@/utils/fetch';
 
-export default defineComponent({
-    name: "LoginView",
-    setup() {
-        return {
-            userStore: useUserStore()
-        }
-    },
-    methods: {
-        /**
-         * Logs the user in and creates a session.
-         * @param event The click event.
-         */
-        async login(event: MouseEvent): Promise<void> {
-            // Fetch
-            event.preventDefault();
-            const usernameInput: HTMLInputElement = this.$refs["usernameInput"] as HTMLInputElement;
-            const passwordInput: HTMLInputElement = this.$refs["passwordInput"] as HTMLInputElement;
-            const data = await fetchLogin(usernameInput.value, passwordInput.value);
+// Setup
+const userStore = useUserStore();
 
-            // Parse
-            if (typeof data === "boolean") return window.alert("Username/password incorrect.");
-            this.userStore.setUser({
-                "username": usernameInput.value,
-                "token": data.access_token
-            });
-            useRouter().push("/");
-        }
-    }
-});
+// HTML Elements
+const usernameInput: Ref<HTMLInputElement | null> = ref(null);
+const passwordInput: Ref<HTMLInputElement | null> = ref(null);
+
+// Methods
+async function login(event: MouseEvent): Promise<void> {
+    // Fetch
+    event.preventDefault();
+    if (!usernameInput.value || !passwordInput.value) return;
+    const data = await useFetchLogin(usernameInput.value.value, passwordInput.value.value).value;
+
+    // Parse
+    if (typeof data === "boolean") return window.alert("Username/password incorrect.");
+    userStore.setUser({
+        "username": usernameInput.value.value,
+        "token": data.access_token
+    });
+    useRouter().push("/");
+}
 </script>
 
 <template>

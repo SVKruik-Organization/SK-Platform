@@ -1,15 +1,8 @@
-<script lang="ts">
+<script setup lang="ts">
 import { useUserStore } from '@/stores/UserStore';
-import { defineComponent } from 'vue';
 
-export default defineComponent({
-    name: "NavbarComponent",
-    setup() {
-        return {
-            userStore: useUserStore()
-        }
-    }
-});
+// Setup
+const userStore = useUserStore();
 </script>
 
 <template>
@@ -29,8 +22,9 @@ export default defineComponent({
                 </menu>
             </section>
             <NuxtLink class="gradient-button sign-up-button" :title="userStore.user.username ? 'account' : 'login'"
-                :to="userStore.user.username ? '/account' : '/login'">{{ userStore.user.username ? "account" :
-                    "login" }}</NuxtLink>
+                :to="userStore.user.username ? '/account' : '/login'">{{ userStore.user.username
+                    ? "account" : "login" }}
+            </NuxtLink>
         </nav>
     </header>
 </template>

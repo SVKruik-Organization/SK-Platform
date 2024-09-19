@@ -1,74 +1,80 @@
-<script lang="ts">
-import { defineComponent, type PropType } from 'vue';
-import DocumentationNavbar from '../components/DocumentationNavbar.vue'
+<script setup lang="ts">
+import { type PropType } from 'vue';
+import DocumentationNavbar from '../components/documentationNavbar.vue'
 import type { DocumentationTypes, DropdownStates } from '@/assets/customTypes';
 import type { RouteLocation } from 'vue-router';
 
-export default defineComponent({
-    name: "DocumentationView",
-    props: {
-        "type": { type: String as PropType<DocumentationTypes>, required: false },
-        "category": { type: String, required: false },
-        "page": { type: String, required: false }
-    },
-    components: {
-        DocumentationNavbar
-    },
-    data() {
-        return {
-            "versionDropdownVisible": false,
-            "languageDropdownVisible": false,
-            "informationDropdownVisible": false,
-            "productDropdownVisible": false,
-            "navigationDropdownVisible": false,
-            "commentOverlayVisible": false
-        }
-    },
-    methods: {
-        /**
-         * Change the toggle state of a specific dropdown.
-         * @param name Which dropdown state to update.
-         * @param newValue The new value of the toggle.
-         */
-        updateDropdownState(name: DropdownStates, newValue: boolean) {
-            this[name] = newValue;
-        }
-    },
-    watch: {
-        useRouter(from: RouteLocation, to: RouteLocation) {
-            setTimeout(() => {
-                if (from.path !== to.path) window.scrollTo({
-                    top: 0,
-                    behavior: "smooth"
-                });
-            }, 300);
-        }
-    },
-    mounted() {
-        // Toggle Dropdown
-        document.addEventListener("click", event => {
-            const target: HTMLElement = event.target as HTMLElement;
-            if (target.classList.contains("disable-close")) return;
-            if (target.tagName === "MENU" || target.tagName === "SPAN" || target.tagName === "NAV") return;
-            this.versionDropdownVisible = false;
-            this.languageDropdownVisible = false;
-            this.informationDropdownVisible = false;
-            this.productDropdownVisible = false;
-            this.navigationDropdownVisible = false;
-            this.commentOverlayVisible = false;
+// Props
+defineProps({
+    "type": { type: String as PropType<DocumentationTypes>, required: false },
+    "category": { type: String, required: false },
+    "page": { type: String, required: false }
+});
+
+// Reactive Data
+const versionDropdownVisible: Ref<boolean> = ref(false);
+const languageDropdownVisible: Ref<boolean> = ref(false);
+const informationDropdownVisible: Ref<boolean> = ref(false);
+const productDropdownVisible: Ref<boolean> = ref(false);
+const navigationDropdownVisible: Ref<boolean> = ref(false);
+const commentOverlayVisible: Ref<boolean> = ref(false);
+const dropdownStates = {
+    versionDropdownVisible,
+    languageDropdownVisible,
+    informationDropdownVisible,
+    productDropdownVisible,
+    navigationDropdownVisible,
+    commentOverlayVisible
+};
+
+// Watchers
+watch(useRoute(), (from: RouteLocation, to: RouteLocation) => {
+    setTimeout(() => {
+        if (from.path !== to.path) window.scrollTo({
+            top: 0,
+            behavior: "smooth"
         });
+    }, 300);
+});
+
+// Methods
+
+/**
+ * Updates the dropdown state.
+ * @param name The name of the dropdown state to update.
+ * @param newValue The new value to set the dropdown state to.
+ */
+function updateDropdownState(name: DropdownStates, newValue: boolean): void {
+    if (dropdownStates[name]) {
+        dropdownStates[name].value = newValue;
     }
+}
+
+// Lifecycle
+onMounted(() => {
+    // Toggle Dropdown
+    document.addEventListener("click", event => {
+        const target: HTMLElement = event.target as HTMLElement;
+        if (target.classList.contains("disable-close")) return;
+        if (target.tagName === "MENU" || target.tagName === "SPAN" || target.tagName === "NAV") return;
+        versionDropdownVisible.value = false;
+        languageDropdownVisible.value = false;
+        informationDropdownVisible.value = false;
+        productDropdownVisible.value = false;
+        navigationDropdownVisible.value = false;
+        commentOverlayVisible.value = false;
+    });
 });
 </script>
 
 <template>
-    <DocumentationNavbar @dropdownState="updateDropdownState" :versionDropdownVisible="versionDropdownVisible"
-        :languageDropdownVisible="languageDropdownVisible"></DocumentationNavbar>
-    <main>
-        <NuxtPage @dropdownState="updateDropdownState" :informationDropdownVisible="informationDropdownVisible"
-            :productDropdownVisible="productDropdownVisible" :navigationDropdownVisible="navigationDropdownVisible"
-            :commentOverlayVisible="commentOverlayVisible" />
-    </main>
+    <div>
+        <DocumentationNavbar @dropdownState="updateDropdownState" :versionDropdownVisible="versionDropdownVisible"
+            :languageDropdownVisible="languageDropdownVisible" />
+        <main>
+            <NuxtPage @dropdownState="updateDropdownState" :informationDropdownVisible="informationDropdownVisible"
+                :productDropdownVisible="productDropdownVisible" :navigationDropdownVisible="navigationDropdownVisible"
+                :commentOverlayVisible="commentOverlayVisible" />
+        </main>
+    </div>
 </template>
-
-<style scoped></style>

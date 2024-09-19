@@ -14,15 +14,17 @@
     "type": "module",
     "scripts": {
         "build": "nuxt build",
-        "dev": "nuxt dev --port 9082",
+        "dev": "nuxt dev --port 9082 --dotenv .env.local",
         "generate": "nuxt generate",
         "preview": "nuxt preview",
         "postinstall": "nuxt prepare"
     },
     "dependencies": {
         "@pinia/nuxt": "^0.5.4",
-        "pinia": "2.2.2",
+        "@vueuse/core": "^5.0.0",
+        "@vueuse/nuxt": "^11.1.0",
         "nuxt": "^3.13.0",
+        "pinia": "2.2.2",
         "vue": "latest",
         "vue-router": "latest"
     }

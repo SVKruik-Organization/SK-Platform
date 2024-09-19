@@ -1,12 +1,10 @@
-<script lang="ts">
-import { defineComponent, type PropType } from 'vue';
+<script setup lang="ts">
+import { type PropType } from 'vue';
 import type { RecommendedItem } from '@/assets/customTypes';
 
-export default defineComponent({
-    name: "DocumentationRecommendedItem",
-    props: {
-        "data": { type: Object as PropType<RecommendedItem>, required: true },
-    },
+// Props
+defineProps({
+    "data": { type: Object as PropType<RecommendedItem>, required: true },
 });
 </script>
 

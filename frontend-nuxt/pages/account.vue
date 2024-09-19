@@ -1,15 +1,8 @@
-<script lang="ts">
+<script setup lang="ts">
 import { useUserStore } from '@/stores/UserStore';
-import { defineComponent } from 'vue';
 
-export default defineComponent({
-    name: "AccountView",
-    setup() {
-        return {
-            userStore: useUserStore()
-        }
-    }
-});
+// Setup
+const userStore = useUserStore();
 </script>
 
 <template>
