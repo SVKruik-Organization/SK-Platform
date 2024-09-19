@@ -20,5 +20,8 @@ export default defineNuxtConfig({
                 { src: 'https://kit.fontawesome.com/ffc90f94bc.js', crossorigin: 'anonymous' }
             ]
         }
+    },
+    routeRules: {
+        '/documentation/read': { redirect: '/documentation' }
     }
 });

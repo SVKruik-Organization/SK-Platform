@@ -1,6 +1,3 @@
-<script setup lang="ts">
-</script>
-
 <template>
     <main>
         <h1>Product View</h1>

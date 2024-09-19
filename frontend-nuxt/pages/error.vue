@@ -1,6 +1,3 @@
-<script setup lang="ts">
-</script>
-
 <template>
     <div class="content-parent flex-col">
         <p>404 Not Found Page</p>

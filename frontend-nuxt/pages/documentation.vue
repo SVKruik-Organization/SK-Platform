@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { type PropType } from 'vue';
-import DocumentationNavbar from '../components/documentationNavbar.vue'
+import DocumentationNavbar from '../components/documentation/navbar.vue'
 import type { DocumentationTypes, DropdownStates } from '@/assets/customTypes';
 import type { RouteLocation } from 'vue-router';
 
