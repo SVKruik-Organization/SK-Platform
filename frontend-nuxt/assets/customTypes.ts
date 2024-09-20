@@ -31,6 +31,12 @@ export enum DocumentationTypes {
     guide = "Guide"
 }
 
+// Image Error Types
+export enum ImageErrorTypes {
+    icon = "icon",
+    banner = "banner"
+}
+
 // Single Documentation File
 export type DocumentationFile = {
     "name": string,

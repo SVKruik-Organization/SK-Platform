@@ -143,7 +143,7 @@ async function search(force: boolean, newOffset: number): Promise<void | Documen
     searchQuery.value = searchValue;
 
     // Fetch
-    const data = await useFetchDocumentationSearch(documentationStore.version, documentationStore.language, searchValue, resultsPerPage.value, offset.value, searchMode.value).value;
+    const data = (await useFetchDocumentationSearch(documentationStore.version, documentationStore.language, searchValue, resultsPerPage.value, offset.value, searchMode.value)).value;
     if (loadingIndicator.value) loadingIndicator.value.classList.remove("visible");
     if (typeof data === "object") {
         if (data.results.length === 0 && offset.value > 0) return search(false, 0);

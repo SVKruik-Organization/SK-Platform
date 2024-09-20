@@ -58,7 +58,7 @@ export const useDocumentationStore = defineStore("documentationStore", {
             if (type === "Guide") convertedType = "guideIndex";
 
             if (this[convertedType].length === 0 || force) {
-                const data = await useFetchDocumentationIndex(this.version, this.language, type).value;
+                const data = (await useFetchDocumentationIndex(this.version, this.language, type)).value;
                 if (typeof data === "boolean") return this[convertedType];
                 if (data.index.length === 0) {
                     this[convertedType] = IndexPlaceholder;
@@ -81,7 +81,7 @@ export const useDocumentationStore = defineStore("documentationStore", {
             if (type === "Guide") convertedType = "recommendedGuideItems";
 
             if (this[convertedType].length === 0 || force) {
-                const data = await useFetchDocumentationRecommendedItems(this.language, type).value;
+                const data = (await useFetchDocumentationRecommendedItems(this.language, type)).value;
                 if (typeof data === "boolean") return this[convertedType];
                 if (data.recommended_items.length === 0) {
                     this[convertedType] = RecommendedPlaceholder;
@@ -124,7 +124,7 @@ export const useDocumentationStore = defineStore("documentationStore", {
          * @returns Void, return on error.
          */
         async refresh(): Promise<void> {
-            const data = await useFetchDocumentationRefresh(this.version, this.language).value
+            const data = (await useFetchDocumentationRefresh(this.version, this.language)).value
             if (typeof data === "boolean") return;
 
             if (data.docIndex.length === 0) {

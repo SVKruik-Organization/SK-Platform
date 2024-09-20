@@ -13,7 +13,7 @@ async function login(event: MouseEvent): Promise<void> {
     // Fetch
     event.preventDefault();
     if (!usernameInput.value || !passwordInput.value) return;
-    const data = await useFetchLogin(usernameInput.value.value, passwordInput.value.value).value;
+    const data = (await useFetchLogin(usernameInput.value.value, passwordInput.value.value)).value;
 
     // Parse
     if (typeof data === "boolean") return window.alert("Username/password incorrect.");

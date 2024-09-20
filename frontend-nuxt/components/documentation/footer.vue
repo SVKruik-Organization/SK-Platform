@@ -26,9 +26,7 @@ const voteTicket: Ref<string> = ref("");
 const confirmationMessage: Ref<HTMLParagraphElement | null> = ref(null);
 
 onMounted(() => {
-    if (documentationStore.voteCast.length) {
-        voteTicket.value = documentationStore.voteCast.slice(0, 8);
-    }
+    if (documentationStore.voteCast.length) voteTicket.value = documentationStore.voteCast.slice(0, 8);
 });
 
 // Methods
@@ -50,7 +48,7 @@ async function castDocumentationVote(value: boolean) {
     } else pressedButton.value = "dislike";
 
     // Cast Vote
-    await useFetchDocumentationVote(documentationStore.version, documentationStore.language, value, props.type || null, props.category || null, props.page || null, voteTicket.value).value;
+    (await useFetchDocumentationVote(documentationStore.version, documentationStore.language, value, props.type || null, props.category || null, props.page || null, voteTicket.value)).value;
     documentationStore.voteCast = `${voteTicket}-${props.type}/${props.category}/${props.page}`;
 
     // Confirmation Message
@@ -75,7 +73,7 @@ function commentDocumentationVote() {
  * Submit additional comment for the vote.
  */
 async function submitCommentDocumentationVote() {
-    await useFetchDocumentationComment(voteTicket.value, commentData.value.slice(0, 255)).value;
+    (await useFetchDocumentationComment(voteTicket.value, commentData.value.slice(0, 255))).value;
 
     // Confirmation Message
     const element = confirmationMessage.value;
@@ -244,6 +242,7 @@ footer {
 .confirmation-message {
     opacity: 0;
     transition: 0.3s;
+    margin-bottom: 20px;
 }
 
 .comment-overlay {

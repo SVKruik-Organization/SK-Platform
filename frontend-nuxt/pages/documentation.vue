@@ -30,10 +30,7 @@ const dropdownStates = {
 // Watchers
 watch(useRoute(), (from: RouteLocation, to: RouteLocation) => {
     setTimeout(() => {
-        if (from.path !== to.path) window.scrollTo({
-            top: 0,
-            behavior: "smooth"
-        });
+        if (from.path !== to.path) window.scrollBy(0, 0);
     }, 300);
 });
 
