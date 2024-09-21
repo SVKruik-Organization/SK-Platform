@@ -90,19 +90,19 @@ export default defineComponent({
                 <img class="mesh" src="/Mesh_1.png">
             </div>
             <div class="hero-right flex">
-                <RouterLink to="/documentation/read/Doc/Products/Discord_Bots#Interpres">
+                <RouterLink to="/documentation/read/Doc/Products/Bots#Interpres">
                     <img src="https://files.stefankruik.com/Products/500/Interpres.png" class="hero-bot-image"
                         title="Interpres, GitHub API proxy bot.">
                 </RouterLink>
-                <RouterLink to="/documentation/read/Doc/Products/Discord_Bots#Ispidina">
+                <RouterLink to="/documentation/read/Doc/Products/Bots#Ispidina">
                     <img src="https://files.stefankruik.com/Products/500/Ispidina.png" class="hero-bot-image"
                         title="Ispidina, TypeScript pioneer bot.">
                 </RouterLink>
-                <RouterLink to="/documentation/read/Doc/Products/Discord_Bots#Stelleri">
+                <RouterLink to="/documentation/read/Doc/Products/Bots#Stelleri">
                     <img src="https://files.stefankruik.com/Products/500/Stelleri.png" class="hero-bot-image"
                         title="Stelleri, early-access features bot.">
                 </RouterLink>
-                <RouterLink to="/documentation/read/Doc/Products/Discord_Bots#Apricaria">
+                <RouterLink to="/documentation/read/Doc/Products/Bots#Apricaria">
                     <img src="https://files.stefankruik.com/Products/500/Apricaria.png" class="hero-bot-image"
                         title="Apricaria, second gen main production bot.">
                 </RouterLink>

@@ -1,12 +1,11 @@
 <script setup lang="ts">
 import { DropdownStates, type DocChapterItem, type DocumentationTypes, type DocumentationFile, type RelatedItem } from '@/assets/customTypes';
 import { useDocumentationStore } from '@/stores/DocumentationStore';
-import type { NavigationFailure } from 'vue-router';
 import { type PropType } from 'vue';
 
 // Setup
 const documentationStore = useDocumentationStore();
-const emit = defineEmits(["dropdownState"]);
+const runtimeConfig = useRuntimeConfig();
 const route = useRoute();
 const handleFallbackImage: Function = inject("handleFallbackImage") as Function;
 
@@ -22,18 +21,40 @@ const props = defineProps({
 });
 
 // Reactive Data
-const fileData: Ref<DocumentationFile | boolean> = ref(true);
+const page = ref<string | undefined>(props.page);
 const chapterData: Ref<Array<DocChapterItem>> = ref([]);
 const relatedItems: Ref<Array<RelatedItem>> = ref([]);
+
+// Reactive Data
+if (!documentationStore.validatePage(props.type, props.category, page.value)) useRouter().push(`/documentation/notfound?type=${props.type}&category=${props.category}&page=${page.value}`);
+const { data: fileData } = await useAsyncData<DocumentationFile>("fileData",
+    () => $fetch(`${runtimeConfig.public.docsApiBase}/${props.page ? 'getFile' : 'getDefault'}/${documentationStore.version}/${documentationStore.language}/${props.type}`, {
+        params: {
+            "folder": props.category,
+            "name": props.page,
+        }
+    }), {
+    watch: [page]
+});
+fileData.value = await parseDocumentationFile(fileData.value) as DocumentationFile;
 
 // HTML Elements
 const shareButtonContents: Ref<HTMLParagraphElement | null> = ref(null);
 
 // Lifecycle
-onMounted(async () => {
-    watch(() => props.category, async (): Promise<void> => {
-        await loadContent(props.type, props.category, props.page);
-    }, { immediate: true });
+onMounted(() => {
+    if (fileData.value && fileData.value.chapters.length) {
+        window.addEventListener('scroll', setActiveChapter);
+        for (const chapter of fileData.value.chapters) {
+            const element: HTMLAnchorElement | null = document.getElementById(chapter.slice(1)) as HTMLAnchorElement | null;
+            if (!element) continue;
+            chapterData.value.push({ "title": element.id, "height": element.getBoundingClientRect().top, "active": false });
+        }
+
+        window.scrollBy(0, 0);
+        setActiveChapter();
+        scrollAnchor();
+    }
 });
 onUnmounted(() => {
     window.removeEventListener('scroll', setActiveChapter);
@@ -45,46 +66,6 @@ const isAnchored = (title: string) => {
 };
 
 // Methods
-
-/**
- * Load all data and components.
- */
-async function loadContent(type: string, category: string, page: string | undefined): Promise<void | NavigationFailure | undefined> {
-    if (!type || !category) return;
-    if (!documentationStore.docIndex.length || !documentationStore.guideIndex.length) await documentationStore.refresh();
-    chapterData.value = [];
-    relatedItems.value = [];
-
-    if (page) {
-        // Specific Page
-        if (!documentationStore.validatePage(category, page, type)) return useRouter().push(`/documentation/notfound?type=${type}&category=${category}&page=${page}`);
-        fileData.value = (await useFetchDocumentationPage(category, page, documentationStore.version, documentationStore.language, type)).value;
-        if (typeof fileData.value === "boolean") return;
-        relatedItems.value = fileData.value.related;
-    } else {
-        // Category Landing Page
-        if (!documentationStore.validateFolder(category, type)) return useRouter().push(`/documentation/notfound?type=${type}&category=${category}`);
-        fileData.value = (await useFetchDocumentationDefault(category, documentationStore.version, documentationStore.language, type)).value;
-    }
-
-    // Other Components
-    setTimeout(() => {
-        // Chapters
-        if (typeof fileData.value !== "object") return;
-        if (fileData.value.chapters.length) {
-            window.addEventListener('scroll', setActiveChapter);
-            for (const chapter of fileData.value.chapters) {
-                const element: HTMLAnchorElement | null = document.getElementById(chapter.slice(1)) as HTMLAnchorElement | null;
-                if (!element) continue;
-                chapterData.value.push({ "title": element.id, "height": element.getBoundingClientRect().top, "active": false });
-            }
-
-            window.scrollBy(0, 0);
-            setActiveChapter();
-            scrollAnchor();
-        }
-    }, 500);
-}
 
 /**
  * Toggle the information dropdown menu.
@@ -124,6 +105,7 @@ function share(): void {
 function scrollAnchor(): void {
     setTimeout(() => {
         if (typeof fileData.value === "object") {
+            fileData.value = fileData.value as DocumentationFile;
             const chapters: Array<string> = fileData.value.chapters;
             if (!chapters.includes(route.hash)) return;
             const element: HTMLAnchorElement | null = document.getElementById(route.hash.slice(1)) as HTMLAnchorElement | null;
@@ -167,18 +149,15 @@ function setActiveChapter(): void {
     }
 }
 
-/**
- * Open or close the vote comment overlay.
- * @param _type Dropdown type, ignored.
- * @param value Overlay visibility.
- */
-function commentDocumentationVote(_type: string, value: boolean): void {
-    emit("dropdownState", DropdownStates.comment, value);
-}
+// Emitters
+const emit = defineEmits(["dropdownState"]);
+function handleDropdownState(name: DropdownStates, newValue: boolean): void {
+    emit("dropdownState", name, newValue);
+};
 </script>
 
 <template>
-    <div class="content-wrapper flex">
+    <div class="content-wrapper flex" v-if="fileData != null">
         <nav class="flex scrollbar" :class="{ 'navigation-expand': navigationDropdownVisible }">
             <section class="navigation scrollbar flex-col" :class="{ 'disable-close': navigationDropdownVisible }">
                 <div class="flex category-title" :class="{ 'disable-close': navigationDropdownVisible }">
@@ -186,9 +165,12 @@ function commentDocumentationVote(_type: string, value: boolean): void {
                         <NuxtLink to="/documentation" title="Go back to the documentation home page.">
                             <i class="fa-regular fa-arrow-left"></i>
                         </NuxtLink>
-                        <NuxtLink :to="`/documentation/Read/${type}/${category}`" title="Go to the category home page.">
-                            {{ category }}
-                        </NuxtLink>
+                        <ClientOnly>
+                            <NuxtLink :to="`/documentation/Read/${type}/${category}`"
+                                title="Go to the category home page.">
+                                {{ category }}
+                            </NuxtLink>
+                        </ClientOnly>
                     </div>
                     <button type="button" class="navigation-button navigation-close navbar-pill"
                         title="Close the navigation bar.">
@@ -292,14 +274,17 @@ function commentDocumentationVote(_type: string, value: boolean): void {
                         @click="toggleNavigationBar($event)" title="Open the navigation bar.">
                         <i class="fa-regular fa-arrow-right-from-line disable-close"></i>
                     </button>
-                    <NuxtLink :to="`/documentation${type === 'Doc' ? '#Documentation' : '#Guides'}`"
-                        class="breadcrumb-item breadcrumb-link">
-                        {{ type === 'Doc' ? 'Documentation' : 'Guides' }}
-                    </NuxtLink>
-                    <p class="breadcrumb-item">/</p>
-                    <NuxtLink :to="`/documentation/read/${type}/${category}`" class="breadcrumb-item breadcrumb-link">
-                        {{ category.replace(/_/g, " ") }}
-                    </NuxtLink>
+                    <ClientOnly>
+                        <NuxtLink :to="`/documentation${type === 'Doc' ? '#Documentation' : '#Guides'}`"
+                            class="breadcrumb-item breadcrumb-link">
+                            {{ type === 'Doc' ? 'Documentation' : 'Guides' }}
+                        </NuxtLink>
+                        <p class="breadcrumb-item">/</p>
+                        <NuxtLink :to="`/documentation/read/${type}/${category}`"
+                            class="breadcrumb-item breadcrumb-link">
+                            {{ category.replace(/_/g, " ") }}
+                        </NuxtLink>
+                    </ClientOnly>
                     <p v-if="page" class="breadcrumb-item">/</p>
                 </div>
                 <section class="flex documentation-content-container">
@@ -333,12 +318,14 @@ function commentDocumentationVote(_type: string, value: boolean): void {
                                 <i class="fa-regular fa-circle-info"></i>
                                 <span>Products that have been used in this {{ type }}.</span>
                             </div>
-                            <NuxtLink class="flex featured-product-item" v-for="product of fileData.products"
-                                :to="product.url">
-                                <img :src="`https://files.stefankruik.com/Products/100/${product.name}.png`"
-                                    alt="Prod Img" @error="handleFallbackImage($event, 'icon')">
-                                <p>{{ product.name.replace(/_/g, " ") }}</p>
-                            </NuxtLink>
+                            <ClientOnly>
+                                <NuxtLink class="flex featured-product-item" v-for="product of fileData.products"
+                                    :to="product.url">
+                                    <img :src="`https://files.stefankruik.com/Products/100/${product.name}.png`"
+                                        alt="Prod Img" @error="handleFallbackImage($event, 'icon')">
+                                    <p>{{ product.name.replace(/_/g, " ") }}</p>
+                                </NuxtLink>
+                            </ClientOnly>
                         </div>
                     </aside>
                 </section>
@@ -359,7 +346,7 @@ function commentDocumentationVote(_type: string, value: boolean): void {
                     <h3>More</h3>
                     <p class="light-text">Leave feedback if you'd like and find links to further assistence.</p>
                 </div>
-                <DocumentationFooter @dropdownState="commentDocumentationVote"
+                <DocumentationFooter @dropdownState="handleDropdownState"
                     :comment-overlay-visible="commentOverlayVisible" :type="props.type" :category="props.category"
                     :page="props.page">
                 </DocumentationFooter>

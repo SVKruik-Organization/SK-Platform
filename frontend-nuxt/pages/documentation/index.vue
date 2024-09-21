@@ -4,7 +4,6 @@ import { useDocumentationStore } from '@/stores/DocumentationStore';
 
 // Setup
 const documentationStore = useDocumentationStore();
-const emit = defineEmits(["dropdownState"]);
 
 // Reactive Data
 const docIndexItems: Ref<Array<DocumentationIndexItem>> = ref([]);
@@ -55,14 +54,11 @@ function scrollAnchor(): void {
     if (element) element.scrollIntoView({ behavior: "smooth" });
 }
 
-/**
- * Open or close the vote comment overlay.
- * @param _type Dropdown type, ignored.
- * @param value Overlay visibility.
- */
-function commentDocumentationVote(_type: string, value: boolean): void {
-    emit("dropdownState", DropdownStates.comment, value);
-}
+// Emitters
+const emit = defineEmits(["dropdownState"]);
+function handleDropdownState(name: DropdownStates, newValue: boolean): void {
+    emit("dropdownState", name, newValue);
+};
 </script>
 
 <template>
@@ -76,19 +72,19 @@ function commentDocumentationVote(_type: string, value: boolean): void {
                 <img class="mesh" src="/Mesh_1.png">
             </div>
             <div class="hero-right flex">
-                <NuxtLink to="/documentation/read/Doc/Products/Discord_Bots#Interpres">
+                <NuxtLink to="/documentation/read/Doc/Products/Bots#Interpres">
                     <img src="https://files.stefankruik.com/Products/500/Interpres.png" class="hero-bot-image"
                         title="Interpres, GitHub API proxy bot.">
                 </NuxtLink>
-                <NuxtLink to="/documentation/read/Doc/Products/Discord_Bots#Ispidina">
+                <NuxtLink to="/documentation/read/Doc/Products/Bots#Ispidina">
                     <img src="https://files.stefankruik.com/Products/500/Ispidina.png" class="hero-bot-image"
                         title="Ispidina, TypeScript pioneer bot.">
                 </NuxtLink>
-                <NuxtLink to="/documentation/read/Doc/Products/Discord_Bots#Stelleri">
+                <NuxtLink to="/documentation/read/Doc/Products/Bots#Stelleri">
                     <img src="https://files.stefankruik.com/Products/500/Stelleri.png" class="hero-bot-image"
                         title="Stelleri, early-access features bot.">
                 </NuxtLink>
-                <NuxtLink to="/documentation/read/Doc/Products/Discord_Bots#Apricaria">
+                <NuxtLink to="/documentation/read/Doc/Products/Bots#Apricaria">
                     <img src="https://files.stefankruik.com/Products/500/Apricaria.png" class="hero-bot-image"
                         title="Apricaria, second gen main production bot.">
                 </NuxtLink>
@@ -169,7 +165,7 @@ function commentDocumentationVote(_type: string, value: boolean): void {
             <h2 id="More">More</h2>
             <span class="splitter"></span>
         </div>
-        <DocumentationFooter @dropdownState="commentDocumentationVote" :comment-overlay-visible="commentOverlayVisible"
+        <DocumentationFooter @dropdown-state="handleDropdownState" :comment-overlay-visible="commentOverlayVisible"
             :type="undefined" :category="undefined" :page="undefined"></DocumentationFooter>
         <a href="https://github.com/SVKruik-Organization/SK-Platform" target="_blank"
             class="banner-content last-content-container footer-note flex">

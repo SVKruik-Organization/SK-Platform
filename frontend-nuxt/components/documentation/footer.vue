@@ -49,7 +49,7 @@ async function castDocumentationVote(value: boolean) {
 
     // Cast Vote
     (await useFetchDocumentationVote(documentationStore.version, documentationStore.language, value, props.type || null, props.category || null, props.page || null, voteTicket.value)).value;
-    documentationStore.voteCast = `${voteTicket}-${props.type}/${props.category}/${props.page}`;
+    documentationStore.voteCast = `${voteTicket.value}-${props.type}/${props.category}/${props.page}`;
 
     // Confirmation Message
     const element = confirmationMessage.value;
@@ -59,14 +59,6 @@ async function castDocumentationVote(value: boolean) {
     setTimeout(() => {
         element.classList.remove("visible");
     }, 2000);
-}
-
-/**
- * Open the comment overlay.
- */
-function commentDocumentationVote() {
-    if (voteCastCurrentPage.value && commentData.value.length > 0) return;
-    emit("dropdownState", DropdownStates.comment, true);
 }
 
 /**
@@ -83,6 +75,14 @@ async function submitCommentDocumentationVote() {
     setTimeout(() => {
         element.classList.remove("visible");
     }, 2000);
+}
+
+/**
+ * Open the comment overlay.
+ */
+function commentDocumentationVote() {
+    if (voteCastCurrentPage.value && commentData.value.length > 0) return;
+    emit("dropdownState", DropdownStates.comment, true);
 }
 
 const voteCastCurrentPage = computed<boolean>(() => {
@@ -112,25 +112,28 @@ const voteCastCurrentPage = computed<boolean>(() => {
             <p class="light-text small-text documentation-footer-item-description">Leave a vote and/or leave a comment.
                 Feedback is always greatly appreciated.</p>
             <div class="flex">
-                <button @click="castDocumentationVote(true)" class="flex footer-button footer-button-like"
-                    :class="{ 'active-button-like': pressedButton === 'like', 'disabled-button': voteCastCurrentPage }"
-                    type="button" title="Click this if you like the design and information available.">
-                    <i class="fa-regular fa-heart light-text"></i>
-                    <p>Yes</p>
-                </button>
-                <button @click="castDocumentationVote(false)" class="flex footer-button footer-button-dislike"
-                    :class="{ 'active-button-dislike': pressedButton === 'dislike', 'disabled-button': voteCastCurrentPage }"
-                    type="button" title="Click this if you think some things could be better.">
-                    <i class="fa-regular fa-heart-crack light-text"></i>
-                    <p>No</p>
-                </button>
-                <button v-if="pressedButton.length || voteCastCurrentPage"
-                    class="flex footer-button footer-button-comment disable-close" type="button"
-                    :class="{ 'disabled-button': voteCastCurrentPage && commentData.length }"
-                    @click="commentDocumentationVote" title="Leave a comment so I can take a look at your feedback.">
-                    <i class="fa-regular fa-comment light-text disable-close"></i>
-                    <p class="disable-close">Comment</p>
-                </button>
+                <ClientOnly>
+                    <button @click="castDocumentationVote(true)" class="flex footer-button footer-button-like"
+                        :class="{ 'active-button-like': pressedButton === 'like', 'disabled-button': voteCastCurrentPage }"
+                        type="button" title="Click this if you like the design and information available.">
+                        <i class="fa-regular fa-heart light-text"></i>
+                        <p>Yes</p>
+                    </button>
+                    <button @click="castDocumentationVote(false)" class="flex footer-button footer-button-dislike"
+                        :class="{ 'active-button-dislike': pressedButton === 'dislike', 'disabled-button': voteCastCurrentPage }"
+                        type="button" title="Click this if you think some things could be better.">
+                        <i class="fa-regular fa-heart-crack light-text"></i>
+                        <p>No</p>
+                    </button>
+                    <button v-if="pressedButton.length || voteCastCurrentPage"
+                        class="flex footer-button footer-button-comment disable-close" type="button"
+                        :class="{ 'disabled-button': voteCastCurrentPage && commentData.length }"
+                        @click="commentDocumentationVote"
+                        title="Leave a comment so I can take a look at your feedback.">
+                        <i class="fa-regular fa-comment light-text disable-close"></i>
+                        <p class="disable-close">Comment</p>
+                    </button>
+                </ClientOnly>
             </div>
             <p ref="confirmationMessage" class="confirmation-message">Thank you so much for {{ submissionType }}!</p>
         </form>

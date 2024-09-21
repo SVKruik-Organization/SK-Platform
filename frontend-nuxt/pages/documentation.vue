@@ -66,10 +66,10 @@ onMounted(() => {
 
 <template>
     <div>
-        <DocumentationNavbar @dropdownState="updateDropdownState" :versionDropdownVisible="versionDropdownVisible"
-            :languageDropdownVisible="languageDropdownVisible" />
+        <DocumentationNavbar @dropdown-state="updateDropdownState" :version-dropdown-visible="versionDropdownVisible"
+            :language-dropdown-visible="languageDropdownVisible" />
         <main>
-            <NuxtPage @dropdownState="updateDropdownState" :informationDropdownVisible="informationDropdownVisible"
+            <NuxtPage @dropdown-state="updateDropdownState" :informationDropdownVisible="informationDropdownVisible"
                 :productDropdownVisible="productDropdownVisible" :navigationDropdownVisible="navigationDropdownVisible"
                 :commentOverlayVisible="commentOverlayVisible" />
         </main>

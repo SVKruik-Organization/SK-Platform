@@ -1,6 +1,15 @@
 import type { DocumentationFile } from "~/assets/customTypes";
 import { parseDocumentationFile } from "~/utils/documentation";
 
+/**
+ * 
+ * @param folder 
+ * @param version 
+ * @param language 
+ * @param type 
+ * @returns 
+ * @deprecated
+ */
 export const useFetchDocumentationDefault = async (folder: string, version: string, language: string, type: string) => {
     const documentationDefault = ref<DocumentationFile | boolean>(false);
     await new Promise<void>(async (resolve) => {

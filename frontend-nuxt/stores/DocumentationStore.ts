@@ -93,31 +93,20 @@ export const useDocumentationStore = defineStore("documentationStore", {
             } else return this[convertedType];
         },
         /**
-         * Check if a string is a valid folder/category.
-         * @param folder The name of the folder to validate.
-         * @param type Documentation (Doc) or Guides (Guide)
-         * @returns The folder object from local storage or undefined if not found.
-         */
-        validateFolder(folder: string | undefined, type: string): DocumentationIndexItem | undefined {
-            // Convert input type to Store State Key
-            let convertedType: "docIndex" | "guideIndex" = "docIndex";
-            if (type === "Guide") convertedType = "guideIndex";
-
-            if (!folder) return;
-            return this[convertedType].filter((indexItem: DocumentationIndexItem) => indexItem.category === folder)[0];
-        },
-        /**
          * Check if a string is a valid category item.
-         * @param folder The name of the folder to validate.
-         * @param name The name of the page to validate.
          * @param type Documentation (Doc) or Guides (Guide)
+         * @param category The name of the folder to validate.
+         * @param page The name of the page to validate.
          * @returns If the page is valid or not.
          */
-        validatePage(folder: string | undefined, name: string | undefined, type: string): boolean {
-            if (!folder || !name) return false;
-            const target = this.validateFolder(folder, type);
-            if (!target) return false;
-            return 0 < target.children.filter(child => child === name).length;
+        validatePage(type: string, category: string, page: string | undefined): boolean {
+            let convertedType: "docIndex" | "guideIndex" = "docIndex";
+            if (type === "Guide") convertedType = "guideIndex";
+            const categoryItem: DocumentationIndexItem | null = this[convertedType].filter((indexItem: DocumentationIndexItem) => indexItem.category === category)[0];
+            if (!categoryItem) return false;
+            if (page) {
+                return categoryItem.children.filter(child => child === page).length > 0;
+            } else return true;
         },
         /**
          * Reload all store keys.

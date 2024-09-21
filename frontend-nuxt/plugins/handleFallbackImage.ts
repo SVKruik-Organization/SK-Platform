@@ -7,7 +7,6 @@ export default defineNuxtPlugin((nuxtApp) => {
             switch (type) {
                 case ImageErrorTypes.icon:
                     eventTarget.src = "/img/svg/circle-exclamation-regular.svg";
-                    console.log("Trigger");
                     break;
                 case ImageErrorTypes.banner:
                     eventTarget.src = "/img/svg/image-landscape-regular.svg";
