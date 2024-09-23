@@ -43,6 +43,7 @@ export function getFile(folder: string, name: string, version: string, language:
             "modification_time": new Date(metadata.mtimeMs),
             "creation_time": new Date(metadata.birthtimeMs),
             "chapters": chapters,
+            "description": root.querySelector(".page-description")?.innerText.replace(/\\n/g, " ").replace(/\s+/g, " ") || ""
         }
     } catch (error: any) {
         if (error.code === "ENOENT") {
@@ -100,17 +101,20 @@ export function getDefaultFile(folder: string, version: string, language: string
         const rawFile: Array<Dirent> = readdirSync(`${__dirname}/../../data/html/${version}/${language}/${type}/${rawFolders[0].name}`, { withFileTypes: true })
             .filter(entity => entity.isFile() && entity.name === "00_Default.html");
         if (rawFile.length === 0) return 404;
+        const fileContents: string = readFileSync(`${rawFile[0].parentPath}/${rawFile[0].name}`, "utf8");
+        const root = parse(fileContents);
 
         // Retrieve & Send File
         const metadata: Stats = statSync(`${rawFile[0].parentPath}/${rawFile[0].name}`);
         return {
             "name": rawFile[0].name,
-            "fileContents": readFileSync(`${rawFile[0].parentPath}/${rawFile[0].name}`, "utf8"),
+            "fileContents": fileContents,
             "size": metadata.size,
             "access_time": new Date(metadata.atimeMs),
             "modification_time": new Date(metadata.mtimeMs),
             "creation_time": new Date(metadata.birthtimeMs),
-            "chapters": []
+            "chapters": [],
+            "description": root.querySelector(".page-description")?.innerText.replace(/\\n/g, " ").replace(/\s+/g, " ") || ""
         }
     } catch (error: any) {
         if (error.code === "ENOENT") {

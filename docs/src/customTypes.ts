@@ -27,7 +27,8 @@ export type DocumentationFile = {
     "access_time": Date,
     "modification_time": Date,
     "creation_time": Date,
-    "chapters": Array<string>
+    "chapters": Array<string>,
+    "description": string
 }
 
 // Database-Persisted Metadata

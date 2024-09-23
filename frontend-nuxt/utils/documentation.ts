@@ -7,7 +7,8 @@ import type { DocumentationFile, DocumentationProduct, RelatedItem } from "~/ass
  * @param folder The name of the folder with underscores instead of spaces. Examples: Get_Started, Community
  * @returns The usable parsed DocumentationFile.
  */
-export async function parseDocumentationFile(input: any): Promise<DocumentationFile> {
+export async function parseDocumentationFile(input: any): Promise<DocumentationFile | null> {
+    if (!input || !input.file) return null;
     return {
         "name": input.file.name,
         "fileContents": input.file.fileContents,
@@ -16,7 +17,7 @@ export async function parseDocumentationFile(input: any): Promise<DocumentationF
         "modification_time": getDate(input.file.modification_time).fullDate,
         "creation_time": getDate(input.file.creation_time).fullDate,
         "chapters": input.file.chapters,
-        "description": input.meta ? input.meta.description : "",
+        "description": input.file ? input.file.description : "",
         "products": (input.meta && input.meta.products) ? await parseDocumentationProducts(input) : [],
         "related": parseRelatedItems(input.related)
     }

@@ -2,6 +2,7 @@
     --main: #0d1116;
     --font: #ededed;
     --font-light: #b1b1b1;
+    --font-disabled: #585858;
     --fill: #161b22;
     --fill-light: #2a323e;
     --border: #30363d;
@@ -81,8 +82,7 @@ body {
 }
 
 .disabled-text {
-    color: var(--font-light);
-    opacity: 0.3;
+    color: var(--font-disabled);
 }
 
 .disabled-button {

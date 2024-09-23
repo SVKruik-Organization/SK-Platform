@@ -25,7 +25,7 @@ defineProps({
                     {{ data.category.replace(/_/g, " ") }}
                 </NuxtLink>
             </div>
-            <img v-if="data.image_url" :src="data.image_url">
+            <img v-if="data.image_url" :src="data.image_url" alt="Related Product Image">
         </article>
     </NuxtLink>
 </template>

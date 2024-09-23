@@ -57,6 +57,7 @@ function toggleVersionMenu(event: Event): void {
     if (target.tagName === "MENU") return;
     emit("dropdownState", DropdownStates.version, !props.versionDropdownVisible);
 }
+
 /**
  * Toggle the language dropdown menu.
  * @param event The click event.
@@ -66,6 +67,7 @@ function toggleLanguageMenu(event: Event): void {
     if (target.tagName === "MENU") return;
     emit("dropdownState", DropdownStates.language, !props.languageDropdownVisible);
 }
+
 /**
  * Cosmetically disable the refresh button and refetch the documentation index & recommended items.
  * Enforced by backend rate limit.
@@ -79,8 +81,9 @@ async function reloadDocumentation(): Promise<void> {
         if (refreshButton.value === null) return;
         refreshButton.value.disabled = false;
         refreshDisabled.value = false;
-    }, 2 * 60 * 1000);
+    }, 2 * 60 * 1000); // Two minutes
 }
+
 /**
  * Handle search input focus, also triggering the search interval.
  */
@@ -95,6 +98,7 @@ function searchFocusHandler(): void {
         await search(false, offset.value);
     }, 1500);
 }
+
 /**
  * Handle search input blur, also clearing the search interval.
  * @param event The blur event.
@@ -110,6 +114,7 @@ function searchBlurHandler(): void {
         }
     }
 }
+
 /**
  * Toggle the search mode (scope).
  * @param mode The search mode to switch to.
@@ -122,13 +127,15 @@ async function switchSearchMode(mode: string): Promise<void> {
     searchMode.value = mode;
     await search(true, offset.value);
 }
+
 /**
  * Get a random subject to suggest when no search results are found.
  */
 function getRandomSubject(): string {
-    const randomSubjects: Array<string> = ["Operator", "Apricaria", "Stelleri", "Bots", "Support", "FAQ", "Uplink", "API", "Integrating", "Authenticating", "Introduction", "Links", "Overway", "Commander", "Administrator", "Setup", "Roles"];
+    const randomSubjects: Array<string> = ["Operator", "Apricaria", "Stelleri", "Bots", "Support", "Help", "FAQ", "Uplink", "API", "Integrating", "Authenticating", "Introduction", "Links", "Overway", "Commander", "Administrator", "Setup", "Roles"];
     return randomSubjects[Math.floor(Math.random() * randomSubjects.length)];
 }
+
 /**
  * Query the search engine.
  * @param force Overwrite the same search query check.
@@ -152,11 +159,15 @@ async function search(force: boolean, newOffset: number): Promise<void | Documen
     } else if (!data) emptyMessage.value = "An error occurred while fetching the search results.";
 }
 
+/**
+ * Handle the search input, and show the loading indicator.
+ */
 function handleInput(): void {
     if (!loadingIndicator.value) return;
     if (!searchInputChecks(false, offset.value)) return;
     loadingIndicator.value.classList.add("visible");
 }
+
 /**
  * Perform several checks before querying the search engine to prevent unnecessary requests.
  * @param force Overwrite the same search query check.
@@ -284,8 +295,9 @@ function searchInputChecks(force: boolean, newOffset: number): boolean {
                     </div>
                 </ClientOnly>
                 <div class="right-nav-buttons flex">
-                    <NuxtLink title="Go back to the homepage." class="flex navbar-pill gradient-button" to="/">
-                        <p>Home</p>
+                    <NuxtLink title="Go back to the SK Platform homepage." class="flex navbar-pill gradient-button"
+                        to="/">
+                        <p>Platform</p>
                         <i class="fa-regular fa-house"></i>
                     </NuxtLink>
                     <NuxtLink title="Read the release notes." class="flex navbar-pill" to="/documentation">
@@ -296,7 +308,7 @@ function searchInputChecks(force: boolean, newOffset: number): boolean {
                         :title="refreshDisabled ? 'Re-fetch is rate-limited for less than 2 minutes to prevent spam.' : 'Re-fetch the documentation.'"
                         class="flex justify-center navbar-pill" type="button" @click="reloadDocumentation()"
                         @mouseenter="refreshHover = true" ref="refreshButton"
-                        :class="{ 'navbar-pill-expand': refreshHover && !refreshDisabled, 'disabled-text': refreshDisabled }"
+                        :class="{ 'navbar-pill-expand': refreshHover && !refreshDisabled, 'disabled-button': refreshDisabled }"
                         @mouseleave="refreshHover = false">
                         <p :class="{ 'navbar-pill-text-expand': refreshHover && !refreshDisabled }">
                             Refresh</p>

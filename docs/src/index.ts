@@ -52,7 +52,7 @@ app.get("/api/status/badge", (_req: Request, res: Response) => {
 // Refresh
 const refreshLimit = rateLimit({
     windowMs: 2 * 60 * 1000,
-    limit: 10,
+    limit: 5,
     standardHeaders: true,
     legacyHeaders: false
 });

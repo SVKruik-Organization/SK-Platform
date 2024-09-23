@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { DropdownStates, type DocChapterItem, type DocumentationTypes, type DocumentationFile, type RelatedItem } from '@/assets/customTypes';
+import { DropdownStates, type DocChapterItem, type DocumentationTypes, type DocumentationFile, type RelatedItem, type DocumentationIndexItem } from '@/assets/customTypes';
 import { useDocumentationStore } from '@/stores/DocumentationStore';
 import { type PropType } from 'vue';
 
@@ -24,19 +24,64 @@ const props = defineProps({
 const page = ref<string | undefined>(props.page);
 const chapterData: Ref<Array<DocChapterItem>> = ref([]);
 const relatedItems: Ref<Array<RelatedItem>> = ref([]);
+let fileData: Ref<DocumentationFile | null> = ref(null);
 
 // Reactive Data
 if (!documentationStore.validatePage(props.type, props.category, page.value)) useRouter().push(`/documentation/notfound?type=${props.type}&category=${props.category}&page=${page.value}`);
-const { data: fileData } = await useAsyncData<DocumentationFile>("fileData",
+const { data: rawFileData } = await useAsyncData<DocumentationFile>("fileData",
     () => $fetch(`${runtimeConfig.public.docsApiBase}/${props.page ? 'getFile' : 'getDefault'}/${documentationStore.version}/${documentationStore.language}/${props.type}`, {
         params: {
             "folder": props.category,
             "name": props.page,
+        },
+        onRequestError() {
+            useRouter().push("/documentation/error");
+        },
+        onResponseError(error) {
+            if (error.response.status === 404) {
+                useRouter().push(`/documentation/notfound?type=${props.type}&category=${props.category}&page=${page.value}`);
+            } else useRouter().push("/documentation/error");
         }
     }), {
     watch: [page]
 });
-fileData.value = await parseDocumentationFile(fileData.value) as DocumentationFile;
+fileData.value = await parseDocumentationFile(rawFileData.value) as DocumentationFile;
+
+// SEO
+const links: Array<{ rel: string, href: string }> = [
+    { rel: "index", href: "https://platform.stefankruik.com/documentation" },
+    { rel: "self", href: `https://platform.stefankruik.com/documentation/read/${props.type}/${props.category}${props.page ? `/${props.page}` : ""}` }
+]
+if (props.page) {
+    const currentCategory: DocumentationIndexItem | undefined = documentationStore.getCategory(props.type, props.category);
+    if (currentCategory) {
+        const nextPageName = currentCategory.children[currentCategory.children.indexOf(props.page) + 1];
+        if (nextPageName) links.push({
+            rel: "next",
+            href: `https://platform.stefankruik.com/documentation/read/${props.type}/${props.category}/${nextPageName}`
+        });
+        const previousPageName = currentCategory.children[currentCategory.children.indexOf(props.page) - 1];
+        if (previousPageName) links.push({
+            rel: "prev",
+            href: `https://platform.stefankruik.com/documentation/read/${props.type}/${props.category}/${previousPageName}`
+        });
+    } else {
+        useRouter().push(`/documentation/notfound?type=${props.type}&category=${props.category}&page=${page.value}`);
+    }
+}
+useHead({
+    title: `SK Platform | Documentation | ${props.category.replace(/_/g, " ")}${props.page ? `/${props.page.replace(/_/g, " ")}` : ""}`,
+    meta: [
+        { name: "description", content: fileData.value.description.length > 0 ? fileData.value.description : `Read page ${props.page ? props.page.replace(/_/g, " ") : ""} in ${props.category.replace(/_/g, " ")} on the SK Platform Documentation website.` },
+        { name: "keywords", content: `SK Platform, Documentation, Read, ${props.category.replace(/_/g, " ")}, Stefan Kruik${props.page ? ", " + props.page.replace(/_/g, " ") : ""}` },
+        { name: "author", content: "Stefan Kruik, platform@stefankruik.com" },
+        { name: "reply-to", content: "platform@stefankruik.com" },
+        { name: "owner", content: "Stefan Kruik" },
+        { name: "color-scheme", content: "dark" },
+        { name: "theme-color", content: "#1E1F24" }
+    ],
+    link: links
+});
 
 // HTML Elements
 const shareButtonContents: Ref<HTMLParagraphElement | null> = ref(null);
@@ -168,7 +213,7 @@ function handleDropdownState(name: DropdownStates, newValue: boolean): void {
                         <ClientOnly>
                             <NuxtLink :to="`/documentation/Read/${type}/${category}`"
                                 title="Go to the category home page.">
-                                {{ category }}
+                                {{ category.replace(/_/g, " ") }}
                             </NuxtLink>
                         </ClientOnly>
                     </div>
@@ -212,7 +257,7 @@ function handleDropdownState(name: DropdownStates, newValue: boolean): void {
                             <NuxtLink class="flex featured-product-item" v-for="product of fileData.products"
                                 :to="product.url">
                                 <img :src="`https://files.stefankruik.com/Products/100/${product.name}.png`"
-                                    @error="handleFallbackImage($event, 'icon')">
+                                    @error="handleFallbackImage($event, 'icon')" alt="Product Icon">
                                 <p>{{ product.name.replace(/_/g, " ") }}</p>
                             </NuxtLink>
                         </ClientOnly>
@@ -322,7 +367,7 @@ function handleDropdownState(name: DropdownStates, newValue: boolean): void {
                                 <NuxtLink class="flex featured-product-item" v-for="product of fileData.products"
                                     :to="product.url">
                                     <img :src="`https://files.stefankruik.com/Products/100/${product.name}.png`"
-                                        alt="Prod Img" @error="handleFallbackImage($event, 'icon')">
+                                        @error="handleFallbackImage($event, 'icon')" alt="Product Icon">
                                     <p>{{ product.name.replace(/_/g, " ") }}</p>
                                 </NuxtLink>
                             </ClientOnly>

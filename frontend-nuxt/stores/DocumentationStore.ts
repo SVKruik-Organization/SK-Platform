@@ -140,6 +140,11 @@ export const useDocumentationStore = defineStore("documentationStore", {
             let convertedType: "docIndex" | "guideIndex" = "docIndex";
             if (type === "Guide") convertedType = "guideIndex";
             return this[convertedType].filter((indexItem: DocumentationIndexItem) => indexItem.category === categoryName)[0]?.children;
+        },
+        getCategory(type: string, name: string): DocumentationIndexItem | undefined {
+            let convertedType: "docIndex" | "guideIndex" = "docIndex";
+            if (type === "Guide") convertedType = "guideIndex";
+            return this[convertedType].filter((indexItem: DocumentationIndexItem) => indexItem.category === name)[0];
         }
     }
 });

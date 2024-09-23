@@ -69,24 +69,24 @@ function handleDropdownState(name: DropdownStates, newValue: boolean): void {
                 <h3 class="content-splitter-header light-text ">Explore information about SK Platform
                     and related product lines.
                 </h3>
-                <img class="mesh" src="/Mesh_1.png">
+                <img class="mesh" src="/Mesh_1.png" alt="Abstract Mesh">
             </div>
             <div class="hero-right flex">
                 <NuxtLink to="/documentation/read/Doc/Products/Bots#Interpres">
                     <img src="https://files.stefankruik.com/Products/500/Interpres.png" class="hero-bot-image"
-                        title="Interpres, GitHub API proxy bot.">
+                        title="Interpres, GitHub API proxy bot." alt="Interpres Profile Picture">
                 </NuxtLink>
                 <NuxtLink to="/documentation/read/Doc/Products/Bots#Ispidina">
                     <img src="https://files.stefankruik.com/Products/500/Ispidina.png" class="hero-bot-image"
-                        title="Ispidina, TypeScript pioneer bot.">
+                        title="Ispidina, TypeScript pioneer bot." alt="Ispidina Profile Picture">
                 </NuxtLink>
                 <NuxtLink to="/documentation/read/Doc/Products/Bots#Stelleri">
                     <img src="https://files.stefankruik.com/Products/500/Stelleri.png" class="hero-bot-image"
-                        title="Stelleri, early-access features bot.">
+                        title="Stelleri, early-access features bot." alt="Stelleri Profile Picture">
                 </NuxtLink>
                 <NuxtLink to="/documentation/read/Doc/Products/Bots#Apricaria">
                     <img src="https://files.stefankruik.com/Products/500/Apricaria.png" class="hero-bot-image"
-                        title="Apricaria, second gen main production bot.">
+                        title="Apricaria, second gen main production bot." alt="Apricaria Profile Picture">
                 </NuxtLink>
             </div>
         </div>
@@ -167,14 +167,24 @@ function handleDropdownState(name: DropdownStates, newValue: boolean): void {
         </div>
         <DocumentationFooter @dropdown-state="handleDropdownState" :comment-overlay-visible="commentOverlayVisible"
             :type="undefined" :category="undefined" :page="undefined"></DocumentationFooter>
-        <a href="https://github.com/SVKruik-Organization/SK-Platform" target="_blank"
-            class="banner-content last-content-container footer-note flex">
-            <p class="disabled-text">Stefan Kruik</p>
-            <i class="fa-regular fa-circle-small disabled-text"></i>
-            <p class="disabled-text">{{ new Date().getFullYear() }}</p>
-            <i class="fa-regular fa-circle-small disabled-text"></i>
-            <p class="disabled-text">v1_dev_beta</p>
-        </a>
+        <div class="banner-content last-content-container footer-wrapper flex-col">
+            <div class="flex footer-note">
+                <a href="https://github.com/SVKruik">
+                    <p class="disabled-text">Stefan Kruik</p>
+                </a>
+                <i class="fa-regular fa-circle-small disabled-text"></i>
+                <p class="disabled-text">{{ new Date().getFullYear() }}</p>
+                <i class="fa-regular fa-circle-small disabled-text"></i>
+                <a href="https://github.com/SVKruik-Organization/SK-Platform" target="_blank">
+                    <p class="disabled-text">v2_dev_beta</p>
+                </a>
+            </div>
+            <div class="flex footer-note">
+                <p class="disabled-text">Made with</p>
+                <i class="fa-solid fa-heart disabled-text"></i>
+                <p class="disabled-text">by 🇺🇦, hosted in 🇳🇱</p>
+            </div>
+        </div>
     </section>
 </template>
 
@@ -270,11 +280,15 @@ h1 {
     gap: 20px;
 }
 
-.footer-note {
+.footer-wrapper {
     margin-bottom: 15px;
     margin-top: 40px;
     width: 100%;
-    justify-content: center;
+    align-items: center;
+}
+
+.footer-note {
+    align-self: center;
 }
 
 .footer-note p {
