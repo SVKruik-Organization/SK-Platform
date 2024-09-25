@@ -9,7 +9,7 @@ export default defineNuxtPlugin((nuxtApp) => {
                     eventTarget.src = "/img/svg/circle-exclamation-regular.svg";
                     break;
                 case ImageErrorTypes.banner:
-                    eventTarget.src = "/img/svg/image-landscape-regular.svg";
+                    eventTarget.src = "/img/svg/image-slash-regular.svg";
                     break;
             }
             eventTarget.classList.add("error-image");
