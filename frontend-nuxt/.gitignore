@@ -9,3 +9,7 @@ logs
 .DS_Store
 .idea
 .env.local
+package-lock.json
+.env
+.obsidian
+.vscode

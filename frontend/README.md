@@ -1,6 +1,6 @@
-# SK Platform
+# SK Platform - frontend
 
-Welcome to SK Platform, the place where the whole project comes together. SK Platform is the homepage of this project. It features SK Docs, account management and a lot more. If you want to start using my products, this is the place to be. Check out the website [here](https://platform.stefankruik.com), and [reach out](https://url.skpvt.io/r/support) if you have any questions.
+This directory is home to the now deprecated Vue Options API frontend. It has been replaced by a Nuxt Composition API frontend. This has been done for better SEO performance. Once the new Nuxt version is stable and battle-tested, I will replace this directory with the Nuxt version. CI/CD deployment of the Nuxt version has been completed already, so now it's just testing.
 
 ---
 
