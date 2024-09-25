@@ -5,7 +5,11 @@ export default defineNuxtConfig({
         public: {
             authApiBase: process.env.AUTH_API_BASE,
             docsApiBase: process.env.DOCS_API_BASE
-        }
+        },
+        uplink_host: process.env.AMQP_HOST,
+        uplink_port: process.env.AMQP_PORT,
+        uplink_username: process.env.AMQP_USERNAME,
+        uplink_password: process.env.AMQP_PASSWORD
     },
     modules: ['@pinia/nuxt'],
     ssr: true,

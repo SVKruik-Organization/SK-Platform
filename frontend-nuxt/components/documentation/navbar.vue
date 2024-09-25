@@ -235,12 +235,12 @@ function searchInputChecks(force: boolean, newOffset: number): boolean {
                                     </div>
                                     <section class="results full-width flex-col disable-nav-close">
                                         <NuxtLink v-if="searchResults && searchResults.count > 0"
-                                            class="flex-col search-result-item disable-nav-close"
+                                            class="flex-col search-result-item"
                                             :title="`Visit ${searchResult.type} ${searchResult.page} in ${searchResult.category}`"
                                             :to="`/documentation/read/${searchResult.type}/${searchResult.category.replace(/ /g, '_')}${searchResult.page === 'Default' ? '' : `/${searchResult.page.replace(/ /g, '_')}`}`"
                                             v-for="searchResult of searchResults.results">
                                             <strong>{{ searchResult.page }}</strong>
-                                            <div class="flex search-results-meta disable-nav-close">
+                                            <div class="flex search-results-meta">
                                                 <p>{{ searchResult.type }}</p>
                                                 <i class="fa-regular fa-circle-small"></i>
                                                 <p>{{ searchResult.category }}</p>

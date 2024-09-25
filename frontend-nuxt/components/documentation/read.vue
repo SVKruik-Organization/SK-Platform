@@ -98,7 +98,7 @@ onMounted(() => {
 
         window.scrollBy(0, 0);
         setActiveChapter();
-        scrollAnchor();
+        scrollAnchor(null);
     }
 });
 onUnmounted(() => {
@@ -109,6 +109,11 @@ onUnmounted(() => {
 const isAnchored = (title: string) => {
     return computed<boolean>(() => route.hash === '#' + title).value;
 };
+
+// Watchers
+watch(useRoute(), () => {
+    scrollAnchor(0);
+});
 
 // Methods
 
@@ -146,12 +151,12 @@ function share(): void {
 
 /**
  * Scroll the URL anchor into view.
+ * @param timeout The timeout before scrolling.
  */
-function scrollAnchor(): void {
+function scrollAnchor(timeout: number | null): void {
     setTimeout(() => {
         if (typeof fileData.value === "object") {
-            fileData.value = fileData.value as DocumentationFile;
-            const chapters: Array<string> = fileData.value.chapters;
+            const chapters: Array<string> = (fileData.value as DocumentationFile).chapters;
             if (!chapters.includes(route.hash)) return;
             const element: HTMLAnchorElement | null = document.getElementById(route.hash.slice(1)) as HTMLAnchorElement | null;
             const chapterMarker: HTMLAnchorElement | null = document.getElementById(`${route.hash.slice(1)}_aside`) as HTMLAnchorElement | null;
@@ -162,7 +167,7 @@ function scrollAnchor(): void {
                 chapterMarker.classList.add("anchored-chapter");
             }
         }
-    }, 100);
+    }, timeout || 100);
 }
 
 /**
