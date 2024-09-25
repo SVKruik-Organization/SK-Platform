@@ -1,7 +1,6 @@
 <script setup lang="ts">
 import { DropdownStates, type DocumentationSearchResponse } from '@/assets/customTypes';
 import { useDocumentationStore } from '@/stores/DocumentationStore';
-import type { RouteLocation } from 'vue-router';
 
 // Setup
 const documentationStore = useDocumentationStore();
@@ -29,13 +28,6 @@ const inputFocus: Ref<boolean> = ref(false);
 const searchInput: Ref<null | HTMLInputElement> = ref(null);
 const loadingIndicator: Ref<null | HTMLElement> = ref(null);
 const refreshButton: Ref<null | HTMLButtonElement> = ref(null);
-
-// Watchers
-watch(useRoute(), (from: RouteLocation, to: RouteLocation) => {
-    if (from.path === to.path) return;
-    if (searchInput.value) searchInput.value.blur();
-    inputFocus.value = false;
-});
 
 // Lifecycle
 onMounted(() => {

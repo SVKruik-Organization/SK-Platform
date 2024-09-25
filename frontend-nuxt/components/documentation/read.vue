@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { DropdownStates, type DocChapterItem, type DocumentationTypes, type DocumentationFile, type RelatedItem, type DocumentationIndexItem } from '@/assets/customTypes';
+import { DropdownStates, type DocChapterItem, type DocumentationTypes, type DocumentationFile, type DocumentationIndexItem } from '@/assets/customTypes';
 import { useDocumentationStore } from '@/stores/DocumentationStore';
 import { type PropType } from 'vue';
 
@@ -23,11 +23,16 @@ const props = defineProps({
 // Reactive Data
 const page = ref<string | undefined>(props.page);
 const chapterData: Ref<Array<DocChapterItem>> = ref([]);
-const relatedItems: Ref<Array<RelatedItem>> = ref([]);
 let fileData: Ref<DocumentationFile | null> = ref(null);
 
+// Prevent Default Page
+if (page.value === "Default") {
+    useRouter().push(`/documentation/read/${props.type}/${props.category}`);
+} else if (!documentationStore.validatePage(props.type, props.category, page.value)) {
+    useRouter().push(`/documentation/notfound?type=${props.type}&category=${props.category}&page=${page.value}`);
+}
+
 // Reactive Data
-if (!documentationStore.validatePage(props.type, props.category, page.value)) useRouter().push(`/documentation/notfound?type=${props.type}&category=${props.category}&page=${page.value}`);
 const { data: rawFileData } = await useAsyncData<DocumentationFile>("fileData",
     () => $fetch(`${runtimeConfig.public.docsApiBase}/${props.page ? 'getFile' : 'getDefault'}/${documentationStore.version}/${documentationStore.language}/${props.type}`, {
         params: {
@@ -69,17 +74,20 @@ if (props.page) {
         useRouter().push(`/documentation/notfound?type=${props.type}&category=${props.category}&page=${page.value}`);
     }
 }
+const metaItems = [
+    { name: "keywords", content: `SK Platform, Documentation, Read, ${props.category.replace(/_/g, " ")}, Stefan Kruik${props.page ? ", " + props.page.replace(/_/g, " ") : ""}` },
+    { name: "author", content: "Stefan Kruik, platform@stefankruik.com" },
+    { name: "reply-to", content: "platform@stefankruik.com" },
+    { name: "owner", content: "Stefan Kruik" },
+    { name: "color-scheme", content: "dark" },
+    { name: "theme-color", content: "#1E1F24" }
+];
+if (fileData.value) {
+    metaItems.push({ name: "description", content: fileData.value.description.length > 0 ? fileData.value.description : `Read page ${props.page ? props.page.replace(/_/g, " ") : ""} in ${props.category.replace(/_/g, " ")} on the SK Platform Documentation website.` },)
+}
 useHead({
     title: `SK Platform | Documentation | ${props.category.replace(/_/g, " ")}${props.page ? `/${props.page.replace(/_/g, " ")}` : ""}`,
-    meta: [
-        { name: "description", content: fileData.value.description.length > 0 ? fileData.value.description : `Read page ${props.page ? props.page.replace(/_/g, " ") : ""} in ${props.category.replace(/_/g, " ")} on the SK Platform Documentation website.` },
-        { name: "keywords", content: `SK Platform, Documentation, Read, ${props.category.replace(/_/g, " ")}, Stefan Kruik${props.page ? ", " + props.page.replace(/_/g, " ") : ""}` },
-        { name: "author", content: "Stefan Kruik, platform@stefankruik.com" },
-        { name: "reply-to", content: "platform@stefankruik.com" },
-        { name: "owner", content: "Stefan Kruik" },
-        { name: "color-scheme", content: "dark" },
-        { name: "theme-color", content: "#1E1F24" }
-    ],
+    meta: metaItems,
     link: links
 });
 
@@ -111,7 +119,7 @@ const isAnchored = (title: string) => {
 };
 
 // Watchers
-watch(useRoute(), () => {
+watch(() => route.fullPath, () => {
     scrollAnchor(0);
 });
 
@@ -229,6 +237,7 @@ function handleDropdownState(name: DropdownStates, newValue: boolean): void {
                 </div>
                 <ClientOnly>
                     <NuxtLink :to="`/documentation/read/${type}/${category}/${link}`" class="navigation-link"
+                        :class="{ 'active-navigation-link': link === page }"
                         v-for="link in documentationStore.getCategoryList(type, category)">
                         {{ link.replace(/_/g, " ") }}
                     </NuxtLink>
@@ -344,8 +353,7 @@ function handleDropdownState(name: DropdownStates, newValue: boolean): void {
                     <div class="documentation-content-child"
                         v-else-if="typeof fileData === 'boolean' && fileData === true">
                         <p class="error-message">Looks like this page is not available in this language and/or version.
-                            Please change them
-                            to their defaults and try again.
+                            Please change them to their defaults and try again.
                         </p>
                     </div>
                     <div class="documentation-content-child" v-else>
@@ -386,9 +394,11 @@ function handleDropdownState(name: DropdownStates, newValue: boolean): void {
                     <p class="light-text">Other popular and related pages that you might find useful as well.</p>
                 </div>
                 <div class="flex related-item-container">
-                    <DocumentationRelatedItem v-for="item of relatedItems" :key="item.id" :data="item">
-                    </DocumentationRelatedItem>
-                    <p v-if="!relatedItems.length" class="light-text">No related Docs or Guides for this page.</p>
+                    <ClientOnly>
+                        <DocumentationRelatedItem v-for="item of fileData.related" :key="item.id" :data="item">
+                        </DocumentationRelatedItem>
+                    </ClientOnly>
+                    <p v-if="!fileData.related.length" class="light-text">No related Docs or Guides for this page.</p>
                 </div>
             </section>
             <section class="flex-col footer-container">

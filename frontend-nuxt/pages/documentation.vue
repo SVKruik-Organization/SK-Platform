@@ -2,7 +2,6 @@
 import { type PropType } from 'vue';
 import DocumentationNavbar from '../components/documentation/navbar.vue'
 import type { DocumentationTypes, DropdownStates } from '@/assets/customTypes';
-import type { RouteLocation } from 'vue-router';
 
 // Props
 defineProps({
@@ -26,13 +25,6 @@ const dropdownStates = {
     navigationDropdownVisible,
     commentOverlayVisible
 };
-
-// Watchers
-watch(useRoute(), (from: RouteLocation, to: RouteLocation) => {
-    setTimeout(() => {
-        if (from.path !== to.path) window.scrollBy(0, 0);
-    }, 300);
-});
 
 // Methods
 

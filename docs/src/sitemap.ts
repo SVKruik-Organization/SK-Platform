@@ -59,6 +59,7 @@ categories.forEach((folder: Dirent) => {
 // Processed Pages
 let pages: Array<SitemapFile> = [];
 rawPages.forEach((page: Dirent) => {
+    if (page.name === "00_Default.html") return;
     const split = page.parentPath.split("/");
     const type = split[split.length - 2];
     const category = split[split.length - 1];

@@ -4,12 +4,16 @@ import "~/assets/css/base.css";
 import "~/assets/css/docpage.css";
 import "~/assets/css/interaction.css";
 
-watch(useRoute(), (to: RouteLocation, _from: RouteLocation) => {
-    let base: string = to.path.split("/")[1];
-    if (base.length) {
-        base = base.charAt(0).toUpperCase() + base.slice(1);
-    } else base = "Home";
-    document.title = `SK Platform | ${base}`;
+// Setup
+const route = useRoute();
+
+// Watchers
+watch(() => route, (to: RouteLocation, _from: RouteLocation) => {
+    let suffix: string = to.path.split("/")[1];
+    if (suffix.length) {
+        suffix = suffix.charAt(0).toUpperCase() + suffix.slice(1);
+    } else suffix = "Home";
+    document.title = `SK Platform | ${suffix}`;
 });
 </script>
 

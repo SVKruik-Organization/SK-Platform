@@ -3,8 +3,6 @@ import type { DocumentationFile, DocumentationProduct, RelatedItem } from "~/ass
 /**
  * Convert the API response to a DocumentationFile typed object.
  * @param input Raw documentation file.
- * @param type Documentation (Doc) or Guides (Guide)
- * @param folder The name of the folder with underscores instead of spaces. Examples: Get_Started, Community
  * @returns The usable parsed DocumentationFile.
  */
 export async function parseDocumentationFile(input: any): Promise<DocumentationFile | null> {
@@ -18,7 +16,7 @@ export async function parseDocumentationFile(input: any): Promise<DocumentationF
         "creation_time": getDate(input.file.creation_time).fullDate,
         "chapters": input.file.chapters,
         "description": input.file ? input.file.description : "",
-        "products": (input.meta && input.meta.products) ? await parseDocumentationProducts(input) : [],
+        "products": (input.meta && input.meta.products) ? await parseDocumentationProducts(input.meta.products) : [],
         "related": parseRelatedItems(input.related)
     }
 }
@@ -61,7 +59,8 @@ function parseRelatedItems(input: any): Array<RelatedItem> {
  */
 async function parseDocumentationProducts(input: any): Promise<DocumentationProduct[]> {
     // Setup
-    const rawProducts: Array<string> = input.meta.products.split(",");
+    const rawProducts: Array<string> = input.split(",");
+    console.log(rawProducts);
     const parsedProducts: Array<DocumentationProduct> = [];
     const documentationStore = useDocumentationStore();
     const index = await documentationStore.getIndex(false, "Doc");
@@ -71,6 +70,7 @@ async function parseDocumentationProducts(input: any): Promise<DocumentationProd
     const vOneValidBots: Array<string> = ["Luscinia", "Ciconia"];
     const products: Array<string> = index.find((item) => item.category === "Products")?.children || [];
     const services: Array<string> = index.find((item) => item.category === "Services")?.children || [];
+    console.log(products, services);
 
     rawProducts.forEach((product: string) => {
         let productURL: string = "/documentation/read/Doc/";
@@ -86,7 +86,7 @@ async function parseDocumentationProducts(input: any): Promise<DocumentationProd
             folder = "Services";
         }
 
-        if (!documentationStore.validatePage(folder, product, "Doc")) productURL = "#";
+        if (!documentationStore.validatePage("Doc", folder, product)) productURL = "#";
         parsedProducts.push({
             "name": product,
             "url": productURL
