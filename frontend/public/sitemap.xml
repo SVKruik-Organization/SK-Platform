@@ -158,13 +158,19 @@
     </url>
     <url>
         <loc>https://platform.stefankruik.com/documentation/read/Doc/Services/Forge</loc>
-        <lastmod>2024-09-25</lastmod>
+        <lastmod>2024-09-26</lastmod>
         <changefreq>monthly</changefreq>
         <priority>0.8</priority>
     </url>
     <url>
         <loc>https://platform.stefankruik.com/documentation/read/Doc/Services/Dispatch</loc>
         <lastmod>2024-09-25</lastmod>
+        <changefreq>monthly</changefreq>
+        <priority>0.8</priority>
+    </url>
+    <url>
+        <loc>https://platform.stefankruik.com/documentation/read/Doc/Services/Render</loc>
+        <lastmod>2024-09-26</lastmod>
         <changefreq>monthly</changefreq>
         <priority>0.8</priority>
     </url>
@@ -260,37 +266,43 @@
     </url>
     <url>
         <loc>https://platform.stefankruik.com/documentation/read/Doc/Parties</loc>
-        <lastmod>2024-09-10</lastmod>
+        <lastmod>2024-09-26</lastmod>
         <changefreq>monthly</changefreq>
         <priority>0.8</priority>
     </url>
     <url>
         <loc>https://platform.stefankruik.com/documentation/read/Doc/Parties/Operator</loc>
-        <lastmod>2024-09-10</lastmod>
+        <lastmod>2024-09-26</lastmod>
         <changefreq>monthly</changefreq>
         <priority>0.8</priority>
     </url>
     <url>
         <loc>https://platform.stefankruik.com/documentation/read/Doc/Parties/Operator_Team</loc>
-        <lastmod>2024-09-10</lastmod>
+        <lastmod>2024-09-26</lastmod>
         <changefreq>monthly</changefreq>
         <priority>0.8</priority>
     </url>
     <url>
         <loc>https://platform.stefankruik.com/documentation/read/Doc/Parties/Administrator</loc>
-        <lastmod>2024-09-10</lastmod>
+        <lastmod>2024-09-26</lastmod>
         <changefreq>monthly</changefreq>
         <priority>0.8</priority>
     </url>
     <url>
-        <loc>https://platform.stefankruik.com/documentation/read/Doc/Parties/Guild</loc>
-        <lastmod>2024-09-10</lastmod>
+        <loc>https://platform.stefankruik.com/documentation/read/Doc/Parties/Server</loc>
+        <lastmod>2024-09-26</lastmod>
         <changefreq>monthly</changefreq>
         <priority>0.8</priority>
     </url>
     <url>
         <loc>https://platform.stefankruik.com/documentation/read/Doc/Parties/Blocked</loc>
-        <lastmod>2024-09-10</lastmod>
+        <lastmod>2024-09-26</lastmod>
+        <changefreq>monthly</changefreq>
+        <priority>0.8</priority>
+    </url>
+    <url>
+        <loc>https://platform.stefankruik.com/documentation/read/Doc/Parties/Blinded</loc>
+        <lastmod>2024-09-26</lastmod>
         <changefreq>monthly</changefreq>
         <priority>0.8</priority>
     </url>
@@ -416,7 +428,7 @@
     </url>
     <url>
         <loc>https://platform.stefankruik.com/documentation/read/Doc/More/Template</loc>
-        <lastmod>2024-09-10</lastmod>
+        <lastmod>2024-09-26</lastmod>
         <changefreq>monthly</changefreq>
         <priority>0.8</priority>
     </url>
