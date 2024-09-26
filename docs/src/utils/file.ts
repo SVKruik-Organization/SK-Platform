@@ -239,7 +239,7 @@ export function getFolderIcon(name: string): string {
         // Guides
         case "Technical":
             return "fa-compass-drafting";
-        case "Managment":
+        case "Management":
             return "fa-chart-mixed";
         case "Customization":
             return "fa-swatchbook"

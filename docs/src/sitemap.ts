@@ -59,14 +59,13 @@ categories.forEach((folder: Dirent) => {
 // Processed Pages
 let pages: Array<SitemapFile> = [];
 rawPages.forEach((page: Dirent) => {
-    if (page.name === "00_Default.html") return;
     const split = page.parentPath.split("/");
     const type = split[split.length - 2];
     const category = split[split.length - 1];
     const metadata: Stats = statSync(`${__dirname}/../data/html/${version}/${language}/${type}/${category}/${page.name}`);
 
     pages.push({
-        "url": `https://platform.stefankruik.com/documentation/read/${type}/${category.slice(3)}/${page.name.slice(3, -5)}`,
+        "url": `https://platform.stefankruik.com/documentation/read/${type}/${category.slice(3)}${page.name === "00_Default.html" ? "" : `/${page.name.slice(3, -5)}`}`,
         "modificationDate": dateFormatter(new Date(metadata.mtime))
     });
 });

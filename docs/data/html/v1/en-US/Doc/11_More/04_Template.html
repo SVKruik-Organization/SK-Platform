@@ -97,5 +97,121 @@
         <i class="fa-regular fa-link"></i>
         <h3>Tables</h3>
     </a>
-    <p>Tables are work in progress.</p>
+    <p>Basic classic table.</p>
+    <table class="table-type-classic" table-sortable="false">
+        <thead>
+            <tr>
+                <th>Column 1</th>
+                <th>Column 2</th>
+                <th>Column 3</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td>Row 1, Column 1</td>
+                <td>Row 1, Column 2</td>
+                <td>Row 1, Column 3</td>
+            </tr>
+            <tr>
+                <td>Row 2, Column 1</td>
+                <td>Row 2, Column 2</td>
+                <td>Row 2, Column 3</td>
+            </tr>
+            <tr>
+                <td>Row 3, Column 1</td>
+                <td>Row 3, Column 2</td>
+                <td>Row 3, Column 3</td>
+            </tr>
+            <tr>
+                <td>Row 4, Column 1</td>
+                <td>Row 4, Column 2</td>
+                <td>Row 4, Column 3</td>
+            </tr>
+            <tr>
+                <td>Row 5, Column 1</td>
+                <td>Row 5, Column 2</td>
+                <td>Row 5, Column 3</td>
+            </tr>
+        </tbody>
+    </table>
+    <p>Aside table.</p>
+    <table class="table-type-data" table-sortable="false">
+        <thead>
+            <tr>
+                <th></th>
+                <th>Var 1</th>
+                <th>Var 2</th>
+                <th>Var 3</th>
+                <th>Var 4</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td>Key A</td>
+                <td>A1</td>
+                <td>A2</td>
+                <td>A3</td>
+                <td>A4</td>
+            </tr>
+            <tr>
+                <td>Key B</td>
+                <td>B1</td>
+                <td>B2</td>
+                <td>B3</td>
+                <td>B4</td>
+            </tr>
+            <tr>
+                <td>Key C</td>
+                <td>C1</td>
+                <td>C2</td>
+                <td>C3</td>
+                <td>C4</td>
+            </tr>
+        </tbody>
+    </table>
+    <p>Sortable table. Click on the header cells to sort.</p>
+    <table class="table-type-classic" table-sort-type="string" table-sortable="true">
+        <thead>
+            <tr>
+                <th table-sortable-item>
+                    <div>
+                        <p>Click me!</p>
+                        <i class="fa-solid fa-sort"></i>
+                        <span click-action="tableSort" table-sort-number="1" class="click-item"></span>
+                    </div>
+                </th>
+                <th table-sortable-item>
+                    <div>
+                        <p>Or me!</p>
+                        <i class="fa-solid fa-sort"></i>
+                        <span click-action="tableSort" table-sort-number="2" class="click-item"></span>
+                    </div>
+                </th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td>Sort A</td>
+                <td>Sort D</td>
+            </tr>
+            <tr>
+                <td>Sort B</td>
+                <td>Sort E</td>
+            </tr>
+            <tr>
+                <td>Sort C</td>
+                <td>Sort F</td>
+            </tr>
+        </tbody>
+    </table>
+    <a href="#Code" id="Code" class="chapter flex">
+        <i class="fa-regular fa-link"></i>
+        <h3>Code</h3>
+    </a>
+    <p>Code blocks are work in progress.</p>
+    <a href="#Blockquote" id="Blockquote" class="chapter flex">
+        <i class="fa-regular fa-link"></i>
+        <h3>Blockquote</h3>
+    </a>
+    <p>Blockquotes are work in progress.</p>
 </article>

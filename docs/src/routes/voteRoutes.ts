@@ -40,7 +40,6 @@ router.put("/comment", async (req: Request, res: Response) => {
         };
 
         await database.query("UPDATE documentation_vote SET comment = ? WHERE ticket = ?", [commentRequest.commment, commentRequest.ticket]);
-        console.log(commentRequest);
         return res.sendStatus(200);
     } catch (error: any) {
         logError(error);
