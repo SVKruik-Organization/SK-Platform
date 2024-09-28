@@ -17,9 +17,10 @@ defineProps({
             <strong>{{ data.title }}</strong>
             <p class="related-description ellipsis">{{ data.description }}</p>
             <div class="related-sub flex">
-                <a :href="data.type === 'Doc' ? '#Documentation' : '#Guides'" class="related-sub-item">
+                <NuxtLink :to="data.type === 'Doc' ? '/documentation#Information' : '/documentation#Guides'"
+                    class="related-sub-item">
                     {{ data.type }}
-                </a>
+                </NuxtLink>
                 <i class="fa-regular fa-circle-small related-sub-item"></i>
                 <NuxtLink :to="`/documentation/read/${data.type}/${data.category}`" class="related-sub-item">
                     {{ data.category.replace(/_/g, " ") }}

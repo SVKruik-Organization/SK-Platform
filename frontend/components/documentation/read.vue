@@ -28,8 +28,6 @@ let fileData: Ref<DocumentationFile | null> = ref(null);
 // Prevent Default Page
 if (page.value === "Default") {
     useRouter().push(`/documentation/read/${props.type}/${props.category}`);
-} else if (!documentationStore.validatePage(props.type, props.category, page.value)) {
-    useRouter().push(`/documentation/notfound?type=${props.type}&category=${props.category}&page=${page.value}`);
 }
 
 // Reactive Data
@@ -50,6 +48,7 @@ const { data: rawFileData } = await useAsyncData<DocumentationFile>("fileData",
     }), {
     watch: [page]
 });
+if (rawFileData.value === null) useRouter().push(`/documentation/notfound?type=${props.type}&category=${props.category}&page=${page.value}`);
 fileData.value = await parseDocumentationFile(rawFileData.value) as DocumentationFile;
 
 // SEO
@@ -88,7 +87,10 @@ if (fileData.value) {
 useHead({
     title: `SK Platform | Documentation | ${props.category.replace(/_/g, " ")}${props.page ? `/${props.page.replace(/_/g, " ")}` : ""}`,
     meta: metaItems,
-    link: links
+    link: links,
+    htmlAttrs: {
+        lang: documentationStore.language.split("-")[0]
+    }
 });
 
 // HTML Elements
@@ -375,7 +377,8 @@ function handleDropdownState(name: DropdownStates, newValue: boolean): void {
                         <i class="fa-regular fa-arrow-right-from-line disable-close"></i>
                     </button>
                     <ClientOnly>
-                        <NuxtLink :to="`/documentation${type === 'Doc' ? '#Documentation' : '#Guides'}`"
+                        <NuxtLink
+                            :to="`/documentation${type === 'Doc' ? '/documentation#Information' : '/documentation#Guides'}`"
                             class="breadcrumb-item breadcrumb-link">
                             {{ type === 'Doc' ? 'Documentation' : 'Guides' }}
                         </NuxtLink>

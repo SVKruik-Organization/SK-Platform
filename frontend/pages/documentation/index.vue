@@ -37,22 +37,7 @@ onMounted(async () => {
     const initialRecommendedItems: Array<RecommendedItem> = (await documentationStore.getRecommendedItems(false, "Doc"))
         .concat(await documentationStore.getRecommendedItems(false, "Guide"));
     recommendedItems.value = initialRecommendedItems;
-
-    // Anchor Scroll
-    if (useRoute().hash) scrollAnchor();
 });
-
-// Methods
-
-/**
- * Scroll the specified anchor into view.
- */
-function scrollAnchor(): void {
-    const anchors: Array<string> = ["#Documentation", "#Guides", "#More"];
-    if (!anchors.includes(useRoute().hash)) return;
-    const element: HTMLHeadingElement | null = document.getElementById(useRoute().hash.slice(1)) as HTMLHeadingElement | null;
-    if (element) element.scrollIntoView({ behavior: "smooth" });
-}
 
 // Emitters
 const emit = defineEmits(["dropdownState"]);
@@ -112,7 +97,7 @@ function handleDropdownState(name: DropdownStates, newValue: boolean): void {
             </div>
         </div>
         <div class="banner-content flex-col section-title-container">
-            <h2 id="Documentation">Information</h2>
+            <h2 id="Information">Information</h2>
             <p class="light-text">In-depth information about all topics from integrating to
                 managing the SK Platform products.</p>
         </div>

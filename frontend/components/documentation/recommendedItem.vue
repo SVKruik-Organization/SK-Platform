@@ -18,9 +18,10 @@ defineProps({
         <article class="recommended-item-right flex-col">
             <p class="recommended-title ellipsis">{{ data.title }}</p>
             <div class="recommended-sub flex">
-                <a :href="data.type === 'Doc' ? '#Documentation' : '#Guides'" class="recommended-sub-item">
+                <NuxtLink :to="data.type === 'Doc' ? '/documentation#Information' : '/documentation#Guides'"
+                    class="recommended-sub-item">
                     {{ data.type }}
-                </a>
+                </NuxtLink>
                 <i class="fa-regular fa-circle-small recommended-sub-item"></i>
                 <NuxtLink :to="`/documentation/read/${data.type}/${data.category}`" class="recommended-sub-item">
                     {{ data.category.replace(/_/g, " ") }}

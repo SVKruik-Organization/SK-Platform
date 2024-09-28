@@ -7,6 +7,14 @@ import "~/assets/css/interaction.css";
 // Setup
 const route = useRoute();
 
+// SEO
+useHead({
+    title: "SK Platform",
+    htmlAttrs: {
+        lang: "en"
+    }
+});
+
 // Watchers
 watch(() => route, (to: RouteLocation, _from: RouteLocation) => {
     let suffix: string = to.path.split("/")[1];

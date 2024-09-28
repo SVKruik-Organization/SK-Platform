@@ -4,8 +4,8 @@ import { IndexPlaceholder, RecommendedPlaceholder, type DocumentationIndexItem, 
 
 export const useDocumentationStore = defineStore("documentationStore", {
     state: () => ({
-        docIndex: useLocalStorage("docIndex", [] as Array<DocumentationIndexItem>),
-        guideIndex: useLocalStorage("guideIndex", [] as Array<DocumentationIndexItem>),
+        docIndex: useSessionStorage("docIndex", [] as Array<DocumentationIndexItem>),
+        guideIndex: useSessionStorage("guideIndex", [] as Array<DocumentationIndexItem>),
         recommendedDocItems: useLocalStorage("recommendedDocItems", [] as Array<RecommendedItem>),
         recommendedGuideItems: useLocalStorage("recommendedGuideItems", [] as Array<RecommendedItem>),
         version: useLocalStorage("documentationVersion", "v1" as string),
@@ -13,8 +13,8 @@ export const useDocumentationStore = defineStore("documentationStore", {
         voteCast: useSessionStorage("voteCast", "" as string)
     }),
     hydrate(state) {
-        state.docIndex = useLocalStorage("docIndex", []);
-        state.guideIndex = useLocalStorage("guideIndex", []);
+        state.docIndex = useSessionStorage("docIndex", []);
+        state.guideIndex = useSessionStorage("guideIndex", []);
         state.recommendedDocItems = useLocalStorage("recommendedDocItems", []);
         state.recommendedGuideItems = useLocalStorage("recommendedGuideItems", []);
         state.version = useLocalStorage("documentationVersion", "v1");
