@@ -74,23 +74,46 @@ if (props.page) {
     }
 }
 const metaItems = [
-    { name: "keywords", content: `SK Platform, Documentation, Read, ${props.category.replace(/_/g, " ")}, Stefan Kruik${props.page ? ", " + props.page.replace(/_/g, " ") : ""}` },
+    { name: "keywords", content: `SK Platform, SK Docs, SK Docs, Stefan Kruik, stefankruik, bots, services, products, developers, community` },
     { name: "author", content: "Stefan Kruik, platform@stefankruik.com" },
-    { name: "reply-to", content: "platform@stefankruik.com" },
     { name: "owner", content: "Stefan Kruik" },
     { name: "color-scheme", content: "dark" },
-    { name: "theme-color", content: "#1E1F24" }
+    { name: "theme-color", content: "#1E1F24" },
+    { property: "og:title", content: "SK Platform" },
+    { property: "og:description", content: "The documentation for the SK Platform. Learn how to use the platform, its products, and services." },
+    { property: "og:url", content: "https://platform.stefankruik.com/documentation" },
+    { property: "og:type", content: "website" },
 ];
 if (fileData.value) {
     metaItems.push({ name: "description", content: fileData.value.description.length > 0 ? fileData.value.description : `Read page ${props.page ? props.page.replace(/_/g, " ") : ""} in ${props.category.replace(/_/g, " ")} on the SK Platform Documentation website.` },)
 }
+// const jsonld = {
+//     "@context": "https://schema.org",
+//     "@type": "BreadcrumbList",
+//     "itemListElement": [{
+//         "@type": "ListItem",
+//         "position": 1,
+//         "name": "A",
+//         "item": "A"
+//     }, {
+//         "@type": "ListItem",
+//         "position": 2,
+//         "name": "B",
+//         "item": "B"
+//     }]
+// }
 useHead({
     title: `SK Platform | Documentation | ${props.category.replace(/_/g, " ")}${props.page ? `/${props.page.replace(/_/g, " ")}` : ""}`,
     meta: metaItems,
     link: links,
     htmlAttrs: {
-        lang: documentationStore.language.split("-")[0]
-    }
+        lang: documentationStore.language.split("-")[0] || "en"
+    },
+    // script: [{
+    //     hid: "breadcrumbs-json-ld",
+    //     type: "application/ld+json",
+    //     textContent: JSON.stringify(jsonld)
+    // }]
 });
 
 // HTML Elements
@@ -358,11 +381,11 @@ function handleDropdownState(name: DropdownStates, newValue: boolean): void {
                             </div>
                             <div class="menu-item flex">
                                 <label class="light-text">Last Modification</label>
-                                <label>{{ fileData.modification_time }}</label>
+                                <label>{{ fileData.modificationTime }}</label>
                             </div>
                             <div class="menu-item flex">
                                 <label class="light-text">Created On</label>
-                                <label>{{ fileData.creation_time }}</label>
+                                <label>{{ fileData.creationTime }}</label>
                             </div>
                         </menu>
                     </button>

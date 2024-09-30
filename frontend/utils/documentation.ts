@@ -12,8 +12,8 @@ export async function parseDocumentationFile(input: any): Promise<DocumentationF
         "fileContents": input.file.fileContents,
         "size": input.file.size,
         "access_time": getDate(input.file.access_time).fullDate,
-        "modification_time": getDate(input.file.modification_time).fullDate,
-        "creation_time": getDate(input.file.creation_time).fullDate,
+        "modificationTime": getDate(input.file.modificationTime).fullDate,
+        "creationTime": getDate(input.file.creationTime).fullDate,
         "chapters": input.file.chapters,
         "description": input.file ? input.file.description : "",
         "products": (input.meta && input.meta.products) ? await parseDocumentationProducts(input.meta.products) : [],
@@ -46,7 +46,7 @@ function parseRelatedItems(input: any): Array<RelatedItem> {
             "icon": item.icon,
             "type": item.type,
             "description": item.description,
-            "image_url": imageUrl
+            "imageUrl": imageUrl
         });
     });
     return relatedItems;

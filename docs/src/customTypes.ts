@@ -25,8 +25,8 @@ export type DocumentationFile = {
     "fileContents": string,
     "size": number,
     "access_time": Date,
-    "modification_time": Date,
-    "creation_time": Date,
+    "modificationTime": Date,
+    "creationTime": Date,
     "chapters": Array<string>,
     "description": string
 }
@@ -45,14 +45,14 @@ export type FilesRequest = {
 
 // File Index/TOC Item
 export type IndexItem = {
-    "category_icon": string,
+    "categoryIcon": string,
     "category": string,
     "children": Array<string>
 }
 
 // Folder-Only
 export type FolderItem = {
-    "category_icon": string,
+    "categoryIcon": string,
     "category": string
 }
 
@@ -106,7 +106,7 @@ export type SeedIndexItem = {
 export type UplinkMessage = {
     "sender": string,
     "recipient": string,
-    "trigger_source": string,
+    "triggerSource": string,
     "reason": string,
     "task": string,
     "content": string,

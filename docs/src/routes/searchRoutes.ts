@@ -48,7 +48,7 @@ router.get("/all/:version/:language", searchLimit, async (req: Request, res: Res
         });
 
         // Return
-        return res.json({ "results": search.hits, "count": search.estimatedTotalHits, "duration_ms": search.processingTimeMs, "query": searchParams.query, "offset": offset });
+        return res.json({ "results": search.hits, "count": search.estimatedTotalHits, "durationMs": search.processingTimeMs, "query": searchParams.query, "offset": offset });
     } catch (error: any) {
         const userErrorCodes: Array<string> = ["index_not_found", "invalid_search_limit"];
         if (error.toString().includes("fetch failed")) return res.sendStatus(503);
@@ -76,7 +76,7 @@ router.get("/page/:version/:language", async (req: Request, res: Response) => {
         });
 
         // Return
-        return res.json({ "results": search.hits, "count": search.estimatedTotalHits, "duration_ms": search.processingTimeMs, "query": searchParams.query, "offset": offset });
+        return res.json({ "results": search.hits, "count": search.estimatedTotalHits, "durationMs": search.processingTimeMs, "query": searchParams.query, "offset": offset });
     } catch (error: any) {
         const userErrorCodes: Array<string> = ["index_not_found", "invalid_search_limit"];
         if (error.toString().includes("fetch failed")) return res.sendStatus(503);

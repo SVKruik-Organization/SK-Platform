@@ -19,7 +19,7 @@ async function login(event: MouseEvent): Promise<void> {
     if (typeof data === "boolean") return window.alert("Username/password incorrect.");
     userStore.setUser({
         "username": usernameInput.value.value,
-        "token": data.access_token
+        "token": data.accessToken
     });
     useRouter().push("/");
 }

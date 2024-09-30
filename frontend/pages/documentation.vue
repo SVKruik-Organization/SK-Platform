@@ -3,6 +3,9 @@ import { type PropType } from 'vue';
 import DocumentationNavbar from '../components/documentation/navbar.vue'
 import type { DocumentationTypes, DropdownStates } from '@/assets/customTypes';
 
+// Setup
+const documentationStore = useDocumentationStore();
+
 // Props
 defineProps({
     "type": { type: String as PropType<DocumentationTypes>, required: false },
@@ -25,6 +28,28 @@ const dropdownStates = {
     navigationDropdownVisible,
     commentOverlayVisible
 };
+
+// SEO
+const metaItems = [
+    { name: "keywords", content: `SK Platform Documentation, SK Documentation, SK Docs, SK Docs Home, Stefan Kruik, stefankruik, Bots, Products, Services, Guides` },
+    { name: "description", content: "The documentation for the SK Platform. Learn how to use the platform, its products, and services." },
+    { name: "author", content: "Stefan Kruik, platform@stefankruik.com" },
+    { name: "reply-to", content: "platform@stefankruik.com" },
+    { name: "owner", content: "Stefan Kruik" },
+    { name: "color-scheme", content: "dark" },
+    { name: "theme-color", content: "#1E1F24" },
+    { property: "og:title", content: "SK Platform | Documentation" },
+    { property: "og:description", content: "The documentation for the SK Platform. Learn how to use the platform, its products, and services." },
+    { property: "og:url", content: "https://platform.stefankruik.com/documentation" },
+    { property: "og:type", content: "website" },
+];
+useHead({
+    title: "SK Platform | Documentation",
+    meta: metaItems,
+    htmlAttrs: {
+        lang: documentationStore.language.split("-")[0] || "en"
+    }
+});
 
 // Methods
 

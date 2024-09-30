@@ -40,8 +40,8 @@ export function getFile(folder: string, name: string, version: string, language:
             "fileContents": fileContents,
             "size": metadata.size,
             "access_time": new Date(metadata.atimeMs),
-            "modification_time": new Date(metadata.mtimeMs),
-            "creation_time": new Date(metadata.birthtimeMs),
+            "modificationTime": new Date(metadata.mtimeMs),
+            "creationTime": new Date(metadata.birthtimeMs),
             "chapters": chapters,
             "description": root.querySelector(".page-description")?.innerText.replace(/\\n/g, " ").replace(/\s+/g, " ") || ""
         }
@@ -111,8 +111,8 @@ export function getDefaultFile(folder: string, version: string, language: string
             "fileContents": fileContents,
             "size": metadata.size,
             "access_time": new Date(metadata.atimeMs),
-            "modification_time": new Date(metadata.mtimeMs),
-            "creation_time": new Date(metadata.birthtimeMs),
+            "modificationTime": new Date(metadata.mtimeMs),
+            "creationTime": new Date(metadata.birthtimeMs),
             "chapters": [],
             "description": root.querySelector(".page-description")?.innerText.replace(/\\n/g, " ").replace(/\s+/g, " ") || ""
         }
@@ -145,7 +145,7 @@ export function getIndex(version: string, language: string, type: string): Array
         for (const rawFolderName of rawFolders) {
             const folderPath = `${__dirname}/../../data/html/${version}/${language}/${type}/${rawFolderName}`;
             const indexItem: IndexItem = {
-                "category_icon": getFolderIcon(rawFolderName.slice(3)),
+                "categoryIcon": getFolderIcon(rawFolderName.slice(3)),
                 "category": rawFolderName.slice(3),
                 "children": readdirSync(folderPath).filter(fileName => fileName.endsWith(".html") && fileName !== "00_Default.html").map(fileName => fileName.slice(3, -5))
             }
@@ -176,7 +176,7 @@ export function getCategories(version: string, language: string, type: string): 
             .filter(entity => entity.isDirectory())
             .map(directory => {
                 return {
-                    "category_icon": getFolderIcon(directory.name.slice(3)),
+                    "categoryIcon": getFolderIcon(directory.name.slice(3)),
                     "category": directory.name.replace(/_/g, " ").slice(3)
                 }
             });

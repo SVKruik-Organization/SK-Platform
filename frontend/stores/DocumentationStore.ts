@@ -83,12 +83,12 @@ export const useDocumentationStore = defineStore("documentationStore", {
             if (this[convertedType].length === 0 || force) {
                 const data = (await useFetchDocumentationRecommendedItems(this.language, type)).value;
                 if (typeof data === "boolean") return this[convertedType];
-                if (data.recommended_items.length === 0) {
+                if (data.recommendedItems.length === 0) {
                     this[convertedType] = RecommendedPlaceholder;
                     return RecommendedPlaceholder;
                 } else {
-                    this[convertedType] = data.recommended_items;
-                    return data.recommended_items;
+                    this[convertedType] = data.recommendedItems;
+                    return data.recommendedItems;
                 }
             } else return this[convertedType];
         },

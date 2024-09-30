@@ -113,7 +113,7 @@ app.get("/getIndex/:version/:language/:type", async (req: Request, res: Response
 app.get("/getRecommendedItems/:language/:type", async (req: Request, res: Response) => {
     const data: Array<RecommendedItem> | number = getRecommendedItems(req.params.language, req.params.type);
     if (typeof data === "number") return res.sendStatus(data);
-    return res.json({ "recommended_items": data });
+    return res.json({ "recommendedItems": data });
 });
 
 // Get Categories

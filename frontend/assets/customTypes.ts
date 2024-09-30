@@ -6,7 +6,7 @@ export type UserData = {
 
 // User Details
 export type UserDataResponse = {
-    "access_token": string
+    "accessToken": string
 }
 
 // Date Formatter
@@ -41,7 +41,7 @@ export enum ImageErrorTypes {
 export type UplinkMessage = {
     "sender": string,
     "recipient": string,
-    "trigger_source": string,
+    "triggerSource": string,
     "reason": string,
     "task": string,
     "content": string,
@@ -54,8 +54,8 @@ export type DocumentationFile = {
     "fileContents": string,
     "size": number,
     "access_time": string,
-    "modification_time": string,
-    "creation_time": string,
+    "modificationTime": string,
+    "creationTime": string,
     "chapters": Array<string>,
     "description": string,
     "products": Array<DocumentationProduct>,
@@ -69,7 +69,7 @@ export type DocumentationIndexResponse = {
 
 // Single Index/TOC Item
 export type DocumentationIndexItem = {
-    "category_icon": string
+    "categoryIcon": string
     "category": string,
     "children": Array<string>
 }
@@ -81,13 +81,13 @@ export type DocumentationCategoriesResponse = {
 
 // Single Folder Only
 export type FolderItem = {
-    "category_icon": string,
+    "categoryIcon": string,
     "category": string
 }
 
 // Raw Recommended Item Response
 export type DocumentationRecommendedItemsResponse = {
-    "recommended_items": Array<RecommendedItem>
+    "recommendedItems": Array<RecommendedItem>
 }
 
 // Documentation Homepage Recommended
@@ -111,7 +111,7 @@ export type RelatedItem = {
     "icon": string,
     "type": string,
     "description": string,
-    "image_url": string | null
+    "imageUrl": string | null
 }
 
 // Raw Full Refresh Response
@@ -126,7 +126,7 @@ export type DocumentationRefreshResponse = {
 export type DocumentationSearchResponse = {
     "results": Array<SearchResultItem>,
     "count": number,
-    "duration_ms": number,
+    "durationMs": number,
     "query": string,
     "offset": number
 }
@@ -164,7 +164,7 @@ export type DocumentationProduct = {
 }
 
 export const IndexPlaceholder: Array<DocumentationIndexItem> = [{
-    "category_icon": "",
+    "categoryIcon": "",
     "category": "None_Available",
     "children": []
 }]

@@ -13,7 +13,7 @@ defineProps({
     <menu class="category-item flex-col">
         <NuxtLink class="flex category-header" :to="`/documentation/read/${type}/${data.category}`"
             title="Click to see category details and it's contents.">
-            <i class=" fa-regular" :class="data.category_icon"></i>
+            <i class=" fa-regular" :class="data.categoryIcon"></i>
             <h4>{{ data.category.replace(/_/g, " ") }}</h4>
         </NuxtLink>
         <NuxtLink v-for="child of data.children.slice(0, 5)" title="Click to read this page."

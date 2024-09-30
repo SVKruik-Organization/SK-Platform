@@ -257,7 +257,7 @@ function searchInputChecks(force: boolean, newOffset: number): boolean {
                                     <small class="light-text disable-nav-close"
                                         v-if="searchResults && searchResults.count">Found {{
                                             searchResults.count }} results
-                                        in {{ searchResults.duration_ms }} ms</small>
+                                        in {{ searchResults.durationMs }} ms</small>
                                 </div>
                             </menu>
                         </button>
