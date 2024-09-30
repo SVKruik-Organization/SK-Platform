@@ -44,6 +44,26 @@ const emit = defineEmits(["dropdownState"]);
 function handleDropdownState(name: DropdownStates, newValue: boolean): void {
     emit("dropdownState", name, newValue);
 };
+
+// SEO
+const metaItems = [
+    { name: "keywords", content: `SK Platform, SK Docs, SK Docs, Stefan Kruik, stefankruik, bots, services, products, developers, community` },
+    { name: "author", content: "Stefan Kruik, platform@stefankruik.com" },
+    { name: "owner", content: "Stefan Kruik" },
+    { name: "color-scheme", content: "dark" },
+    { name: "theme-color", content: "#1E1F24" },
+    { property: "og:title", content: "SK Platform | Documentation" },
+    { property: "og:description", content: "The documentation for the SK Platform. Learn how to use the platform, its products, and services." },
+    { property: "og:url", content: `https://platform.stefankruik.com/documentation` },
+    { property: "og:type", content: "website" },
+];
+useHead({
+    title: "SK Platform",
+    meta: metaItems,
+    htmlAttrs: {
+        lang: documentationStore.language.split("-")[0] || "en"
+    }
+});
 </script>
 
 <template>

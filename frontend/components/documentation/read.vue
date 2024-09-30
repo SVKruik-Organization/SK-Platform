@@ -51,71 +51,6 @@ const { data: rawFileData } = await useAsyncData<DocumentationFile>("fileData",
 if (rawFileData.value === null) useRouter().push(`/documentation/notfound?type=${props.type}&category=${props.category}&page=${page.value}`);
 fileData.value = await parseDocumentationFile(rawFileData.value) as DocumentationFile;
 
-// SEO
-const links: Array<{ rel: string, href: string }> = [
-    { rel: "index", href: "https://platform.stefankruik.com/documentation" },
-    { rel: "self", href: `https://platform.stefankruik.com/documentation/read/${props.type}/${props.category}${props.page ? `/${props.page}` : ""}` }
-]
-if (props.page) {
-    const currentCategory: DocumentationIndexItem | undefined = documentationStore.getCategory(props.type, props.category);
-    if (currentCategory) {
-        const nextPageName = currentCategory.children[currentCategory.children.indexOf(props.page) + 1];
-        if (nextPageName) links.push({
-            rel: "next",
-            href: `https://platform.stefankruik.com/documentation/read/${props.type}/${props.category}/${nextPageName}`
-        });
-        const previousPageName = currentCategory.children[currentCategory.children.indexOf(props.page) - 1];
-        if (previousPageName) links.push({
-            rel: "prev",
-            href: `https://platform.stefankruik.com/documentation/read/${props.type}/${props.category}/${previousPageName}`
-        });
-    } else {
-        useRouter().push(`/documentation/notfound?type=${props.type}&category=${props.category}&page=${page.value}`);
-    }
-}
-const metaItems = [
-    { name: "keywords", content: `SK Platform, SK Docs, SK Docs, Stefan Kruik, stefankruik, bots, services, products, developers, community` },
-    { name: "author", content: "Stefan Kruik, platform@stefankruik.com" },
-    { name: "owner", content: "Stefan Kruik" },
-    { name: "color-scheme", content: "dark" },
-    { name: "theme-color", content: "#1E1F24" },
-    { property: "og:title", content: "SK Platform" },
-    { property: "og:description", content: "The documentation for the SK Platform. Learn how to use the platform, its products, and services." },
-    { property: "og:url", content: "https://platform.stefankruik.com/documentation" },
-    { property: "og:type", content: "website" },
-];
-if (fileData.value) {
-    metaItems.push({ name: "description", content: fileData.value.description.length > 0 ? fileData.value.description : `Read page ${props.page ? props.page.replace(/_/g, " ") : ""} in ${props.category.replace(/_/g, " ")} on the SK Platform Documentation website.` },)
-}
-// const jsonld = {
-//     "@context": "https://schema.org",
-//     "@type": "BreadcrumbList",
-//     "itemListElement": [{
-//         "@type": "ListItem",
-//         "position": 1,
-//         "name": "A",
-//         "item": "A"
-//     }, {
-//         "@type": "ListItem",
-//         "position": 2,
-//         "name": "B",
-//         "item": "B"
-//     }]
-// }
-useHead({
-    title: `SK Platform | Documentation | ${props.category.replace(/_/g, " ")}${props.page ? `/${props.page.replace(/_/g, " ")}` : ""}`,
-    meta: metaItems,
-    link: links,
-    htmlAttrs: {
-        lang: documentationStore.language.split("-")[0] || "en"
-    },
-    // script: [{
-    //     hid: "breadcrumbs-json-ld",
-    //     type: "application/ld+json",
-    //     textContent: JSON.stringify(jsonld)
-    // }]
-});
-
 // HTML Elements
 const shareButtonContents: Ref<HTMLParagraphElement | null> = ref(null);
 
@@ -278,6 +213,77 @@ const emit = defineEmits(["dropdownState"]);
 function handleDropdownState(name: DropdownStates, newValue: boolean): void {
     emit("dropdownState", name, newValue);
 };
+
+// SEO
+const links: Array<{ rel: string, href: string }> = [
+    { rel: "index", href: "https://platform.stefankruik.com/documentation" },
+    { rel: "self", href: `https://platform.stefankruik.com/documentation/read/${props.type}/${props.category}${props.page ? `/${props.page}` : ""}` }
+]
+if (props.page) {
+    const currentCategory: DocumentationIndexItem | undefined = documentationStore.getCategory(props.type, props.category);
+    if (currentCategory) {
+        const nextPageName = currentCategory.children[currentCategory.children.indexOf(props.page) + 1];
+        if (nextPageName) links.push({
+            rel: "next",
+            href: `https://platform.stefankruik.com/documentation/read/${props.type}/${props.category}/${nextPageName}`
+        });
+        const previousPageName = currentCategory.children[currentCategory.children.indexOf(props.page) - 1];
+        if (previousPageName) links.push({
+            rel: "prev",
+            href: `https://platform.stefankruik.com/documentation/read/${props.type}/${props.category}/${previousPageName}`
+        });
+    }
+}
+const metaItems = [
+    { name: "keywords", content: `SK Platform, SK Docs, SK Docs, Stefan Kruik, stefankruik, bots, services, products, developers, ${props.category}` },
+    { name: "author", content: "Stefan Kruik, platform@stefankruik.com" },
+    { name: "owner", content: "Stefan Kruik" },
+    { name: "color-scheme", content: "dark" },
+    { name: "theme-color", content: "#1E1F24" },
+    { property: "og:title", content: "SK Platform | Documentation" },
+    { property: "og:description", content: "The documentation for the SK Platform. Learn how to use the platform, its products, and services." },
+    { property: "og:url", content: `https://platform.stefankruik.com/documentation/read/${props.type}/${props.category}${props.page ? "/" + props.page.replace : ""}` },
+    { property: "og:type", content: "website" },
+];
+if (fileData.value) {
+    metaItems.push({ name: "description", content: fileData.value.description.length > 0 ? fileData.value.description : `Read page ${props.page ? props.page.replace(/_/g, " ") : ""} in ${props.category.replace(/_/g, " ")} on the SK Platform Documentation website.` },)
+}
+const jsonld = {
+    "@context": "https://schema.org",
+    "@type": "BreadcrumbList",
+    "itemListElement": [{
+        "@type": "ListItem",
+        "position": 1,
+        "name": "Documentation",
+        "item": "https://platform.stefankruik.com/documentation"
+    }, {
+        "@type": "ListItem",
+        "position": 2,
+        "name": props.category.replace(/_/g, " "),
+        "item": `https://platform.stefankruik.com/documentation/read/${props.type}/${props.category}`
+    }]
+}
+if (props.page) {
+    jsonld.itemListElement.push({
+        "@type": "ListItem",
+        "position": 3,
+        "name": props.page.replace(/_/g, " "),
+        "item": `https://platform.stefankruik.com/documentation/read/${props.type}/${props.category}/${props.page}`
+    });
+}
+useHead({
+    title: `SK Platform | Documentation | ${props.category.replace(/_/g, " ")}${props.page ? `/${props.page.replace(/_/g, " ")}` : ""}`,
+    meta: metaItems,
+    link: links,
+    htmlAttrs: {
+        lang: documentationStore.language.split("-")[0] || "en"
+    },
+    script: [{
+        hid: "breadcrumbs-json-ld",
+        type: "application/ld+json",
+        textContent: JSON.stringify(jsonld)
+    }]
+});
 </script>
 
 <template>
