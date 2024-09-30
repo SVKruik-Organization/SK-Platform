@@ -18,7 +18,7 @@ function handleError(): void {
             <h2>Whoops! Something went wrong.</h2>
             <strong>Some error occured while retrieving the requested data.</strong>
             <p>This might happen due to a network error or some server struggling to keep up.</p>
-            <p class="back-link link-text" @click="handleError">Go back</p>
+            <p class="back-link link-text" @click.prevent="handleError">Go back</p>
             <div class="flex">
                 <p class="light-text">For the devs, this is want went wrong: {{ `${error?.message || "No message"}
                     ${error?.statusCode || 500}` }}</p>
@@ -44,6 +44,7 @@ article {
 
 .back-link {
     margin: 20px 0;
+    cursor: pointer;
 }
 
 @media (width <=700px) {
