@@ -4,8 +4,8 @@ import type { DocumentationIndexItem } from '@/assets/customTypes';
 
 // Props
 defineProps({
-    data: { type: Object as PropType<DocumentationIndexItem>, required: true },
-    type: { type: String as PropType<string>, required: true }
+    "data": { type: Object as PropType<DocumentationIndexItem>, required: true },
+    "type": { type: String, required: true }
 });
 </script>
 

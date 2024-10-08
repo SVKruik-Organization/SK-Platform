@@ -3,7 +3,7 @@ import type { NuxtError } from '#app';
 
 // Props
 defineProps({
-    error: Object as () => NuxtError
+    "error": Object as () => NuxtError
 });
 
 // Methods

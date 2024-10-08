@@ -1,0 +1,29 @@
+{
+    "name": "sk-horizon",
+    "description": "SK Horizon",
+    "version": "1.0.0",
+    "author": "Stefan Kruik",
+    "repository": {
+        "type": "git",
+        "url": "git+https://github.com/SVKruik-Organization/SK-Platform.git"
+    },
+    "bugs": {
+        "url": "https://github.com/SVKruik-Organization/SK-Platform/issues"
+    },
+    "homepage": "https://github.com/SVKruik-Organization/SK-Platform#readme",
+    "type": "module",
+    "scripts": {
+        "build": "nuxt build",
+        "dev": "nuxt dev --port 9094 --dotenv .env",
+        "generate": "nuxt generate",
+        "preview": "nuxt preview",
+        "postinstall": "nuxt prepare"
+    },
+    "dependencies": {
+        "@vueuse/core": "^5.0.0",
+        "@vueuse/nuxt": "^11.1.0",
+        "nuxt": "^3.13.0",
+        "vue": "latest",
+        "vue-router": "latest"
+    }
+}
