@@ -15,3 +15,10 @@ npm install
 npm run build
 sudo systemctl restart sk-platform.service
 echo "Hosting deployment complete. Reloading server."
+
+# Horizon - www.stefankruik.com
+cd ../site
+npm install
+npm run build
+sudo systemctl restart sk-horizon.service
+echo "Horizon deployment complete. Reloading server."
