@@ -9,16 +9,16 @@ git reset --hard
 git pull
 echo "Git setup complete"
 
-# Hosting - platform.stefankruik.com
-cd frontend
-npm install
-npm run build
-sudo systemctl restart sk-platform.service
-echo "Hosting deployment complete. Reloading server."
-
 # Horizon - www.stefankruik.com
-cd ../site
+cd site
 npm install
 npm run build
 sudo systemctl restart sk-horizon.service
 echo "Horizon deployment complete. Reloading server."
+
+# Hosting - platform.stefankruik.com
+cd ../frontend
+npm install
+npm run build
+sudo systemctl restart sk-platform.service
+echo "Hosting deployment complete. Reloading server."
