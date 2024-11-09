@@ -13,7 +13,8 @@ const props = defineProps({
     "commentOverlayVisible": { type: Boolean, required: true },
     "type": { type: String as PropType<DocumentationTypes>, required: false },
     "category": { type: String, required: false },
-    "page": { type: String, required: false }
+    "page": { type: String, required: false },
+    "styles": { type: String, required: false }
 });
 
 // Reactive Data
@@ -106,7 +107,7 @@ const voteCastCurrentPage = computed<boolean>(() => {
             </div>
         </form>
     </div>
-    <footer>
+    <footer :class="styles">
         <form class="flex-col documentation-footer-item">
             <h4>Happy with SK Docs?</h4>
             <p class="light-text small-text documentation-footer-item-description">Leave a vote and/or leave a comment.
@@ -173,6 +174,10 @@ footer {
     grid-template-columns: 1fr 1fr 1fr;
     max-width: 1200px;
     width: 100%;
+}
+
+.read-footer {
+    margin-bottom: 40px;
 }
 
 .documentation-footer-item {
@@ -257,6 +262,7 @@ footer {
     z-index: 5;
     align-items: center;
     justify-content: center;
+    cursor: pointer;
 }
 
 .comment-overlay form {
@@ -268,6 +274,7 @@ footer {
     max-width: 400px;
     margin: 0 10px;
     width: 100%;
+    cursor: default;
 }
 
 .comment-overlay textarea {
@@ -282,12 +289,16 @@ footer {
     padding: 5px;
 }
 
-@media (width <=1280px) {
+@media (width <=1500px) {
     footer {
         display: flex;
         justify-content: space-between;
         margin-bottom: 70px;
         flex-wrap: wrap;
+    }
+
+    .read-footer {
+        justify-content: center;
     }
 
     .documentation-footer-item {
@@ -310,7 +321,10 @@ footer {
 
     .documentation-footer-item {
         width: 100%;
+    }
 
+    .confirmation-message {
+        margin-bottom: -30px;
     }
 }
 

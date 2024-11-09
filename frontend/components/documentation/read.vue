@@ -23,6 +23,8 @@ const props = defineProps({
 // Reactive Data
 const page = ref<string | undefined>(props.page);
 const chapterData: Ref<Array<DocChapterItem>> = ref([]);
+const hasPreviousPage: Ref<boolean> = ref(true);
+const hasNextPage: Ref<boolean> = ref(true);
 let fileData: Ref<DocumentationFile | null> = ref(null);
 
 // Prevent Default Page
@@ -30,7 +32,7 @@ if (page.value === "Default") {
     useRouter().push(`/documentation/read/${props.type}/${props.category}`);
 }
 
-// Reactive Data
+// Load Reactive Data
 const { data: rawFileData } = await useAsyncData<DocumentationFile>("fileData",
     () => $fetch(`${runtimeConfig.public.docsApiBase}/${props.page ? 'getFile' : 'getDefault'}/${documentationStore.version}/${documentationStore.language}/${props.type}`, {
         params: {
@@ -50,6 +52,9 @@ const { data: rawFileData } = await useAsyncData<DocumentationFile>("fileData",
 });
 if (rawFileData.value === null) useRouter().push(`/documentation/notfound?type=${props.type}&category=${props.category}&page=${page.value}`);
 fileData.value = await parseDocumentationFile(rawFileData.value) as DocumentationFile;
+
+hasPreviousPage.value = documentationStore.hasPreviousPage(props.type, props.category, props.page);
+hasNextPage.value = documentationStore.hasNextPage(props.type, props.category, props.page);
 
 // HTML Elements
 const shareButtonContents: Ref<HTMLParagraphElement | null> = ref(null);
@@ -81,6 +86,7 @@ const isAnchored = (title: string) => {
 // Watchers
 watch(() => route.fullPath, () => {
     scrollAnchor(0);
+    setActiveChapter();
 });
 
 // Methods
@@ -205,6 +211,41 @@ function setActiveChapter(): void {
             chapter.active = true;
             activeChapterFound = true;
         }
+    }
+}
+
+/**
+ * Go to the previous page in the category.
+ */
+function previousPage(): void {
+    const currentCategory: DocumentationIndexItem | undefined = documentationStore.getCategory(props.type, props.category);
+    if (!currentCategory || !currentCategory.children.length) return;
+    const router = useRouter();
+    if (props.page) {
+        const previousPageName = currentCategory.children[currentCategory.children.indexOf(props.page) - 1];
+        if (!previousPageName) {
+            router.push(`/documentation/read/${props.type}/${props.category}`);
+        } else router.push(`/documentation/read/${props.type}/${props.category}/${previousPageName}`);
+    }
+}
+
+/**
+ * Go to the next page in the category.
+ */
+function nextPage(): void {
+    const currentCategory: DocumentationIndexItem | undefined = documentationStore.getCategory(props.type, props.category);
+    if (!currentCategory || !currentCategory.children.length) return;
+    const router = useRouter();
+    if (props.page) {
+        const nextPageName = currentCategory.children[currentCategory.children.indexOf(props.page) + 1];
+        if (!nextPageName) return;
+        router.push(`/documentation/read/${props.type}/${props.category}/${nextPageName}`);
+
+        // Default page
+    } else {
+        const nextPageName = currentCategory.children[0];
+        if (!nextPageName) return;
+        router.push(`/documentation/read/${props.type}/${props.category}/${nextPageName}`);
     }
 }
 
@@ -357,12 +398,17 @@ useHead({
                 <strong class="responsive-nav-title"
                     :class="{ 'disable-close': navigationDropdownVisible }">Options</strong>
                 <div class="flex-col">
+                    <button title="Go to the previous page." class="flex navbar-pill control-pill" type="button"
+                        :class="{ 'disabled-button': !hasPreviousPage }" @click="previousPage()">
+                        <p>Previous</p>
+                        <i class="fa-regular fa-diagram-previous"></i>
+                    </button>
                     <button title="Share this article." class="flex navbar-pill control-pill" type="button"
                         :class="{ 'disable-close': navigationDropdownVisible }" @click="share()">
                         <p :class="{ 'disable-close': navigationDropdownVisible }" ref="shareButtonContents">Share</p>
                         <i :class="{ 'disable-close': navigationDropdownVisible }" class="fa-regular fa-share"></i>
                     </button>
-                    <button title="View page information." type="button" v-if="typeof fileData === 'object'"
+                    <button hide title="View page information." type="button" v-if="typeof fileData === 'object'"
                         class="flex dropdown-container justify-center navbar-pill disable-close"
                         @click="toggleInformationMenu($event)"
                         :class="{ 'navbar-pill-expand': informationDropdownVisible, 'disable-close': navigationDropdownVisible }">
@@ -395,6 +441,11 @@ useHead({
                             </div>
                         </menu>
                     </button>
+                    <button title="Go to the next page." class="flex navbar-pill control-pill" type="button"
+                        :class="{ 'disabled-button': !hasNextPage }" @click="nextPage()">
+                        <p>Next</p>
+                        <i class="fa-regular fa-diagram-next"></i>
+                    </button>
                 </div>
             </section>
         </nav>
@@ -406,8 +457,7 @@ useHead({
                         <i class="fa-regular fa-arrow-right-from-line disable-close"></i>
                     </button>
                     <ClientOnly>
-                        <NuxtLink
-                            :to="`/documentation${type === 'Doc' ? '/documentation#Information' : '/documentation#Guides'}`"
+                        <NuxtLink :to="`/documentation${type === 'Doc' ? '#Information' : '/#Guides'}`"
                             class="breadcrumb-item breadcrumb-link">
                             {{ type === 'Doc' ? 'Documentation' : 'Guides' }}
                         </NuxtLink>
@@ -447,7 +497,10 @@ useHead({
                             <div class="flex featured-product-title-container">
                                 <strong>Featured Products</strong>
                                 <i class="fa-regular fa-circle-info"></i>
-                                <span>Products that have been used in this {{ type }}.</span>
+                                <span>
+                                    <p>Products that have been used</p>
+                                    <p>and/or mentioned in this {{ type }}.</p>
+                                </span>
                             </div>
                             <ClientOnly>
                                 <NuxtLink class="flex featured-product-item" v-for="product of fileData.products"
@@ -461,7 +514,7 @@ useHead({
                     </aside>
                 </section>
             </div>
-            <section v-if="page" class="flex-col related-container">
+            <section v-if="page && fileData.related.length" class="flex-col related-container">
                 <div class="flex-col section-title-container">
                     <h3>Also Read</h3>
                     <p class="light-text">Other popular and related pages that you might find useful as well.</p>
@@ -471,7 +524,6 @@ useHead({
                         <DocumentationRelatedItem v-for="item of fileData.related" :key="item.id" :data="item">
                         </DocumentationRelatedItem>
                     </ClientOnly>
-                    <p v-if="!fileData.related.length" class="light-text">No related Docs or Guides for this page.</p>
                 </div>
             </section>
             <section class="flex-col footer-container">
@@ -481,7 +533,7 @@ useHead({
                 </div>
                 <DocumentationFooter @dropdownState="handleDropdownState"
                     :comment-overlay-visible="commentOverlayVisible" :type="props.type" :category="props.category"
-                    :page="props.page">
+                    :page="props.page" styles="read-footer">
                 </DocumentationFooter>
             </section>
         </div>
@@ -504,6 +556,7 @@ nav {
     height: calc(100vh - 56px);
     align-items: flex-start;
     position: sticky;
+    z-index: 1;
 }
 
 .splitter-container {
@@ -568,6 +621,7 @@ nav {
 .information-dropdown-menu {
     width: 0;
     transition: height 0.4s, opacity 0.3s, width 0.8s;
+    top: 39px;
 }
 
 .information-dropdown-expand {
@@ -682,7 +736,7 @@ aside a,
     background-color: var(--fill);
     opacity: 0;
     transition: opacity 0.3s, height 0.4s;
-    width: 310px;
+    width: 250px;
     overflow: hidden;
     height: 0;
     border-radius: var(--border-radius-low);
@@ -690,20 +744,14 @@ aside a,
     pointer-events: none;
 }
 
-.featured-product-title-container span::before {
-    content: "";
-    position: absolute;
-    top: 100%;
-    left: 50%;
-    border: 5px solid transparent;
-    border-top-color: var(--border);
-    margin-left: -5px;
+.featured-product-title-container span p {
+    text-wrap: nowrap;
 }
 
 .featured-product-title-container i:hover + span {
     opacity: 1;
-    height: 42px;
-    overflow: unset;
+    height: 60px;
+    width: 250px;
 }
 
 .featured-product-item {
@@ -762,24 +810,12 @@ footer {
 
 @media (width <=1650px) {
     .featured-product-title-container span {
-        right: 170px;
-        bottom: -10px;
-        transition: opacity 0.3s, width 0.1s;
+        right: 180px;
+        bottom: -20px;
+        transition: opacity 0.3s, width 0.4s;
         width: 0;
         height: 42px;
         margin-left: unset;
-    }
-
-    .featured-product-title-container span::before {
-        top: 40%;
-        left: 100%;
-        border: 5px solid transparent;
-        border-left-color: var(--border);
-        margin-left: unset;
-    }
-
-    .featured-product-title-container i:hover + span {
-        width: 310px;
     }
 }
 
@@ -914,7 +950,7 @@ footer {
         width: 100%;
     }
 
-    .controls div button:last-of-type {
+    .controls div button[hide] {
         display: none;
     }
 

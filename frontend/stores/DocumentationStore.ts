@@ -142,10 +142,56 @@ export const useDocumentationStore = defineStore("documentationStore", {
             if (type === "Guide") convertedType = "guideIndex";
             return this[convertedType].filter((indexItem: DocumentationIndexItem) => indexItem.category === categoryName)[0]?.children;
         },
+        /**
+         * Retrieve a category item by name.
+         * @param type Documentation (Doc) or Guides (Guide)
+         * @param name The name of the category to get.
+         * @returns The category item.
+         */
         getCategory(type: string, name: string): DocumentationIndexItem | undefined {
             let convertedType: "docIndex" | "guideIndex" = "docIndex";
             if (type === "Guide") convertedType = "guideIndex";
             return this[convertedType].filter((indexItem: DocumentationIndexItem) => indexItem.category === name)[0];
+        },
+        /**
+         * Check if a page has a previous page.
+         * @param type Documentation (Doc) or Guides (Guide)
+         * @param category The name of the folder to validate.
+         * @param page The name of the page to validate.
+         * @returns If this page has a previous page.
+         */
+        hasPreviousPage(type: string, category: string, page: string | undefined): boolean {
+            let convertedType: "docIndex" | "guideIndex" = "docIndex";
+            if (type === "Guide") convertedType = "guideIndex";
+            const categoryItem: DocumentationIndexItem | null = this[convertedType].filter((indexItem: DocumentationIndexItem) => indexItem.category === category)[0];
+            if (!categoryItem) return false;
+
+            if (!page) {
+                return false;
+            } else {
+                const pageIndex = categoryItem.children.indexOf(page);
+                return pageIndex > 0 || !!page;
+            }
+        },
+        /**
+         * Check if a page has a next page.
+         * @param type Documentation (Doc) or Guides (Guide)
+         * @param category The name of the folder to validate.
+         * @param page The name of the page to validate.
+         * @returns If this page has a next page.
+         */
+        hasNextPage(type: string, category: string, page: string | undefined): boolean {
+            let convertedType: "docIndex" | "guideIndex" = "docIndex";
+            if (type === "Guide") convertedType = "guideIndex";
+            const categoryItem: DocumentationIndexItem | null = this[convertedType].filter((indexItem: DocumentationIndexItem) => indexItem.category === category)[0];
+            if (!categoryItem) return false;
+
+            if (!page) {
+                return !!categoryItem.children.length;
+            } else {
+                const pageIndex = categoryItem.children.indexOf(page);
+                return pageIndex < categoryItem.children.length - 1;
+            }
         }
     }
 });
