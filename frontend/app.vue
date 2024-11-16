@@ -18,6 +18,11 @@ const metaItems = [
     // Image
     { property: "og:image", content: "https://files.stefankruik.com/Products/1280/Platform.png" },
     { property: "og:image:alt", content: "The SK Platform logo." },
+    { property: "twitter:image", content: "https://files.stefankruik.com/Products/1280/Platform.png" },
+
+    // Twitter
+    { property: "twitter:title", content: "SK Platform - The place where SK Platform and its sub-products come together." },
+    { property: "twitter:description", content: "The place where SK Platform and its sub-products come together." },
 
     // Type
     { property: "og:type", content: "website" }
@@ -59,6 +64,17 @@ function metaUpdater(newRoute: string): void {
         newOgUrl.setAttribute("property", "og:url");
         newOgUrl.setAttribute("content", window.location.href);
         document.head.appendChild(newOgUrl);
+    }
+
+    // Twitter URL
+    const twitterUrl: HTMLMetaElement | null = document.querySelector("meta[property='twitter:url']");
+    if (twitterUrl) {
+        twitterUrl.setAttribute("content", window.location.href);
+    } else {
+        const newTwitterUrl: HTMLMetaElement = document.createElement("meta");
+        newTwitterUrl.setAttribute("property", "twitter:url");
+        newTwitterUrl.setAttribute("content", window.location.href);
+        document.head.appendChild(newTwitterUrl);
     }
 
     // Apple Touch Icon

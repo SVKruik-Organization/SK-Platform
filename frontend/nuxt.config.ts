@@ -30,6 +30,7 @@ export default defineNuxtConfig({
                 { property: "og:image:type", content: "image/png" },
                 { property: "og:image:width", content: "1280" },
                 { property: "og:image:height", content: "640" },
+                { property: "twitter:card", content: "summary_large_image" },
             ],
             link: [
                 { rel: 'icon', type: 'image/x-icon', href: '/favicon.ico' }

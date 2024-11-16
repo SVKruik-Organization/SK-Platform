@@ -41,6 +41,11 @@ const metaItems = [
     // Image
     { property: "og:image", content: "https://files.stefankruik.com/Products/1280/Docs.png" },
     { property: "og:image:alt", content: "The SK Docs logo." },
+    { property: "twitter:image", content: "https://files.stefankruik.com/Products/1280/Docs.png" },
+
+    // Twitter
+    { property: "twitter:title", content: "SK Docs - The documentation for the SK Platform. Learn how to use the platform, its products, and services." },
+    { property: "twitter:description", content: "The documentation for the SK Platform. Learn how to use the platform, its products, and services." },
 
     // Type
     { property: "og:type", content: "article" },
