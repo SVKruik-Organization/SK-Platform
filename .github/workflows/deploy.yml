@@ -8,8 +8,9 @@ jobs:
     steps:
       - run: |
           PAYLOAD=$(echo '${{ toJson(github.event) }}' | jq -c .)
+          ESCAPED_PAYLOAD=$(jq -Rn --argjson data "$PAYLOAD" '$data')
           curl -X POST \
                -H "Content-Type: application/json" \
                -H "Authorization: Bearer ${{ secrets.DEPLOYMENT_PASSWORD }}" \
-               -d '{"type":"push","repository":"SK-Platform", "payload":'"$PAYLOAD"'}' \
+               -d '{"type":"push","repository":"SK-Platform", "payload":'"$ESCAPED_PAYLOAD"'}' \
                ${{ secrets.DEPLOYMENT_ENDPOINT }}
