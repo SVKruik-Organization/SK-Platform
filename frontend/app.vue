@@ -1,40 +1,83 @@
 <script setup lang="ts">
-import type { RouteLocation } from "vue-router";
 import "~/assets/css/base.css";
 import "~/assets/css/docpage.css";
 import "~/assets/css/interaction.css";
+import "~/assets/css/documentation.css"
 
 // Setup
 const route = useRoute();
+const documentationStore = useDocumentationStore();
 
 // SEO
 const metaItems = [
-    { name: "keywords", content: "SK Platform - your central hub for managing SK products, accounts, services and documentation." },
-    { name: "author", content: "Stefan Kruik, platform@stefankruik.com" },
-    { name: "owner", content: "Stefan Kruik" },
-    { name: "color-scheme", content: "dark" },
-    { name: "theme-color", content: "#1E1F24" },
-    { property: "og:title", content: "SK Platform | Documentation" },
-    { property: "og:description", content: "SK Platform - your central hub for managing SK products, accounts, services and documentation." },
-    { property: "og:url", content: "https://platform.stefankruik.com" },
-    { property: "og:type", content: "website" },
+    // Base
+    { name: "description", content: "The place where SK Platform and its sub-products come together." },
+    { property: "og:title", content: "SK Platform - The place where SK Platform and its sub-products come together." },
+    { property: "og:description", content: "The place where SK Platform and its sub-products come together." },
+
+    // Image
+    { property: "og:image", content: "https://files.stefankruik.com/Products/1280/Platform.png" },
+    { property: "og:image:alt", content: "The SK Platform logo." },
+
+    // Type
+    { property: "og:type", content: "website" }
 ];
 useHead({
-    title: "SK Platform",
     meta: metaItems,
     htmlAttrs: {
-        lang: "en"
+        lang: documentationStore.language.split("-")[0] || "en"
     }
 });
 
-// Watchers
-watch(() => route, (to: RouteLocation, _from: RouteLocation) => {
-    let suffix: string = to.path.split("/")[1];
-    if (suffix.length) {
-        suffix = suffix.charAt(0).toUpperCase() + suffix.slice(1);
-    } else suffix = "Home";
-    document.title = `SK Platform | ${suffix}`;
+// Lifecycle
+onMounted(() => {
+    metaUpdater(route.path);
 });
+
+// Watchers
+watch(() => route.path, (to: string) => metaUpdater(to));
+
+// Methods
+
+/**
+ * Updates several 'things' around the website conforming to the new route.
+ * @param route The route to use for updating.
+ */
+function metaUpdater(newRoute: string): void {
+    const split: Array<string> = newRoute.split("/");
+    if (split[1].length) {
+        const join: string = split.slice(0).map((string) => (string.charAt(0).toUpperCase() + string.slice(1))).join(" | ");
+        document.title = `SK Platform ${join}`;
+    } else document.title = "SK Platform";
+
+    // Open Graph URL
+    const ogUrl: HTMLMetaElement | null = document.querySelector("meta[property='og:url']");
+    if (ogUrl) {
+        ogUrl.setAttribute("content", window.location.href);
+    } else {
+        const newOgUrl: HTMLMetaElement = document.createElement("meta");
+        newOgUrl.setAttribute("property", "og:url");
+        newOgUrl.setAttribute("content", window.location.href);
+        document.head.appendChild(newOgUrl);
+    }
+
+    // Apple Touch Icon
+    const icon = document.querySelector("link[rel='apple-touch-icon']");
+    const imageName: string = split[1] === "documentation" ? "Docs" : "Platform";
+    if (icon) {
+        icon.setAttribute("href", `/seo/${imageName}.png`);
+    } else {
+        const newImage = document.createElement("link");
+        newImage.setAttribute("rel", "apple-touch-icon");
+        newImage.setAttribute("href", `/seo/${imageName}.png`);
+        document.head.appendChild(newImage);
+    }
+
+    // Theme Color
+    if (split[1] !== "documentation") {
+        document.documentElement.className = "";
+    } else documentationStore.setTheme(null);
+}
 </script>
 
 <template>

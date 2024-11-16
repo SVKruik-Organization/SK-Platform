@@ -9,7 +9,8 @@ const emit = defineEmits(["dropdownState"]);
 // Props
 const props = defineProps({
     "versionDropdownVisible": { type: Boolean, required: true },
-    "languageDropdownVisible": { type: Boolean, required: true }
+    "languageDropdownVisible": { type: Boolean, required: true },
+    "themeDropdownVisible": { type: Boolean, required: true }
 });
 
 // Reactive Data
@@ -58,6 +59,16 @@ function toggleLanguageMenu(event: Event): void {
     const target: HTMLElement = event.target as HTMLElement;
     if (target.tagName === "MENU") return;
     emit("dropdownState", DropdownStates.language, !props.languageDropdownVisible);
+}
+
+/**
+ * Toggle the theme dropdown menu.
+ * @param event The click event.
+ */
+function toggleThemeMenu(event: Event): void {
+    const target: HTMLElement = event.target as HTMLElement;
+    if (target.tagName === "MENU") return;
+    emit("dropdownState", DropdownStates.theme, !props.themeDropdownVisible);
 }
 
 /**
@@ -262,27 +273,29 @@ function searchInputChecks(force: boolean, newOffset: number): boolean {
                             </menu>
                         </button>
                         <button title="Change the version of the documentation." type="button"
-                            class="flex dropdown-container navbar-pill disable-close"
+                            class="flex dropdown-container justify-center navbar-pill disable-close"
                             :class="{ 'navbar-pill-expand': versionDropdownVisible }"
                             @click="toggleVersionMenu($event)">
                             <p class="disable-close" :class="{ 'navbar-pill-text-expand': versionDropdownVisible }">
                                 Version</p>
-                            <i class="fa-regular fa-code-branch"></i>
-                            <menu :class="{ 'dropdown-expand': versionDropdownVisible }"
-                                class="dropdown-menu dropdown-menu-left flex-col disable-close">
-                                <button type="button" class="menu-item flex"
-                                    @click="documentationStore.setVersion('v1')">
-                                    <i class="fa-regular fa-check"
-                                        :class="{ 'visible': documentationStore.version === 'v1' }"></i>
-                                    <label>v1 Stable</label>
-                                </button>
-                                <button type="button" class="menu-item flex"
-                                    @click="documentationStore.setVersion('v2')">
-                                    <i class="fa-regular fa-check"
-                                        :class="{ 'visible': documentationStore.version === 'v2' }"></i>
-                                    <label class="disabled-text">v2 Beta</label>
-                                </button>
-                            </menu>
+                            <i class="fa-regular fa-code-branch disable-close"></i>
+                            <ClientOnly>
+                                <menu :class="{ 'dropdown-expand version-dropdown-expand': versionDropdownVisible }"
+                                    class="dropdown-menu dropdown-menu-left flex-col disable-close">
+                                    <button type="button" class="menu-item flex"
+                                        @click="documentationStore.setVersion('v1')">
+                                        <i class="fa-regular fa-check"
+                                            :class="{ 'visible': documentationStore.version === 'v1' }"></i>
+                                        <label>v1 Stable</label>
+                                    </button>
+                                    <button type="button" class="menu-item flex"
+                                        @click="documentationStore.setVersion('v2')">
+                                        <i class="fa-regular fa-check"
+                                            :class="{ 'visible': documentationStore.version === 'v2' }"></i>
+                                        <label class="disabled-text">v2 Beta</label>
+                                    </button>
+                                </menu>
+                            </ClientOnly>
                         </button>
                     </div>
                 </ClientOnly>
@@ -313,19 +326,61 @@ function searchInputChecks(force: boolean, newOffset: number): boolean {
                             Language</p>
                         <i class="fa-regular fa-globe disable-close"></i>
                         <ClientOnly>
-                            <menu :class="{ 'dropdown-expand': languageDropdownVisible }"
+                            <menu :class="{ 'dropdown-expand language-dropdown-expand': languageDropdownVisible }"
                                 class="dropdown-menu dropdown-menu-left flex-col disable-close">
                                 <button type="button" class="menu-item flex"
                                     @click="documentationStore.setLanguage('en-US')">
                                     <i class="fa-regular fa-check"
                                         :class="{ 'visible': documentationStore.language === 'en-US' }"></i>
                                     <label>English</label>
+                                    <span>🇺🇸</span>
                                 </button>
                                 <button type="button" class="menu-item flex"
                                     @click="documentationStore.setLanguage('nl-NL')">
                                     <i class="fa-regular fa-check"
                                         :class="{ 'visible': documentationStore.language === 'nl-NL' }"></i>
                                     <label class="disabled-text">Nederlands</label>
+                                    <span>🇳🇱</span>
+                                </button>
+                            </menu>
+                        </ClientOnly>
+                    </button>
+                    <button title="Change the theme of the documentation." type="button"
+                        class="flex dropdown-container justify-center navbar-pill disable-close"
+                        :class="{ 'navbar-pill-expand': themeDropdownVisible }" @click="toggleThemeMenu($event)">
+                        <p class="disable-close" :class="{ 'navbar-pill-text-expand': themeDropdownVisible }">
+                            Theme</p>
+                        <i class="fa-regular fa-palette disable-close"></i>
+                        <ClientOnly>
+                            <menu :class="{ 'dropdown-expand theme-dropdown-expand': themeDropdownVisible }"
+                                class="dropdown-menu dropdown-menu-left flex-col disable-close">
+                                <button type="button" class="menu-item flex"
+                                    @click="documentationStore.setTheme('Cobalt')">
+                                    <i class="fa-regular fa-check"
+                                        :class="{ 'visible': documentationStore.theme === 'Cobalt' }"></i>
+                                    <label>Cobalt</label>
+                                    <span class="theme-preview-item theme-preview-item-cobalt"></span>
+                                </button>
+                                <button type="button" class="menu-item flex"
+                                    @click="documentationStore.setTheme('Slate')">
+                                    <i class="fa-regular fa-check"
+                                        :class="{ 'visible': documentationStore.theme === 'Slate' }"></i>
+                                    <label>Slate</label>
+                                    <span class="theme-preview-item theme-preview-item-slate"></span>
+                                </button>
+                                <button type="button" class="menu-item flex"
+                                    @click="documentationStore.setTheme('North')">
+                                    <i class="fa-regular fa-check"
+                                        :class="{ 'visible': documentationStore.theme === 'North' }"></i>
+                                    <label>North</label>
+                                    <span class="theme-preview-item theme-preview-item-north"></span>
+                                </button>
+                                <button type="button" class="menu-item flex"
+                                    @click="documentationStore.setTheme('Mokka')">
+                                    <i class="fa-regular fa-check"
+                                        :class="{ 'visible': documentationStore.theme === 'Mokka' }"></i>
+                                    <label>Mokka</label>
+                                    <span class="theme-preview-item theme-preview-item-mokka"></span>
                                 </button>
                             </menu>
                         </ClientOnly>
@@ -523,6 +578,11 @@ input::placeholder {
     opacity: 0;
 }
 
+.menu-item span {
+    margin-left: auto;
+    margin-right: 5px;
+}
+
 @media (width <=980px) {
     nav {
         align-items: flex-start;
@@ -549,7 +609,6 @@ input::placeholder {
     .input-container {
         flex: 1;
     }
-
 
     .input-results-container {
         top: 90px;

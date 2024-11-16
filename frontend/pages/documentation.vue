@@ -20,35 +20,35 @@ const informationDropdownVisible: Ref<boolean> = ref(false);
 const productDropdownVisible: Ref<boolean> = ref(false);
 const navigationDropdownVisible: Ref<boolean> = ref(false);
 const commentOverlayVisible: Ref<boolean> = ref(false);
+const themeDropdownVisible: Ref<boolean> = ref(false);
 const dropdownStates = {
     versionDropdownVisible,
     languageDropdownVisible,
     informationDropdownVisible,
     productDropdownVisible,
     navigationDropdownVisible,
-    commentOverlayVisible
+    commentOverlayVisible,
+    themeDropdownVisible
 };
 
 // SEO
 const metaItems = [
-    { name: "keywords", content: `SK Platform Documentation, SK Documentation, SK Docs, SK Docs Home, Stefan Kruik, stefankruik, Bots, Products, Services, Guides` },
+    // Base
     { name: "description", content: "The documentation for the SK Platform. Learn how to use the platform, its products, and services." },
-    { name: "author", content: "Stefan Kruik, platform@stefankruik.com" },
-    { name: "reply-to", content: "platform@stefankruik.com" },
-    { name: "owner", content: "Stefan Kruik" },
-    { name: "color-scheme", content: "dark" },
-    { name: "theme-color", content: "#1E1F24" },
-    { property: "og:title", content: "SK Platform | Documentation" },
+    { property: "og:title", content: "SK Docs - The documentation for the SK Platform. Learn how to use the platform, its products, and services." },
     { property: "og:description", content: "The documentation for the SK Platform. Learn how to use the platform, its products, and services." },
-    { property: "og:url", content: "https://platform.stefankruik.com/documentation" },
-    { property: "og:type", content: "website" },
+
+    // Image
+    { property: "og:image", content: "https://files.stefankruik.com/Products/1280/Docs.png" },
+    { property: "og:image:alt", content: "The SK Docs logo." },
+
+    // Type
+    { property: "og:type", content: "article" },
+    { property: "article:author", content: "https://github.com/SVKruik" },
+    { property: "article:section", content: "Documentation" },
 ];
 useHead({
-    title: "SK Platform | Documentation",
-    meta: metaItems,
-    htmlAttrs: {
-        lang: documentationStore.language.split("-")[0] || "en"
-    }
+    meta: metaItems
 });
 
 // Methods
@@ -59,9 +59,7 @@ useHead({
  * @param newValue The new value to set the dropdown state to.
  */
 function updateDropdownState(name: DropdownStates, newValue: boolean): void {
-    if (dropdownStates[name]) {
-        dropdownStates[name].value = newValue;
-    }
+    if (dropdownStates[name]) dropdownStates[name].value = newValue;
 }
 
 // Lifecycle
@@ -78,14 +76,19 @@ onMounted(() => {
         productDropdownVisible.value = false;
         navigationDropdownVisible.value = false;
         commentOverlayVisible.value = false;
+        themeDropdownVisible.value = false;
     });
+
+    // Load Theme
+    const theme: string = documentationStore.theme;
+    if (theme) document.documentElement.classList.add(theme.toLowerCase());
 });
 </script>
 
 <template>
     <div>
         <DocumentationNavbar @dropdown-state="updateDropdownState" :version-dropdown-visible="versionDropdownVisible"
-            :language-dropdown-visible="languageDropdownVisible" />
+            :language-dropdown-visible="languageDropdownVisible" :theme-dropdown-visible="themeDropdownVisible" />
         <main>
             <NuxtPage @dropdown-state="updateDropdownState" :informationDropdownVisible="informationDropdownVisible"
                 :productDropdownVisible="productDropdownVisible" :navigationDropdownVisible="navigationDropdownVisible"

@@ -11,7 +11,7 @@ export async function parseDocumentationFile(input: any): Promise<DocumentationF
         "name": input.file.name,
         "fileContents": input.file.fileContents,
         "size": input.file.size,
-        "access_time": getDate(input.file.access_time).fullDate,
+        "accessTime": getDate(input.file.accessTime).fullDate,
         "modificationTime": getDate(input.file.modificationTime).fullDate,
         "creationTime": getDate(input.file.creationTime).fullDate,
         "chapters": input.file.chapters,

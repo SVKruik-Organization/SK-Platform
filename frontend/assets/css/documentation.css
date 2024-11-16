@@ -1,0 +1,77 @@
+/* Themes */
+:root.cobalt {
+    --main: #0d1116;
+    --font: #ededed;
+    --font-light: #b1b1b1;
+    --font-disabled: #585858;
+    --fill: #161b22;
+    --fill-light: #2a323e;
+    --border: #30363d;
+    --link: #2f81f7;
+    --glass: rgba(30, 30, 34, 0.65);
+}
+
+:root.slate {
+    --main: #252525;
+    --font: #ffffff;
+    --font-light: #b9b9b9;
+    --font-disabled: #585858;
+    --fill: #2d2d2d;
+    --fill-light: #2a2a2a;
+    --border: #3e3e3e;
+    --link: #408fff;
+    --glass: rgba(26, 26, 26, 0.65);
+}
+
+:root.north {
+    --main: #fcfcfc;
+    --font: #000000;
+    --font-light: #494949;
+    --font-disabled: #919191;
+    --fill: #ffffff;
+    --fill-light: #f4f4f4;
+    --border: #e5e5e5;
+    --link: #004ebc;
+    --glass: rgba(239, 239, 239, 0.65);
+}
+
+.mokka .gradient-button i,
+.north .gradient-button i {
+    color: var(--main) !important;
+}
+
+:root.mokka {
+    --main: #fdfaf4;
+    --font: #000000;
+    --font-light: #494949;
+    --font-disabled: #919191;
+    --fill: #f5eee2;
+    --fill-light: #e6e0d5;
+    --border: #c3b8a5;
+    --link: #004ebc;
+    --glass: rgba(234, 229, 219, 0.65);
+}
+
+/* Theme Selector */
+.theme-preview-item {
+    height: 15px;
+    width: 15px;
+    border-radius: 50%;
+    border: 1px solid #4b4b4b;
+}
+
+.theme-preview-item-cobalt {
+    background-color: #293543;
+}
+
+.theme-preview-item-slate {
+    background-color: #4d4d4d;
+}
+
+.theme-preview-item-north {
+    background-color: #fcfcfc;
+}
+
+.theme-preview-item-mokka {
+    background-color: #c2b8a6;
+}

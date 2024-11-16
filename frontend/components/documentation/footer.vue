@@ -36,7 +36,7 @@ onMounted(() => {
  * Cast a vote for the documentation page.
  * @param value The value of the vote.
  */
-async function castDocumentationVote(value: boolean) {
+async function submitDocumentationVote(value: boolean) {
     // Prevent Double Vote
     if (value && pressedButton.value === "like") return;
     if (!value && pressedButton.value === "dislike") return;
@@ -65,8 +65,9 @@ async function castDocumentationVote(value: boolean) {
 /**
  * Submit additional comment for the vote.
  */
-async function submitCommentDocumentationVote() {
+async function submitDocumentationComment() {
     (await useFetchDocumentationComment(voteTicket.value, commentData.value.slice(0, 255))).value;
+    documentationStore.commentCast = `${voteTicket.value}-${props.type}/${props.category}/${props.page}`;
 
     // Confirmation Message
     const element = confirmationMessage.value;
@@ -90,6 +91,9 @@ const voteCastCurrentPage = computed<boolean>(() => {
     if (!documentationStore.voteCast.length) return false;
     return documentationStore.voteCast.slice(9) === `${props.type}/${props.category}/${props.page}`;
 });
+const commentCastCurrentPage = computed<boolean>(() => {
+    return voteCastCurrentPage.value && documentationStore.commentCast.slice(9) === `${props.type}/${props.category}/${props.page}`;
+});
 </script>
 
 <template>
@@ -102,7 +106,7 @@ const voteCastCurrentPage = computed<boolean>(() => {
             <textarea v-model="commentData" class="comment-textarea disable-close" maxlength="255"></textarea>
             <p class="light-text small-text disable-close">{{ 255 - commentData.length }} characters left</p>
             <div class="flex">
-                <button class="footer-button footer-button-like" @click.prevent="submitCommentDocumentationVote"
+                <button class="footer-button footer-button-like" @click.prevent="submitDocumentationComment"
                     type="submit">Submit</button>
             </div>
         </form>
@@ -110,17 +114,17 @@ const voteCastCurrentPage = computed<boolean>(() => {
     <footer :class="styles">
         <form class="flex-col documentation-footer-item">
             <h4>Happy with SK Docs?</h4>
-            <p class="light-text small-text documentation-footer-item-description">Leave a vote and/or leave a comment.
+            <p class="light-text small-text documentation-footer-item-description">Leave a vote and optional comment.
                 Feedback is always greatly appreciated.</p>
             <div class="flex">
                 <ClientOnly>
-                    <button @click="castDocumentationVote(true)" class="flex footer-button footer-button-like"
+                    <button @click="submitDocumentationVote(true)" class="flex footer-button footer-button-like"
                         :class="{ 'active-button-like': pressedButton === 'like', 'disabled-button': voteCastCurrentPage }"
                         type="button" title="Click this if you like the design and information available.">
                         <i class="fa-regular fa-heart light-text"></i>
                         <p>Yes</p>
                     </button>
-                    <button @click="castDocumentationVote(false)" class="flex footer-button footer-button-dislike"
+                    <button @click="submitDocumentationVote(false)" class="flex footer-button footer-button-dislike"
                         :class="{ 'active-button-dislike': pressedButton === 'dislike', 'disabled-button': voteCastCurrentPage }"
                         type="button" title="Click this if you think some things could be better.">
                         <i class="fa-regular fa-heart-crack light-text"></i>
@@ -128,8 +132,7 @@ const voteCastCurrentPage = computed<boolean>(() => {
                     </button>
                     <button v-if="pressedButton.length || voteCastCurrentPage"
                         class="flex footer-button footer-button-comment disable-close" type="button"
-                        :class="{ 'disabled-button': voteCastCurrentPage && commentData.length }"
-                        @click="commentDocumentationVote"
+                        :class="{ 'disabled-button': commentCastCurrentPage }" @click="commentDocumentationVote"
                         title="Leave a comment so I can take a look at your feedback.">
                         <i class="fa-regular fa-comment light-text disable-close"></i>
                         <p class="disable-close">Comment</p>

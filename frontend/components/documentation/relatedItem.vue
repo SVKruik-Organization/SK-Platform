@@ -51,6 +51,8 @@ defineProps({
     width: 40px;
     justify-content: center;
     background-color: var(--fill-light);
+    border-top-left-radius: calc(var(--border-radius-low) - 2px);
+    border-bottom-left-radius: calc(var(--border-radius-low) - 2px);
 }
 
 .related-item-right {

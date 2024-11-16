@@ -47,7 +47,7 @@
 .dropdown-menu {
     position: absolute;
     box-sizing: border-box;
-    top: 40px;
+    top: 39px;
     width: 170px;
     opacity: 0;
     height: 0;
@@ -76,6 +76,18 @@
 }
 
 .dropdown-expand {
-    height: 55px;
     opacity: 1;
+    pointer-events: auto;
+}
+
+.version-dropdown-expand {
+    height: 55px;
+}
+
+.language-dropdown-expand {
+    height: 55px;
+}
+
+.theme-dropdown-expand {
+    height: 102px;
 }

@@ -24,7 +24,7 @@ export type DocumentationFile = {
     "name": string,
     "fileContents": string,
     "size": number,
-    "access_time": Date,
+    "accessTime": Date,
     "modificationTime": Date,
     "creationTime": Date,
     "chapters": Array<string>,

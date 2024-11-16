@@ -2,24 +2,32 @@ import { defineStore } from "pinia";
 import { useSessionStorage, useLocalStorage } from "@vueuse/core";
 import { IndexPlaceholder, RecommendedPlaceholder, type DocumentationIndexItem, type RecommendedItem } from "@/assets/customTypes";
 
+const defaultVersion: string = "v1";
+const defaultLanguage: string = "en-US";
+const defaultTheme: string = "Cobalt";
+
 export const useDocumentationStore = defineStore("documentationStore", {
     state: () => ({
         docIndex: useLocalStorage("docIndex", [] as Array<DocumentationIndexItem>),
         guideIndex: useLocalStorage("guideIndex", [] as Array<DocumentationIndexItem>),
         recommendedDocItems: useLocalStorage("recommendedDocItems", [] as Array<RecommendedItem>),
         recommendedGuideItems: useLocalStorage("recommendedGuideItems", [] as Array<RecommendedItem>),
-        version: useLocalStorage("documentationVersion", "v1" as string),
-        language: useLocalStorage("language", "en-US" as string),
-        voteCast: useSessionStorage("voteCast", "" as string)
+        version: useLocalStorage("documentationVersion", defaultVersion),
+        language: useLocalStorage("language", defaultLanguage),
+        theme: useLocalStorage("theme", defaultTheme),
+        voteCast: useSessionStorage("voteCast", ""),
+        commentCast: useSessionStorage("commentCast", "")
     }),
     hydrate(state) {
         state.docIndex = useLocalStorage("docIndex", []);
         state.guideIndex = useLocalStorage("guideIndex", []);
         state.recommendedDocItems = useLocalStorage("recommendedDocItems", []);
         state.recommendedGuideItems = useLocalStorage("recommendedGuideItems", []);
-        state.version = useLocalStorage("documentationVersion", "v1");
-        state.language = useLocalStorage("language", "en-US");
+        state.version = useLocalStorage("documentationVersion", defaultVersion);
+        state.language = useLocalStorage("language", defaultLanguage);
+        state.theme = useLocalStorage("theme", defaultTheme);
         state.voteCast = useSessionStorage("voteCast", "");
+        state.commentCast = useSessionStorage("commentCast", "");
     },
     actions: {
         /**
@@ -45,6 +53,20 @@ export const useDocumentationStore = defineStore("documentationStore", {
             if (!validLanguages.includes(newLanguage)) return;
             this.language = newLanguage;
             await this.refresh();
+        },
+        /**
+         * Change the documentation theme.
+         * @param newTheme The new theme to set to. If null, set to current.
+         * @returns Void, return if invalid.
+         */
+        setTheme(newTheme: string | null): void {
+            if (newTheme) {
+                if (newTheme === this.theme) return;
+                const validThemes: Array<string> = ["Cobalt", "Slate", "North", "Mokka"];
+                if (!validThemes.includes(newTheme)) return;
+                document.documentElement.className = newTheme.toLowerCase();
+                this.theme = newTheme;
+            } else document.documentElement.className = this.theme.toLowerCase();
         },
         /**
          * Retrieve the index/table of contents.

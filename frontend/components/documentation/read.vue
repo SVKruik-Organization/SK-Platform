@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { DropdownStates, type DocChapterItem, type DocumentationTypes, type DocumentationFile, type DocumentationIndexItem } from '@/assets/customTypes';
+import { DropdownStates, type DocChapterItem, type DocumentationTypes, type DocumentationFile, type DocumentationIndexItem, type HeadLink } from '@/assets/customTypes';
 import { useDocumentationStore } from '@/stores/DocumentationStore';
 import { type PropType } from 'vue';
 
@@ -249,6 +249,18 @@ function nextPage(): void {
     }
 }
 
+/**
+ * Convert DDMMYYYY to YYYYMMDD for Open Graph article dates.
+ * @param input The date string to convert.
+ */
+function seoDateConverter(input: string): string {
+    const split: Array<string> = input.slice(6).split("-");
+    const day: string = split[0];
+    const month: string = split[1];
+    const year: string = split[2];
+    return `${year}-${month}-${day}`;
+}
+
 // Emitters
 const emit = defineEmits(["dropdownState"]);
 function handleDropdownState(name: DropdownStates, newValue: boolean): void {
@@ -256,11 +268,18 @@ function handleDropdownState(name: DropdownStates, newValue: boolean): void {
 };
 
 // SEO
-const links: Array<{ rel: string, href: string }> = [
+const links: Array<HeadLink> = [
     { rel: "index", href: "https://platform.stefankruik.com/documentation" },
     { rel: "self", href: `https://platform.stefankruik.com/documentation/read/${props.type}/${props.category}${props.page ? `/${props.page}` : ""}` }
-]
+];
+const metaItems = [
+    { property: "article:section", content: props.type === "Doc" ? "Documentation" : "Guide" },
+    { property: "article:published_time", content: seoDateConverter(fileData.value.creationTime) },
+    { property: "article:modified_time", content: seoDateConverter(fileData.value.modificationTime) },
+    { property: "article:tag", content: props.category.replace(/_/g, " ") },
+];
 if (props.page) {
+    metaItems.push({ property: "article:tag", content: props.page.replace(/_/g, " ") });
     const currentCategory: DocumentationIndexItem | undefined = documentationStore.getCategory(props.type, props.category);
     if (currentCategory) {
         const nextPageName = currentCategory.children[currentCategory.children.indexOf(props.page) + 1];
@@ -275,23 +294,11 @@ if (props.page) {
         });
     }
 }
-const metaItems = [
-    { name: "keywords", content: `SK Platform, SK Docs, SK Docs, Stefan Kruik, stefankruik, bots, services, products, developers, ${props.category}` },
-    { name: "author", content: "Stefan Kruik, platform@stefankruik.com" },
-    { name: "owner", content: "Stefan Kruik" },
-    { name: "color-scheme", content: "dark" },
-    { name: "theme-color", content: "#1E1F24" },
-    { property: "og:title", content: "SK Platform | Documentation" },
-    { property: "og:description", content: "The documentation for the SK Platform. Learn how to use the platform, its products, and services." },
-    { property: "og:url", content: `https://platform.stefankruik.com/documentation/read/${props.type}/${props.category}${props.page ? "/" + props.page.replace : ""}` },
-    { property: "og:type", content: "website" },
-];
-if (fileData.value) {
-    metaItems.push({ name: "description", content: fileData.value.description.length > 0 ? fileData.value.description : `Read page ${props.page ? props.page.replace(/_/g, " ") : ""} in ${props.category.replace(/_/g, " ")} on the SK Platform Documentation website.` },)
-}
+
 const jsonld = {
     "@context": "https://schema.org",
     "@type": "BreadcrumbList",
+    "name": "SK Platform | Documentation",
     "itemListElement": [{
         "@type": "ListItem",
         "position": 1,
@@ -313,12 +320,8 @@ if (props.page) {
     });
 }
 useHead({
-    title: `SK Platform | Documentation | ${props.category.replace(/_/g, " ")}${props.page ? `/${props.page.replace(/_/g, " ")}` : ""}`,
-    meta: metaItems,
     link: links,
-    htmlAttrs: {
-        lang: documentationStore.language.split("-")[0] || "en"
-    },
+    meta: metaItems,
     script: [{
         hid: "breadcrumbs-json-ld",
         type: "application/ld+json",
@@ -398,11 +401,13 @@ useHead({
                 <strong class="responsive-nav-title"
                     :class="{ 'disable-close': navigationDropdownVisible }">Options</strong>
                 <div class="flex-col">
-                    <button title="Go to the previous page." class="flex navbar-pill control-pill" type="button"
-                        :class="{ 'disabled-button': !hasPreviousPage }" @click="previousPage()">
-                        <p>Previous</p>
-                        <i class="fa-regular fa-diagram-previous"></i>
-                    </button>
+                    <ClientOnly>
+                        <button title="Go to the previous page." class="flex navbar-pill control-pill" type="button"
+                            :class="{ 'disabled-button': !hasPreviousPage }" @click="previousPage()">
+                            <p>Previous</p>
+                            <i class="fa-regular fa-diagram-previous"></i>
+                        </button>
+                    </ClientOnly>
                     <button title="Share this article." class="flex navbar-pill control-pill" type="button"
                         :class="{ 'disable-close': navigationDropdownVisible }" @click="share()">
                         <p :class="{ 'disable-close': navigationDropdownVisible }" ref="shareButtonContents">Share</p>
@@ -429,7 +434,7 @@ useHead({
                             </div>
                             <div class="menu-item flex">
                                 <label class="light-text">Last Read</label>
-                                <label>{{ fileData.access_time }}</label>
+                                <label>{{ fileData.accessTime }}</label>
                             </div>
                             <div class="menu-item flex">
                                 <label class="light-text">Last Modification</label>
@@ -441,11 +446,13 @@ useHead({
                             </div>
                         </menu>
                     </button>
-                    <button title="Go to the next page." class="flex navbar-pill control-pill" type="button"
-                        :class="{ 'disabled-button': !hasNextPage }" @click="nextPage()">
-                        <p>Next</p>
-                        <i class="fa-regular fa-diagram-next"></i>
-                    </button>
+                    <ClientOnly>
+                        <button title="Go to the next page." class="flex navbar-pill control-pill" type="button"
+                            :class="{ 'disabled-button': !hasNextPage }" @click="nextPage()">
+                            <p>Next</p>
+                            <i class="fa-regular fa-diagram-next"></i>
+                        </button>
+                    </ClientOnly>
                 </div>
             </section>
         </nav>
@@ -986,7 +993,7 @@ footer {
         background-color: var(--fill);
         display: none;
         width: 0;
-        z-index: 6;
+        z-index: 4;
     }
 
     .splitter {

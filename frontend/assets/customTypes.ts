@@ -9,6 +9,12 @@ export type UserDataResponse = {
     "accessToken": string
 }
 
+// HTML Head Link
+export type HeadLink = {
+    "rel": string,
+    "href": string
+}
+
 // Date Formatter
 export type DateFormat = {
     "date": string,
@@ -53,7 +59,7 @@ export type DocumentationFile = {
     "name": string,
     "fileContents": string,
     "size": number,
-    "access_time": string,
+    "accessTime": string,
     "modificationTime": string,
     "creationTime": string,
     "chapters": Array<string>,
@@ -148,6 +154,7 @@ export enum DropdownStates {
     product = "productDropdownVisible",
     navigation = "navigationDropdownVisible",
     comment = "commentOverlayVisible",
+    theme = "themeDropdownVisible",
 }
 
 // Documentation Chapter
