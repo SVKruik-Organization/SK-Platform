@@ -21,8 +21,6 @@ export default defineNuxtConfig({
                 { name: "keywords", content: `SK Platform Documentation, SK Documentation, SK Docs, SK Docs Home, Stefan Kruik, stefankruik, Bots, SK Bots, Docs` },
                 { name: "author", content: "Stefan Kruik, platform@stefankruik.com" },
                 { name: "owner", content: "Stefan Kruik" },
-                { name: "color-scheme", content: "dark" },
-                { name: "theme-color", content: "#1E1F24" },
                 { property: "og:site_name", content: "SK Platform" },
                 { property: "og:locale", content: "en_US" },
                 { property: "og:locale:alternate", content: "nl_NL" },
@@ -31,9 +29,6 @@ export default defineNuxtConfig({
                 { property: "og:image:width", content: "1280" },
                 { property: "og:image:height", content: "640" },
                 { property: "twitter:card", content: "summary_large_image" },
-            ],
-            link: [
-                { rel: 'icon', type: 'image/x-icon', href: '/favicon.ico' }
             ],
             script: [
                 { src: 'https://kit.fontawesome.com/ffc90f94bc.js', crossorigin: 'anonymous' }

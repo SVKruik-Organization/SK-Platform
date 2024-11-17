@@ -3,6 +3,8 @@ import "~/assets/css/base.css";
 import "~/assets/css/docpage.css";
 import "~/assets/css/interaction.css";
 import "~/assets/css/documentation.css"
+import "/node_modules/flag-icons/css/flag-icons.min.css";
+import { themeMeta } from "./assets/config/theme";
 
 // Setup
 const route = useRoute();
@@ -51,7 +53,7 @@ watch(() => route.path, (to: string) => metaUpdater(to));
 function metaUpdater(newRoute: string): void {
     const split: Array<string> = newRoute.split("/");
     if (split[1].length) {
-        const join: string = split.slice(0).map((string) => (string.charAt(0).toUpperCase() + string.slice(1))).join(" | ");
+        const join: string = split.slice(0).map((string) => ((string.charAt(0).toUpperCase() + string.slice(1))).replace(/_/g, " ")).join(" | ");
         document.title = `SK Platform ${join}`;
     } else document.title = "SK Platform";
 
@@ -81,12 +83,35 @@ function metaUpdater(newRoute: string): void {
     const icon = document.querySelector("link[rel='apple-touch-icon']");
     const imageName: string = split[1] === "documentation" ? "Docs" : "Platform";
     if (icon) {
-        icon.setAttribute("href", `/seo/${imageName}.png`);
+        icon.setAttribute("href", `/seo/apple/${imageName}.png`);
     } else {
         const newImage = document.createElement("link");
         newImage.setAttribute("rel", "apple-touch-icon");
-        newImage.setAttribute("href", `/seo/${imageName}.png`);
+        newImage.setAttribute("href", `/seo/apple/${imageName}.png`);
         document.head.appendChild(newImage);
+    }
+
+    // Favicon
+    const favicon = document.querySelector("link[rel='icon']");
+    if (favicon) {
+        favicon.setAttribute("href", `/seo/favicon/${imageName}.ico`);
+        favicon.setAttribute("type", "image/x-icon");
+    } else {
+        const newFavicon = document.createElement("link");
+        newFavicon.setAttribute("rel", "icon");
+        newFavicon.setAttribute("href", `/seo/favicon/${imageName}.ico`);
+        document.head.appendChild(newFavicon);
+    }
+
+    // Shortcut Icon
+    const shortcut = document.querySelector("link[rel='shortcut icon']");
+    if (shortcut) {
+        shortcut.setAttribute("href", `/seo/apple/${imageName}.png`);
+    } else {
+        const newShortcut = document.createElement("link");
+        newShortcut.setAttribute("rel", "shortcut icon");
+        newShortcut.setAttribute("href", `/seo/apple/${imageName}.png`);
+        document.head.appendChild(newShortcut);
     }
 
     // Theme Color

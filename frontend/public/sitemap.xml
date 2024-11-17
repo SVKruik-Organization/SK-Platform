@@ -2,7 +2,7 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
     <url>
         <loc>https://platform.stefankruik.com/documentation</loc>
-        <lastmod>2024-09-26</lastmod>
+        <lastmod>2024-11-17</lastmod>
         <changefreq>weekly</changefreq>
         <priority>1.0</priority>
     </url>
@@ -98,7 +98,7 @@
     </url>
     <url>
         <loc>https://platform.stefankruik.com/documentation/read/Doc/Services/Uplink</loc>
-        <lastmod>2024-09-10</lastmod>
+        <lastmod>2024-11-09</lastmod>
         <changefreq>monthly</changefreq>
         <priority>0.8</priority>
     </url>
@@ -127,14 +127,14 @@
         <priority>0.8</priority>
     </url>
     <url>
-        <loc>https://platform.stefankruik.com/documentation/read/Doc/Services/Lexicon</loc>
-        <lastmod>2024-09-23</lastmod>
+        <loc>https://platform.stefankruik.com/documentation/read/Doc/Services/Horizon</loc>
+        <lastmod>2024-10-08</lastmod>
         <changefreq>monthly</changefreq>
         <priority>0.8</priority>
     </url>
     <url>
         <loc>https://platform.stefankruik.com/documentation/read/Doc/Services/Tempo</loc>
-        <lastmod>2024-09-23</lastmod>
+        <lastmod>2024-11-09</lastmod>
         <changefreq>monthly</changefreq>
         <priority>0.8</priority>
     </url>
@@ -164,13 +164,19 @@
     </url>
     <url>
         <loc>https://platform.stefankruik.com/documentation/read/Doc/Services/Dispatch</loc>
-        <lastmod>2024-09-25</lastmod>
+        <lastmod>2024-11-09</lastmod>
         <changefreq>monthly</changefreq>
         <priority>0.8</priority>
     </url>
     <url>
         <loc>https://platform.stefankruik.com/documentation/read/Doc/Services/Render</loc>
         <lastmod>2024-09-26</lastmod>
+        <changefreq>monthly</changefreq>
+        <priority>0.8</priority>
+    </url>
+    <url>
+        <loc>https://platform.stefankruik.com/documentation/read/Doc/Services/Lexicon</loc>
+        <lastmod>2024-09-23</lastmod>
         <changefreq>monthly</changefreq>
         <priority>0.8</priority>
     </url>
@@ -363,6 +369,12 @@
     <url>
         <loc>https://platform.stefankruik.com/documentation/read/Doc/Contributing/SK_Docs</loc>
         <lastmod>2024-09-10</lastmod>
+        <changefreq>monthly</changefreq>
+        <priority>0.8</priority>
+    </url>
+    <url>
+        <loc>https://platform.stefankruik.com/documentation/read/Doc/Contributing/SK_Services</loc>
+        <lastmod>2024-11-16</lastmod>
         <changefreq>monthly</changefreq>
         <priority>0.8</priority>
     </url>

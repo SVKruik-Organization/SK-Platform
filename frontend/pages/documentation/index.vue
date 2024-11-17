@@ -54,7 +54,7 @@ function handleDropdownState(name: DropdownStates, newValue: boolean): void {
                 <h3 class="content-splitter-header light-text ">Explore information about SK Platform
                     and related product lines.
                 </h3>
-                <img class="mesh" src="/Mesh_1.png" alt="Abstract Mesh">
+                <img class="mesh" src="/img/graphics/Mesh_1.png" alt="Abstract Mesh">
             </div>
             <div class="hero-right flex">
                 <NuxtLink to="/documentation/read/Doc/Products/Bots#Interpres">
@@ -201,6 +201,7 @@ function handleDropdownState(name: DropdownStates, newValue: boolean): void {
     -webkit-user-select: none;
     user-select: none;
     filter: blur(50px);
+    pointer-events: none;
 }
 
 h1 {

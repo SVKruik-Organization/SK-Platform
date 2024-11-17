@@ -1,6 +1,7 @@
 import { defineStore } from "pinia";
 import { useSessionStorage, useLocalStorage } from "@vueuse/core";
 import { IndexPlaceholder, RecommendedPlaceholder, type DocumentationIndexItem, type RecommendedItem } from "@/assets/customTypes";
+import { themeData, themeMeta } from "~/assets/config/theme";
 
 const defaultVersion: string = "v1";
 const defaultLanguage: string = "en-US";
@@ -62,11 +63,32 @@ export const useDocumentationStore = defineStore("documentationStore", {
         setTheme(newTheme: string | null): void {
             if (newTheme) {
                 if (newTheme === this.theme) return;
-                const validThemes: Array<string> = ["Cobalt", "Slate", "North", "Mokka"];
-                if (!validThemes.includes(newTheme)) return;
+                if (!themeData.themes.includes(newTheme)) return;
                 document.documentElement.className = newTheme.toLowerCase();
                 this.theme = newTheme;
             } else document.documentElement.className = this.theme.toLowerCase();
+
+            // Theme Meta Tag
+            const themeMetaTag = document.querySelector("meta[name='theme-color']");
+            if (themeMetaTag) {
+                themeMetaTag.setAttribute("content", themeMeta[this.theme.toUpperCase() as keyof typeof themeMeta] || themeMeta.DEFAULT);
+            } else {
+                const newThemeColor = document.createElement("meta");
+                newThemeColor.setAttribute("name", "theme-color");
+                newThemeColor.setAttribute("content", themeMeta[this.theme.toUpperCase() as keyof typeof themeMeta] || themeMeta.DEFAULT);
+                document.head.appendChild(newThemeColor);
+            }
+
+            // Color Schema Meta Tag
+            const colorSchemaMetaTag = document.querySelector("meta[name='color-scheme']");
+            if (colorSchemaMetaTag) {
+                colorSchemaMetaTag.setAttribute("content", themeData.lightThemes.includes(this.theme) ? "light" : "dark");
+            } else {
+                const newColorSchema = document.createElement("meta");
+                newColorSchema.setAttribute("name", "color-scheme");
+                newColorSchema.setAttribute("content", themeData.lightThemes.includes(this.theme) ? "light" : "dark");
+                document.head.appendChild(newColorSchema);
+            }
         },
         /**
          * Retrieve the index/table of contents.

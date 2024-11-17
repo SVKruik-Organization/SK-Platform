@@ -333,14 +333,14 @@ function searchInputChecks(force: boolean, newOffset: number): boolean {
                                     <i class="fa-regular fa-check"
                                         :class="{ 'visible': documentationStore.language === 'en-US' }"></i>
                                     <label>English</label>
-                                    <span>🇺🇸</span>
+                                    <span class="fi fi-us"></span>
                                 </button>
                                 <button type="button" class="menu-item flex"
                                     @click="documentationStore.setLanguage('nl-NL')">
                                     <i class="fa-regular fa-check"
                                         :class="{ 'visible': documentationStore.language === 'nl-NL' }"></i>
                                     <label class="disabled-text">Nederlands</label>
-                                    <span>🇳🇱</span>
+                                    <span class="fi fi-nl"></span>
                                 </button>
                             </menu>
                         </ClientOnly>
@@ -581,6 +581,7 @@ input::placeholder {
 .menu-item span {
     margin-left: auto;
     margin-right: 5px;
+    font-size: 12px;
 }
 
 @media (width <=980px) {

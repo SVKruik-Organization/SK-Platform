@@ -1,37 +1,37 @@
 /* Themes */
 :root.cobalt {
-    --main: #0d1116;
-    --font: #ededed;
-    --font-light: #b1b1b1;
+    --main: #0D1116;
+    --font: #EDEDED;
+    --font-light: #B1B1B1;
     --font-disabled: #585858;
-    --fill: #161b22;
-    --fill-light: #2a323e;
-    --border: #30363d;
-    --link: #2f81f7;
+    --fill: #161B22;
+    --fill-light: #2A323E;
+    --border: #30363D;
+    --link: #2F81F7;
     --glass: rgba(30, 30, 34, 0.65);
 }
 
 :root.slate {
     --main: #252525;
-    --font: #ffffff;
-    --font-light: #b9b9b9;
+    --font: #FFFFFF;
+    --font-light: #B9B9B9;
     --font-disabled: #585858;
-    --fill: #2d2d2d;
-    --fill-light: #2a2a2a;
-    --border: #3e3e3e;
-    --link: #408fff;
+    --fill: #2D2D2D;
+    --fill-light: #2A2A2A;
+    --border: #3E3E3E;
+    --link: #408FFF;
     --glass: rgba(26, 26, 26, 0.65);
 }
 
 :root.north {
-    --main: #fcfcfc;
+    --main: #FCFCFC;
     --font: #000000;
     --font-light: #494949;
     --font-disabled: #919191;
-    --fill: #ffffff;
-    --fill-light: #f4f4f4;
-    --border: #e5e5e5;
-    --link: #004ebc;
+    --fill: #FFFFFF;
+    --fill-light: #F4F4F4;
+    --border: #E5E5E5;
+    --link: #004EBC;
     --glass: rgba(239, 239, 239, 0.65);
 }
 
@@ -41,14 +41,14 @@
 }
 
 :root.mokka {
-    --main: #fdfaf4;
+    --main: #F8F2E6;
     --font: #000000;
     --font-light: #494949;
     --font-disabled: #919191;
-    --fill: #f5eee2;
-    --fill-light: #e6e0d5;
-    --border: #c3b8a5;
-    --link: #004ebc;
+    --fill: #F5EEE2;
+    --fill-light: #E6E0D5;
+    --border: #C3B8A5;
+    --link: #004EBC;
     --glass: rgba(234, 229, 219, 0.65);
 }
 
@@ -57,7 +57,7 @@
     height: 15px;
     width: 15px;
     border-radius: 50%;
-    border: 1px solid #4b4b4b;
+    border: 1px solid #4B4B4B;
 }
 
 .theme-preview-item-cobalt {
@@ -65,13 +65,13 @@
 }
 
 .theme-preview-item-slate {
-    background-color: #4d4d4d;
+    background-color: #4D4D4D;
 }
 
 .theme-preview-item-north {
-    background-color: #fcfcfc;
+    background-color: #FCFCFC;
 }
 
 .theme-preview-item-mokka {
-    background-color: #c2b8a6;
+    background-color: #C2B8A6;
 }

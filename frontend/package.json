@@ -24,6 +24,7 @@
         "@vueuse/core": "^5.0.0",
         "@vueuse/nuxt": "^11.1.0",
         "amqplib": "^0.10.4",
+        "flag-icons": "^7.2.3",
         "nuxt": "^3.13.0",
         "pinia": "2.2.2",
         "shelljs": "^0.8.5",
@@ -31,7 +32,7 @@
         "vue-router": "latest"
     },
     "devDependencies": {
-        "@types/shelljs": "^0.8.15",
-        "@types/amqplib": "^0.10.5"
+        "@types/amqplib": "^0.10.5",
+        "@types/shelljs": "^0.8.15"
     }
 }

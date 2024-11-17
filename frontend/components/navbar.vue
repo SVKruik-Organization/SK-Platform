@@ -10,7 +10,7 @@ const userStore = useUserStore();
         <nav>
             <section>
                 <NuxtLink to="/">
-                    <img alt="Logo" src="/seo/Platform.png" title="Home">
+                    <img alt="Logo" src="/seo/apple/Platform.png" title="Home">
                 </NuxtLink>
             </section>
             <section>
