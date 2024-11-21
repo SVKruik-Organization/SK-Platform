@@ -1,15 +1,14 @@
 import express, { Express, Request, Response } from "express";
 import dotenv from "dotenv";
 import cors from "cors";
-import { DocumentationFile, DocumentationFileMetadata, FileRequest, FilesRequest, FolderItem, IndexItem, RecommendedItem, UplinkMessage } from "./customTypes";
-import { getCategories, getDefaultFile, getFile, getFiles, getIndex, getRecommendedItems } from "./utils/file";
+import { DocumentationFileParent, FileRequest, IndexItem, RecommendedItem, UplinkMessage } from "./customTypes";
+import { getDefaultFile, getFile, getIndex, getRecommendedItems } from "./utils/file";
 import { SearchRoutes } from "./routes/searchRoutes";
 import { apiMiddleware, log } from "./utils/logger";
 import { rateLimit } from 'express-rate-limit';
 import { Channel, Message } from "amqplib";
 import shell from "shelljs";
-import { getConnection } from "./utils/connection";
-import mariadb, { Pool } from 'mariadb';
+import { getUplinkConnection } from "./utils/networking";
 import { VoteRoutes } from "./routes/voteRoutes";
 dotenv.config();
 const app: Express = express();
@@ -23,19 +22,6 @@ const corsOptions = {
 }
 app.use(cors(corsOptions));
 app.use(apiMiddleware);
-
-
-// Database Connection
-if (!process.env.DB_HOST || !process.env.DB_PORT) throw new Error("Missing database credentials.");
-const database: Pool = mariadb.createPool({
-    host: process.env.DB_HOST,
-    port: parseInt(process.env.DB_PORT),
-    user: process.env.DB_USERNAME,
-    database: process.env.DB_NAME,
-    password: process.env.DB_PASSWORD,
-    multipleStatements: true
-});
-export { database };
 app.use("/search", SearchRoutes);
 app.use("/votes", VoteRoutes);
 
@@ -80,26 +66,17 @@ app.get("/refresh/:version/:language", refreshLimit, async (req: Request, res: R
 // Get File
 app.get("/getFile/:version/:language/:type", async (req: Request, res: Response) => {
     const searchQuery: FileRequest = req.query as FileRequest;
-    const metadata: Array<DocumentationFileMetadata> = await database.query("SELECT * FROM documentation_page WHERE category = ? AND name = ? UNION ALL SELECT dp.* FROM documentation_page dp JOIN ( SELECT related FROM documentation_page WHERE category = ? AND name = ? ) AS target_related ON FIND_IN_SET(dp.id, target_related.related) > 0;", [searchQuery.folder, searchQuery.name, searchQuery.folder, searchQuery.name]);
-    const file: DocumentationFile | number = getFile(searchQuery.folder, searchQuery.name, req.params.version, req.params.language, req.params.type);
-    if (typeof file === "number") return res.sendStatus(file);
-    return res.json({ "file": file, "meta": metadata ? metadata[0] : null, "related": metadata ? metadata.slice(1) : null });
-});
-
-// Get Files
-app.get("/getFiles/:version/:language/:type", async (req: Request, res: Response) => {
-    const searchQuery: FilesRequest = req.query as FilesRequest;
-    const files: Array<string> | number = getFiles(searchQuery.folder, req.params.version, req.params.language, req.params.type);
-    if (typeof files === "number") return res.sendStatus(files);
-    return res.json({ "files": files });
+    const parent: DocumentationFileParent | number = await getFile(searchQuery.folder, searchQuery.name, req.params.version, req.params.language, req.params.type);
+    if (typeof parent === "number") return res.sendStatus(parent);
+    return res.json({ "file": parent.file, "meta": parent.metadata ? parent.metadata[0] : null, "related": parent.metadata ? parent.metadata.slice(1) : null });
 });
 
 // Get Category Default
 app.get("/getDefault/:version/:language/:type", async (req: Request, res: Response) => {
     const searchQuery: FileRequest = req.query as FileRequest;
-    const file: DocumentationFile | number = getDefaultFile(searchQuery.folder, req.params.version, req.params.language, req.params.type);
-    if (typeof file === "number") return res.sendStatus(file);
-    return res.json({ "file": file });
+    const parent: DocumentationFileParent | number = await getDefaultFile(searchQuery.folder, req.params.version, req.params.language, req.params.type);
+    if (typeof parent === "number") return res.sendStatus(parent);
+    return res.json({ "file": parent.file, "meta": parent.metadata ? parent.metadata[0] : null, "related": parent.metadata ? parent.metadata.slice(1) : null });
 });
 
 // Get Index
@@ -116,19 +93,12 @@ app.get("/getRecommendedItems/:language/:type", async (req: Request, res: Respon
     return res.json({ "recommendedItems": data });
 });
 
-// Get Categories
-app.get("/getCategories/:version/:language/:type", async (req: Request, res: Response) => {
-    const categories: Array<FolderItem> | number = getCategories(req.params.version, req.params.language, req.params.type);
-    if (typeof categories === "number") return res.sendStatus(categories);
-    return res.json({ "categories": categories });
-});
-
 // Start
 const PORT: number = parseInt(process.env.PORT as string) || 3002;
 app.listen(PORT, "0.0.0.0", async () => {
     // Uplink Connection
     try {
-        const channel: Channel | null = await getConnection();
+        const channel: Channel | null = await getUplinkConnection();
         if (!channel) throw new Error("Uplink connection missing. Starting server without Uplink connection.");
         channel.assertExchange("unicast-products", "direct", { durable: false });
         const queue = await channel.assertQueue("", { exclusive: true });

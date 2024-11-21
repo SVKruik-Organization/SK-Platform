@@ -36,7 +36,7 @@ onMounted(() => {
  * Cast a vote for the documentation page.
  * @param value The value of the vote.
  */
-async function submitDocumentationVote(value: boolean) {
+async function submitDocumentationVote(value: boolean): Promise<void> {
     // Prevent Double Vote
     if (value && pressedButton.value === "like") return;
     if (!value && pressedButton.value === "dislike") return;
@@ -49,7 +49,11 @@ async function submitDocumentationVote(value: boolean) {
     } else pressedButton.value = "dislike";
 
     // Cast Vote
-    (await useFetchDocumentationVote(documentationStore.version, documentationStore.language, value, props.type || null, props.category || null, props.page || null, voteTicket.value)).value;
+    const response: string | number = await useFetchDocumentationVote(documentationStore.version, documentationStore.language, value, props.type || null, props.category || null, props.page || null, voteTicket.value);
+    if (typeof response === "string") {
+        // TODO: Handle error
+        return;
+    };
     documentationStore.voteCast = `${voteTicket.value}-${props.type}/${props.category}/${props.page}`;
 
     // Confirmation Message
@@ -65,8 +69,12 @@ async function submitDocumentationVote(value: boolean) {
 /**
  * Submit additional comment for the vote.
  */
-async function submitDocumentationComment() {
-    (await useFetchDocumentationComment(voteTicket.value, commentData.value.slice(0, 255))).value;
+async function submitDocumentationComment(): Promise<void> {
+    const response: string | number = await useFetchDocumentationComment(voteTicket.value, commentData.value.slice(0, 255));
+    if (typeof response === "string") {
+        // TODO: Handle error
+        return;
+    };
     documentationStore.commentCast = `${voteTicket.value}-${props.type}/${props.category}/${props.page}`;
 
     // Confirmation Message
@@ -82,7 +90,7 @@ async function submitDocumentationComment() {
 /**
  * Open the comment overlay.
  */
-function commentDocumentationVote() {
+function commentDocumentationVote(): void {
     if (voteCastCurrentPage.value && commentData.value.length > 0) return;
     emit("dropdownState", DropdownStates.comment, true);
 }

@@ -423,26 +423,30 @@ useHead({
                         <menu
                             :class="{ 'dropdown-expand': informationDropdownVisible, 'information-dropdown-expand': informationDropdownVisible }"
                             class="dropdown-menu dropdown-menu-right information-dropdown-menu flex-col disable-close">
-                            <div class="menu-item flex">
-                                <label class="light-text">Name</label>
+                            <div class="menu-item flex disable-close">
+                                <label class=" light-text disable-close">Name</label>
                                 <label>{{ fileData.name }}</label>
                             </div>
-                            <div class="menu-item flex">
-                                <label class="light-text">Size</label>
+                            <div class="menu-item flex disable-close">
+                                <label class="light-text disable-close">Size</label>
                                 <label>{{ fileData.size < 1024 ? `${fileData.size} bytes` : `${Math.round(fileData.size
                                     / 1024)} kB` }}</label>
                             </div>
-                            <div class="menu-item flex">
-                                <label class="light-text">Last Read</label>
+                            <div class="menu-item flex disable-close">
+                                <label class="light-text disable-close">Last Read</label>
                                 <label>{{ fileData.accessTime }}</label>
                             </div>
-                            <div class="menu-item flex">
-                                <label class="light-text">Last Modification</label>
+                            <div class="menu-item flex disable-close">
+                                <label class="light-text disable-close">Last Modification</label>
                                 <label>{{ fileData.modificationTime }}</label>
                             </div>
-                            <div class="menu-item flex">
-                                <label class="light-text">Created On</label>
+                            <div class="menu-item flex disable-close">
+                                <label class="light-text disable-close">Created On</label>
                                 <label>{{ fileData.creationTime }}</label>
+                            </div>
+                            <div class="menu-item flex disable-close">
+                                <label class="light-text disable-close">View Count</label>
+                                <label>{{ fileData.viewCount }}</label>
                             </div>
                         </menu>
                     </button>
@@ -632,7 +636,7 @@ nav {
 }
 
 .information-dropdown-expand {
-    height: 130px;
+    height: 160px;
     width: 320px;
 }
 

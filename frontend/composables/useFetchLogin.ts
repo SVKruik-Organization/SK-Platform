@@ -1,7 +1,7 @@
 import type { UserDataResponse } from "~/assets/customTypes";
 
-export const useFetchLogin = async (username: string, password: string) => {
-    const login = ref<UserDataResponse | boolean>(false);
+export const useFetchLogin = async (username: string, password: string): Promise<string | UserDataResponse> => {
+    const login = ref<string | UserDataResponse>("Error");
     await new Promise<void>(async (resolve) => {
         watchEffect(async () => {
             try {
@@ -16,15 +16,13 @@ export const useFetchLogin = async (username: string, password: string) => {
                         "password": password
                     })
                 });
-                if (response.ok) {
-                    login.value = await response.json();
-                } else login.value = false;
+                if (response.ok) login.value = await response.json();
             } catch (error) {
-                login.value = false;
+                login.value = "Error";
             }
             resolve();
         });
     });
 
-    return login;
+    return login.value;
 }

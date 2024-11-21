@@ -19,11 +19,17 @@ export type CommentRequest = {
     "commment": string
 }
 
+export type DocumentationFileParent = {
+    "file": DocumentationFile,
+    "metadata": Array<DocumentationFileMetadata> | null
+}
+
 // Single Documentation File
 export type DocumentationFile = {
     "name": string,
     "fileContents": string,
     "size": number,
+    "viewCount": number,
     "accessTime": Date,
     "modificationTime": Date,
     "creationTime": Date,

@@ -153,13 +153,13 @@ async function search(force: boolean, newOffset: number): Promise<void | Documen
     searchQuery.value = searchValue;
 
     // Fetch
-    const data = (await useFetchDocumentationSearch(documentationStore.version, documentationStore.language, searchValue, resultsPerPage.value, offset.value, searchMode.value)).value;
+    const data: string | DocumentationSearchResponse = await useFetchDocumentationSearch(documentationStore.version, documentationStore.language, searchValue, resultsPerPage.value, offset.value, searchMode.value);
     if (loadingIndicator.value) loadingIndicator.value.classList.remove("visible");
     if (typeof data === "object") {
         if (data.results.length === 0 && offset.value > 0) return search(false, 0);
         emptyMessage.value = "Type in the search bar above, and results will appear here.";
         return searchResults.value = data;
-    } else if (!data) emptyMessage.value = "An error occurred while fetching the search results.";
+    } else emptyMessage.value = data;
 }
 
 /**

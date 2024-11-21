@@ -1,6 +1,6 @@
 import { defineStore } from "pinia";
 import { useSessionStorage, useLocalStorage } from "@vueuse/core";
-import { IndexPlaceholder, RecommendedPlaceholder, type DocumentationIndexItem, type RecommendedItem } from "@/assets/customTypes";
+import { IndexPlaceholder, RecommendedPlaceholder, type DocumentationIndexItem, type DocumentationIndexResponse, type DocumentationRecommendedItemsResponse, type DocumentationRefreshResponse, type RecommendedItem } from "@/assets/customTypes";
 import { themeData, themeMeta } from "~/assets/config/theme";
 
 const defaultVersion: string = "v1";
@@ -102,8 +102,14 @@ export const useDocumentationStore = defineStore("documentationStore", {
             if (type === "Guide") convertedType = "guideIndex";
 
             if (this[convertedType].length === 0 || force) {
-                const data = (await useFetchDocumentationIndex(this.version, this.language, type)).value;
-                if (typeof data === "boolean") return this[convertedType];
+                console.log(this[convertedType].length, force);
+                console.log("Fetching");
+                const data: string | DocumentationIndexResponse = await useFetchDocumentationIndex(this.version, this.language, type);
+                if (typeof data === "string") {
+                    // TODO: Handle error
+                    return this[convertedType];
+                };
+
                 if (data.index.length === 0) {
                     this[convertedType] = IndexPlaceholder;
                     return IndexPlaceholder;
@@ -125,8 +131,12 @@ export const useDocumentationStore = defineStore("documentationStore", {
             if (type === "Guide") convertedType = "recommendedGuideItems";
 
             if (this[convertedType].length === 0 || force) {
-                const data = (await useFetchDocumentationRecommendedItems(this.language, type)).value;
-                if (typeof data === "boolean") return this[convertedType];
+                const data: string | DocumentationRecommendedItemsResponse = await useFetchDocumentationRecommendedItems(this.language, type);
+                if (typeof data === "string") {
+                    // TODO: Handle error
+                    return this[convertedType];
+                };
+
                 if (data.recommendedItems.length === 0) {
                     this[convertedType] = RecommendedPlaceholder;
                     return RecommendedPlaceholder;
@@ -157,8 +167,11 @@ export const useDocumentationStore = defineStore("documentationStore", {
          * @returns Void, return on error.
          */
         async refresh(): Promise<void> {
-            const data = (await useFetchDocumentationRefresh(this.version, this.language)).value
-            if (typeof data === "boolean") return;
+            const data: string | DocumentationRefreshResponse = await useFetchDocumentationRefresh(this.version, this.language);
+            if (typeof data === "string") {
+                // TODO: Handle error
+                return;
+            };
 
             if (data.docIndex.length === 0) {
                 this.docIndex = IndexPlaceholder;

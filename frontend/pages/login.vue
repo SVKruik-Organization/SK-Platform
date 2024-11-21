@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { useUserStore } from '@/stores/UserStore';
+import type { UserDataResponse } from '~/assets/customTypes';
 
 // Setup
 const userStore = useUserStore();
@@ -13,10 +14,10 @@ async function login(event: MouseEvent): Promise<void> {
     // Fetch
     event.preventDefault();
     if (!usernameInput.value || !passwordInput.value) return;
-    const data = (await useFetchLogin(usernameInput.value.value, passwordInput.value.value)).value;
+    const data: string | UserDataResponse = await useFetchLogin(usernameInput.value.value, passwordInput.value.value);
 
     // Parse
-    if (typeof data === "boolean") return window.alert("Username/password incorrect.");
+    if (typeof data === "string") return window.alert("Username/password incorrect.");
     userStore.setUser({
         "username": usernameInput.value.value,
         "token": data.accessToken

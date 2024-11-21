@@ -1,8 +1,8 @@
 import dotenv from "dotenv";
 import express, { Request, Response, Router } from "express";
 import { CommentRequest, VoteRequest } from "../customTypes";
-import { database } from "..";
 import { logError } from "../utils/logger";
+import { queryDatabase } from "../utils/networking";
 dotenv.config();
 const router: Router = express.Router();
 
@@ -20,7 +20,7 @@ router.post("/new/:version/:language", async (req: Request, res: Response) => {
             "page": voteParams.page === "null" ? null : voteParams.page
         };
 
-        await database.query("INSERT INTO documentation_vote (ticket, value, type, category, page) VALUES (?, ?, ?, ?, ?)", [voteRequest.ticket, voteRequest.value, voteRequest.type, voteRequest.category, voteRequest.page]);
+        await queryDatabase("INSERT INTO documentation_vote (ticket, value, type, category, page) VALUES (?, ?, ?, ?, ?)", [voteRequest.ticket, voteRequest.value, voteRequest.type, voteRequest.category, voteRequest.page]);
         return res.sendStatus(200);
     } catch (error: any) {
         logError(error);
@@ -39,7 +39,7 @@ router.put("/comment", async (req: Request, res: Response) => {
             "commment": req.body.comment
         };
 
-        await database.query("UPDATE documentation_vote SET comment = ? WHERE ticket = ?", [commentRequest.commment, commentRequest.ticket]);
+        await queryDatabase("UPDATE documentation_vote SET comment = ? WHERE ticket = ?", [commentRequest.commment, commentRequest.ticket]);
         return res.sendStatus(200);
     } catch (error: any) {
         logError(error);

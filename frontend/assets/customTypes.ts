@@ -59,6 +59,7 @@ export type DocumentationFile = {
     "name": string,
     "fileContents": string,
     "size": number,
+    "viewCount": number,
     "accessTime": string,
     "modificationTime": string,
     "creationTime": string,

@@ -1,5 +1,5 @@
-export const useFetchDocumentationComment = async (ticket: string, comment: string) => {
-    const documentationComment = ref<boolean>(false);
+export const useFetchDocumentationComment = async (ticket: string, comment: string): Promise<string | number> => {
+    const documentationComment = ref<string | number>("Error");
     await new Promise<void>(async (resolve) => {
         watchEffect(async () => {
             try {
@@ -13,15 +13,13 @@ export const useFetchDocumentationComment = async (ticket: string, comment: stri
                         "comment": comment
                     })
                 });
-                if (response.ok) {
-                    documentationComment.value = true;
-                } else documentationComment.value = false;
+                if (response.ok) documentationComment.value = 200;
             } catch (error) {
-                documentationComment.value = false;
+                documentationComment.value = "Error";
             }
             resolve();
         });
     });
 
-    return documentationComment;
+    return documentationComment.value;
 }

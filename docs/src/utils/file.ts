@@ -1,7 +1,8 @@
 import { Dirent, readdirSync, readFileSync, Stats, statSync } from "fs";
 import { logError } from "./logger";
-import { DocumentationFile, FolderItem, IndexItem, RecommendedItem } from "../customTypes";
+import { DocumentationFileParent, IndexItem, RecommendedItem } from "../customTypes";
 import { parse } from "node-html-parser";
+import { queryDatabase } from "./networking";
 
 /**
  * Fetch a specific Documentation page from the file system.
@@ -12,7 +13,7 @@ import { parse } from "node-html-parser";
  * @param type Documentation (Doc) or Guides (Guide)
  * @returns HTML data as string or status code on error.
  */
-export function getFile(folder: string, name: string, version: string, language: string, type: string): DocumentationFile | number {
+export async function getFile(folder: string, name: string, version: string, language: string, type: string): Promise<DocumentationFileParent | number> {
     try {
         // Retrieve Correct Folder
         const rawFolders: Array<Dirent> = readDirectory(folder, version, language, type);
@@ -34,45 +35,23 @@ export function getFile(folder: string, name: string, version: string, language:
             }, []);
 
         // Retrieve & Send File
-        const metadata: Stats = statSync(`${rawFile[0].parentPath}/${rawFile[0].name}`);
+        const fileMetaData: Stats = statSync(`${rawFile[0].parentPath}/${rawFile[0].name}`);
+        const databaseMetaData: Array<any> | number = await queryDatabase("SELECT * FROM documentation_page WHERE category = ? AND name = ? UNION ALL SELECT dp.* FROM documentation_page dp JOIN ( SELECT related FROM documentation_page WHERE category = ? AND name = ?) AS target_related ON FIND_IN_SET(dp.id, target_related.related) > 0;", [folder, name, folder, name]);
+        if (typeof databaseMetaData === "number") return databaseMetaData;
         return {
-            "name": rawFile[0].name,
-            "fileContents": fileContents,
-            "size": metadata.size,
-            "accessTime": new Date(metadata.atimeMs),
-            "modificationTime": new Date(metadata.mtimeMs),
-            "creationTime": new Date(metadata.birthtimeMs),
-            "chapters": chapters,
-            "description": root.querySelector(".page-description")?.innerText.replace(/\\n/g, " ").replace(/\s+/g, " ") || ""
+            "file": {
+                "name": rawFile[0].name,
+                "fileContents": fileContents,
+                "size": fileMetaData.size,
+                "viewCount": 0,
+                "accessTime": new Date(fileMetaData.atimeMs),
+                "modificationTime": new Date(fileMetaData.mtimeMs),
+                "creationTime": new Date(fileMetaData.birthtimeMs),
+                "chapters": chapters,
+                "description": root.querySelector(".page-description")?.innerText.replace(/\\n/g, " ").replace(/\s+/g, " ") || ""
+            },
+            "metadata": databaseMetaData
         }
-    } catch (error: any) {
-        if (error.code === "ENOENT") {
-            return 404;
-        } else {
-            logError(error);
-            return 500;
-        }
-    }
-}
-
-/**
- * Fetch all pages for a specific category.
- * @param folder The name of the folder with underscores instead of spaces. Examples: Get_Started, Community
- * @param version The version number of the index. Examples: v1, v2
- * @param language The language of the documentation. Examples: en-US, nl-NL
- * @param type Documentation (Doc) or Guides (Guide)
- * @returns List of pages for the category or status code on error.
- */
-export function getFiles(folder: string, version: string, language: string, type: string): Array<string> | number {
-    try {
-        // Retrieve Correct Folder
-        const rawFolders: Array<Dirent> = readDirectory(folder, version, language, type);
-        if (rawFolders.length === 0) return 404;
-
-        // Retrieve Correct File
-        return readdirSync(`${__dirname}/../../data/html/${version}/${language}/${type}/${rawFolders[0].name}`, { withFileTypes: true })
-            .filter(entity => entity.isFile() && entity.name !== "00_Default.html")
-            .map(file => file.name.slice(3, -5));
     } catch (error: any) {
         if (error.code === "ENOENT") {
             return 404;
@@ -91,7 +70,7 @@ export function getFiles(folder: string, version: string, language: string, type
  * @param type Documentation (Doc) or Guides (Guide)
  * @returns HTML data as string or status code on error.
  */
-export function getDefaultFile(folder: string, version: string, language: string, type: string): DocumentationFile | number {
+export async function getDefaultFile(folder: string, version: string, language: string, type: string): Promise<DocumentationFileParent | number> {
     try {
         // Retrieve Correct Folder
         const rawFolders: Array<Dirent> = readDirectory(folder, version, language, type);
@@ -105,16 +84,22 @@ export function getDefaultFile(folder: string, version: string, language: string
         const root = parse(fileContents);
 
         // Retrieve & Send File
-        const metadata: Stats = statSync(`${rawFile[0].parentPath}/${rawFile[0].name}`);
+        const fileMetaData: Stats = statSync(`${rawFile[0].parentPath}/${rawFile[0].name}`);
+        const databaseMetaData: Array<any> | number = await queryDatabase("SELECT * FROM documentation_page WHERE category = ? AND name = 'Default' UNION ALL SELECT dp.* FROM documentation_page dp JOIN ( SELECT related FROM documentation_page WHERE category = ? AND name = 'Default') AS target_related ON FIND_IN_SET(dp.id, target_related.related) > 0;", [folder, folder]);
+        if (typeof databaseMetaData === "number") return databaseMetaData;
         return {
-            "name": rawFile[0].name,
-            "fileContents": fileContents,
-            "size": metadata.size,
-            "accessTime": new Date(metadata.atimeMs),
-            "modificationTime": new Date(metadata.mtimeMs),
-            "creationTime": new Date(metadata.birthtimeMs),
-            "chapters": [],
-            "description": root.querySelector(".page-description")?.innerText.replace(/\\n/g, " ").replace(/\s+/g, " ") || ""
+            "file": {
+                "name": rawFile[0].name,
+                "fileContents": fileContents,
+                "size": fileMetaData.size,
+                "viewCount": 0,
+                "accessTime": new Date(fileMetaData.atimeMs),
+                "modificationTime": new Date(fileMetaData.mtimeMs),
+                "creationTime": new Date(fileMetaData.birthtimeMs),
+                "chapters": [],
+                "description": root.querySelector(".page-description")?.innerText.replace(/\\n/g, " ").replace(/\s+/g, " ") || ""
+            },
+            "metadata": databaseMetaData
         }
     } catch (error: any) {
         if (error.code === "ENOENT") {
@@ -152,34 +137,6 @@ export function getIndex(version: string, language: string, type: string): Array
             index.push(indexItem);
         }
         return index;
-    } catch (error: any) {
-        if (error.code === "ENOENT") {
-            return 404;
-        } else {
-            logError(error);
-            return 500;
-        }
-    }
-}
-
-/**
- * Fetch the icons and names of the categories.
- * @param version The version number of the index. Examples: v1, v2
- * @param language The language of the documentation. Examples: en-US, nl-NL
- * @param type Documentation (Doc) or Guides (Guide)
- * @returns Data or status code on error.
- */
-export function getCategories(version: string, language: string, type: string): Array<FolderItem> | number {
-    try {
-        // Retrieve & Format Folder Names
-        return readdirSync(`${__dirname}/../../data/html/${version}/${language}/${type}`, { withFileTypes: true })
-            .filter(entity => entity.isDirectory())
-            .map(directory => {
-                return {
-                    "categoryIcon": getFolderIcon(directory.name.slice(3)),
-                    "category": directory.name.replace(/_/g, " ").slice(3)
-                }
-            });
     } catch (error: any) {
         if (error.code === "ENOENT") {
             return 404;

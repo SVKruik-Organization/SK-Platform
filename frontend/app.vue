@@ -4,7 +4,6 @@ import "~/assets/css/docpage.css";
 import "~/assets/css/interaction.css";
 import "~/assets/css/documentation.css"
 import "/node_modules/flag-icons/css/flag-icons.min.css";
-import { themeMeta } from "./assets/config/theme";
 
 // Setup
 const route = useRoute();

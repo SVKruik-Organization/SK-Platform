@@ -1,7 +1,7 @@
 import type { DocumentationRefreshResponse } from "~/assets/customTypes";
 
-export const useFetchDocumentationRefresh = async (version: string, language: string) => {
-    const documentationRefresh = ref<DocumentationRefreshResponse | boolean>(false);
+export const useFetchDocumentationRefresh = async (version: string, language: string): Promise<string | DocumentationRefreshResponse> => {
+    const documentationRefresh = ref<string | DocumentationRefreshResponse>("Error");
     await new Promise<void>(async (resolve) => {
         watchEffect(async () => {
             try {
@@ -9,15 +9,13 @@ export const useFetchDocumentationRefresh = async (version: string, language: st
                 const response = await fetch(`${runtimeConfig.public.docsApiBase}/refresh/${version}/${language}`, {
                     method: "GET"
                 });
-                if (response.ok) {
-                    documentationRefresh.value = await response.json();
-                } else documentationRefresh.value = false;
+                if (response.ok) documentationRefresh.value = await response.json();
             } catch (error) {
-                documentationRefresh.value = false;
+                documentationRefresh.value = "Error";
             }
             resolve();
         });
     });
 
-    return documentationRefresh;
+    return documentationRefresh.value;
 }
