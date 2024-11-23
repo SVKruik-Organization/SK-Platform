@@ -10,8 +10,8 @@ export const useFetchDocumentationRecommendedItems = async (language: string, ty
                     method: "GET"
                 });
                 if (response.ok) documentationRecommendedItems.value = await response.json();
-            } catch (error) {
-                documentationRecommendedItems.value = "Error";
+            } catch (error: any) {
+                documentationRecommendedItems.value = "Something went wrong while fetching the recommended items. Please try again later.";
             }
             resolve();
         });

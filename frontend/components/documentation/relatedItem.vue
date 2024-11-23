@@ -14,8 +14,7 @@ defineProps({
             <i :class="`fa-regular ${data.icon}`"></i>
         </section>
         <article class="related-item-right flex-col">
-            <strong>{{ data.title }}</strong>
-            <p class="related-description ellipsis">{{ data.description }}</p>
+            <strong>{{ data.page.replace(/_/g, " ") }}</strong>
             <div class="related-sub flex">
                 <NuxtLink :to="data.type === 'Doc' ? '/documentation#Information' : '/documentation#Guides'"
                     class="related-sub-item">

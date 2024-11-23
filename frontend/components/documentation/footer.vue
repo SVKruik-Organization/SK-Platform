@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { DropdownStates, type DocumentationTypes } from '@/assets/customTypes';
+import { DropdownStates, type DocumentationTypes, type ToastItem } from '@/assets/customTypes';
 import { useDocumentationStore } from '@/stores/DocumentationStore';
 import { createTicket } from '@/utils/ticket';
 import { type PropType } from 'vue';
@@ -7,6 +7,7 @@ import { type PropType } from 'vue';
 // Setup
 const documentationStore = useDocumentationStore();
 const emit = defineEmits(["dropdownState"]);
+const { $event } = useNuxtApp();
 
 // Props
 const props = defineProps({
@@ -50,10 +51,12 @@ async function submitDocumentationVote(value: boolean): Promise<void> {
 
     // Cast Vote
     const response: string | number = await useFetchDocumentationVote(documentationStore.version, documentationStore.language, value, props.type || null, props.category || null, props.page || null, voteTicket.value);
-    if (typeof response === "string") {
-        // TODO: Handle error
-        return;
-    };
+    if (typeof response === "string") return $event("emit-toast", {
+        "id": createTicket(),
+        "type": "error",
+        "message": response,
+        "duration": 3
+    } as ToastItem);
     documentationStore.voteCast = `${voteTicket.value}-${props.type}/${props.category}/${props.page}`;
 
     // Confirmation Message
@@ -71,10 +74,12 @@ async function submitDocumentationVote(value: boolean): Promise<void> {
  */
 async function submitDocumentationComment(): Promise<void> {
     const response: string | number = await useFetchDocumentationComment(voteTicket.value, commentData.value.slice(0, 255));
-    if (typeof response === "string") {
-        // TODO: Handle error
-        return;
-    };
+    if (typeof response === "string") return $event("emit-toast", {
+        "id": createTicket(),
+        "type": "error",
+        "message": response,
+        "duration": 3
+    } as ToastItem);
     documentationStore.commentCast = `${voteTicket.value}-${props.type}/${props.category}/${props.page}`;
 
     // Confirmation Message
@@ -95,6 +100,7 @@ function commentDocumentationVote(): void {
     emit("dropdownState", DropdownStates.comment, true);
 }
 
+// Computed Variables
 const voteCastCurrentPage = computed<boolean>(() => {
     if (!documentationStore.voteCast.length) return false;
     return documentationStore.voteCast.slice(9) === `${props.type}/${props.category}/${props.page}`;
@@ -277,7 +283,7 @@ footer {
 }
 
 .comment-overlay form {
-    background-color: var(--fill-light);
+    background-color: var(--border);
     border-radius: var(--border-radius-low);
     border: 1px solid var(--fill);
     padding: 20px;

@@ -1,9 +1,10 @@
 <script setup lang="ts">
-import { DropdownStates, type DocumentationIndexItem, type RecommendedItem } from '@/assets/customTypes';
+import { DropdownStates, type DocumentationIndexItem, type RecommendedItem, type ToastItem } from '@/assets/customTypes';
 import { useDocumentationStore } from '@/stores/DocumentationStore';
 
 // Setup
 const documentationStore = useDocumentationStore();
+const { $event } = useNuxtApp();
 
 // Reactive Data
 const docIndexItems: Ref<Array<DocumentationIndexItem>> = ref([]);
@@ -30,13 +31,39 @@ onMounted(async () => {
     });
 
     // Initial Load - Indices
-    docIndexItems.value = await documentationStore.getIndex(false, "Doc");
-    guideIndexItems.value = await documentationStore.getIndex(false, "Guide");
+    const rawDocIndexItems: string | Array<DocumentationIndexItem> = await documentationStore.getIndex(false, "Doc");
+    if (typeof rawDocIndexItems === "string") return $event("emit-toast", {
+        "id": createTicket(),
+        "type": "error",
+        "message": rawDocIndexItems,
+        "duration": 3
+    } as ToastItem);
+    docIndexItems.value = rawDocIndexItems;
+    const rawGuideIndexItems: string | Array<DocumentationIndexItem> = await documentationStore.getIndex(false, "Guide");
+    if (typeof rawGuideIndexItems === "string") return $event("emit-toast", {
+        "id": createTicket(),
+        "type": "error",
+        "message": rawGuideIndexItems,
+        "duration": 3
+    } as ToastItem);
+    guideIndexItems.value = rawGuideIndexItems;
 
     // Initial Load - Recommended
-    const initialRecommendedItems: Array<RecommendedItem> = (await documentationStore.getRecommendedItems(false, "Doc"))
-        .concat(await documentationStore.getRecommendedItems(false, "Guide"));
-    recommendedItems.value = initialRecommendedItems;
+    const rawDocRecommendedItems: string | Array<RecommendedItem> = await documentationStore.getRecommendedItems(false, "Doc");
+    if (typeof rawDocRecommendedItems === "string") return $event("emit-toast", {
+        "id": createTicket(),
+        "type": "error",
+        "message": rawDocRecommendedItems,
+        "duration": 3
+    } as ToastItem);
+    const rawGuideRecommendedItems: string | Array<RecommendedItem> = await documentationStore.getRecommendedItems(false, "Guide");
+    if (typeof rawGuideRecommendedItems === "string") return $event("emit-toast", {
+        "id": createTicket(),
+        "type": "error",
+        "message": rawGuideRecommendedItems,
+        "duration": 3
+    } as ToastItem);
+    recommendedItems.value = rawDocRecommendedItems.concat(rawGuideRecommendedItems);
 });
 
 // Emitters
@@ -81,10 +108,10 @@ function handleDropdownState(name: DropdownStates, newValue: boolean): void {
             <h3 class="banner-content content-splitter-header">Recommended pages</h3>
             <div class="banner-content recommended-item-container flex">
                 <DocumentationRecommendedItem
-                    v-if="recommendedItems.length > 0 && recommendedItems[0].title !== 'None_Available'"
+                    v-if="recommendedItems.length > 0 && recommendedItems[0].page !== 'None_Available'"
                     v-for="recommendedItem of recommendedItems" :key="recommendedItem.id" :data="recommendedItem">
                 </DocumentationRecommendedItem>
-                <article v-else-if="recommendedItems.length > 0 && recommendedItems[0].title === 'None_Available'"
+                <article v-else-if="recommendedItems.length > 0 && recommendedItems[0].page === 'None_Available'"
                     class="flex-col error-message">
                     <p>Looks like there aren't any recommended items available in your language and version at this
                         time.</p>

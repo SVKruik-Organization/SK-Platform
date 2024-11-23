@@ -2,7 +2,7 @@
 import "~/assets/css/base.css";
 import "~/assets/css/docpage.css";
 import "~/assets/css/interaction.css";
-import "~/assets/css/documentation.css"
+import "~/assets/css/documentation.css";
 import "/node_modules/flag-icons/css/flag-icons.min.css";
 
 // Setup
@@ -121,5 +121,6 @@ function metaUpdater(newRoute: string): void {
 </script>
 
 <template>
+    <Toast />
     <NuxtPage />
 </template>

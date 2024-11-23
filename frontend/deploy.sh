@@ -7,18 +7,18 @@ cd ..
 git config --global --add safe.directory /home/SVKruik/Documents/GitHub/SK-Platform
 git reset --hard
 git pull
-echo "Git setup complete"
+echo "Git setup complete."
 
 # Horizon - www.stefankruik.com
 cd site
 npm install
 npm run build
 sudo systemctl restart sk-horizon.service
-echo "Horizon deployment complete. Reloading server."
+echo "SK Horizon deployment complete. Reloading server."
 
-# Hosting - platform.stefankruik.com
+# Platform - platform.stefankruik.com
 cd ../frontend
 npm install
 npm run build
 sudo systemctl restart sk-platform.service
-echo "Hosting deployment complete. Reloading server."
+echo "SK Platform deployment complete. Reloading server."

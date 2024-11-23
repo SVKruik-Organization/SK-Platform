@@ -1,6 +1,6 @@
 import { defineStore } from "pinia";
 import { useSessionStorage, useLocalStorage } from "@vueuse/core";
-import { IndexPlaceholder, RecommendedPlaceholder, type DocumentationIndexItem, type DocumentationIndexResponse, type DocumentationRecommendedItemsResponse, type DocumentationRefreshResponse, type RecommendedItem } from "@/assets/customTypes";
+import { IndexPlaceholder, RecommendedPlaceholder, type DocumentationIndexItem, type DocumentationIndexResponse, type DocumentationRecommendedItemsResponse, type DocumentationRefreshResponse, type RecommendedItem, type ToastItem } from "@/assets/customTypes";
 import { themeData, themeMeta } from "~/assets/config/theme";
 
 const defaultVersion: string = "v1";
@@ -96,27 +96,18 @@ export const useDocumentationStore = defineStore("documentationStore", {
          * @param type Documentation (Doc) or Guides (Guide)
          * @returns A new or the existing index.
          */
-        async getIndex(force: boolean, type: string): Promise<Array<DocumentationIndexItem>> {
+        async getIndex(force: boolean, type: string): Promise<string | Array<DocumentationIndexItem>> {
             // Convert input type to Store State Key
             let convertedType: "docIndex" | "guideIndex" = "docIndex";
             if (type === "Guide") convertedType = "guideIndex";
 
             if (this[convertedType].length === 0 || force) {
-                console.log(this[convertedType].length, force);
-                console.log("Fetching");
                 const data: string | DocumentationIndexResponse = await useFetchDocumentationIndex(this.version, this.language, type);
-                if (typeof data === "string") {
-                    // TODO: Handle error
-                    return this[convertedType];
-                };
+                if (typeof data === "string") return data;
 
                 if (data.index.length === 0) {
-                    this[convertedType] = IndexPlaceholder;
-                    return IndexPlaceholder;
-                } else {
-                    this[convertedType] = data.index;
-                    return data.index;
-                }
+                    return this[convertedType] = IndexPlaceholder;
+                } else return this[convertedType] = data.index;
             } else return this[convertedType];
         },
         /**
@@ -125,25 +116,18 @@ export const useDocumentationStore = defineStore("documentationStore", {
          * @param type Documentation (Doc) or Guides (Guide)
          * @returns The new or the existing recommended items.
          */
-        async getRecommendedItems(force: boolean, type: string): Promise<Array<RecommendedItem>> {
+        async getRecommendedItems(force: boolean, type: string): Promise<string | Array<RecommendedItem>> {
             // Convert input type to Store State Key
             let convertedType: "recommendedDocItems" | "recommendedGuideItems" = "recommendedDocItems";
             if (type === "Guide") convertedType = "recommendedGuideItems";
 
             if (this[convertedType].length === 0 || force) {
                 const data: string | DocumentationRecommendedItemsResponse = await useFetchDocumentationRecommendedItems(this.language, type);
-                if (typeof data === "string") {
-                    // TODO: Handle error
-                    return this[convertedType];
-                };
+                if (typeof data === "string") return data;
 
                 if (data.recommendedItems.length === 0) {
-                    this[convertedType] = RecommendedPlaceholder;
-                    return RecommendedPlaceholder;
-                } else {
-                    this[convertedType] = data.recommendedItems;
-                    return data.recommendedItems;
-                }
+                    return this[convertedType] = RecommendedPlaceholder;
+                } else return this[convertedType] = data.recommendedItems;
             } else return this[convertedType];
         },
         /**
@@ -168,10 +152,21 @@ export const useDocumentationStore = defineStore("documentationStore", {
          */
         async refresh(): Promise<void> {
             const data: string | DocumentationRefreshResponse = await useFetchDocumentationRefresh(this.version, this.language);
-            if (typeof data === "string") {
-                // TODO: Handle error
-                return;
-            };
+            const { $event } = useNuxtApp();
+
+            if (typeof data === "string") return $event("emit-toast", {
+                "id": createTicket(),
+                "type": "error",
+                "message": data,
+                "duration": 3
+            } as ToastItem);
+
+            $event("emit-toast", {
+                "id": createTicket(),
+                "type": "success",
+                "message": "Refreshed indices and recommended pages.",
+                "duration": 3
+            } as ToastItem);
 
             if (data.docIndex.length === 0) {
                 this.docIndex = IndexPlaceholder;
@@ -194,7 +189,6 @@ export const useDocumentationStore = defineStore("documentationStore", {
          * @returns The list of pages as primitive strings.
          */
         getCategoryList(type: string, categoryName: string): Array<string> {
-            this.getIndex(false, type);
             let convertedType: "docIndex" | "guideIndex" = "docIndex";
             if (type === "Guide") convertedType = "guideIndex";
             return this[convertedType].filter((indexItem: DocumentationIndexItem) => indexItem.category === categoryName)[0]?.children;

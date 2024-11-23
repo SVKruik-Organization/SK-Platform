@@ -10,8 +10,8 @@ export const useFetchDocumentationRefresh = async (version: string, language: st
                     method: "GET"
                 });
                 if (response.ok) documentationRefresh.value = await response.json();
-            } catch (error) {
-                documentationRefresh.value = "Error";
+            } catch (error: any) {
+                documentationRefresh.value = "Something went wrong while refreshing the documentation. Please try again later.";
             }
             resolve();
         });

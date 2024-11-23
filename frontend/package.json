@@ -25,6 +25,7 @@
         "@vueuse/nuxt": "^11.1.0",
         "amqplib": "^0.10.4",
         "flag-icons": "^7.2.3",
+        "mitt": "^3.0.1",
         "nuxt": "^3.13.0",
         "pinia": "2.2.2",
         "shelljs": "^0.8.5",

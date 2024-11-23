@@ -1,6 +1,6 @@
 import { Dirent, readdirSync, readFileSync, Stats, statSync } from "fs";
 import { logError } from "./logger";
-import { DocumentationFileParent, IndexItem, RecommendedItem } from "../customTypes";
+import { DocumentationFile, DocumentationProduct, IndexItem, RawRelatedItem, RecommendedItem, RelatedItem } from "../customTypes";
 import { parse } from "node-html-parser";
 import { queryDatabase } from "./networking";
 
@@ -11,9 +11,10 @@ import { queryDatabase } from "./networking";
  * @param version The version number of the index. Examples: v1, v2
  * @param language The language of the documentation. Examples: en-US, nl-NL
  * @param type Documentation (Doc) or Guides (Guide)
+ * @param newFetch Whether to update the view count in the database.
  * @returns HTML data as string or status code on error.
  */
-export async function getFile(folder: string, name: string, version: string, language: string, type: string): Promise<DocumentationFileParent | number> {
+export async function getFile(folder: string, name: string, version: string, language: string, type: string, newFetch: boolean): Promise<DocumentationFile | number> {
     try {
         // Retrieve Correct Folder
         const rawFolders: Array<Dirent> = readDirectory(folder, version, language, type);
@@ -21,7 +22,7 @@ export async function getFile(folder: string, name: string, version: string, lan
 
         // Retrieve Correct File
         const rawFile: Array<Dirent> = readdirSync(`${__dirname}/../../data/html/${version}/${language}/${type}/${rawFolders[0].name}`, { withFileTypes: true })
-            .filter(entity => entity.isFile() && entity.name !== "00_Default.html" && entity.name.slice(3, -5) === name);
+            .filter(entity => entity.isFile() && entity.name.slice(3, -5) === name);
         if (rawFile.length === 0) return 404;
         const fileContents: string = readFileSync(`${rawFile[0].parentPath}/${rawFile[0].name}`, "utf8");
 
@@ -34,72 +35,29 @@ export async function getFile(folder: string, name: string, version: string, lan
                 return acc;
             }, []);
 
-        // Retrieve & Send File
+        // Retrieve Local File Data
         const fileMetaData: Stats = statSync(`${rawFile[0].parentPath}/${rawFile[0].name}`);
-        const databaseMetaData: Array<any> | number = await queryDatabase("SELECT * FROM documentation_page WHERE category = ? AND name = ? UNION ALL SELECT dp.* FROM documentation_page dp JOIN ( SELECT related FROM documentation_page WHERE category = ? AND name = ?) AS target_related ON FIND_IN_SET(dp.id, target_related.related) > 0;", [folder, name, folder, name]);
-        if (typeof databaseMetaData === "number") return databaseMetaData;
+
+        // Query & View Count
+        let query = "SELECT * FROM documentation_page WHERE type = ? AND category = ? AND name = ? UNION ALL SELECT dp.* FROM documentation_page dp JOIN ( SELECT related FROM documentation_page WHERE type = ? AND category = ? AND name = ?) AS target_related ON FIND_IN_SET(dp.id, target_related.related) > 0;";
+        if (newFetch) query += " UPDATE documentation_page SET view_count = view_count + 1 WHERE type = ? AND category = ? AND name = ?;";
+
+        // Retrieve Database File Data
+        const rawDatabaseMetaData: Array<any> | number = await queryDatabase(query, [type, folder, name, type, folder, name, type, folder, name]);
+        if (typeof rawDatabaseMetaData === "number") return rawDatabaseMetaData;
+        const databaseMetaData = newFetch ? rawDatabaseMetaData[0] : rawDatabaseMetaData;
         return {
-            "file": {
-                "name": rawFile[0].name,
-                "fileContents": fileContents,
-                "size": fileMetaData.size,
-                "viewCount": 0,
-                "accessTime": new Date(fileMetaData.atimeMs),
-                "modificationTime": new Date(fileMetaData.mtimeMs),
-                "creationTime": new Date(fileMetaData.birthtimeMs),
-                "chapters": chapters,
-                "description": root.querySelector(".page-description")?.innerText.replace(/\\n/g, " ").replace(/\s+/g, " ") || ""
-            },
-            "metadata": databaseMetaData
-        }
-    } catch (error: any) {
-        if (error.code === "ENOENT") {
-            return 404;
-        } else {
-            logError(error);
-            return 500;
-        }
-    }
-}
-
-/**
- * Fetch the landing page for a specific category.
- * @param folder The name of the folder with underscores instead of spaces. Examples: Get_Started, Community
- * @param version The version number of the index. Examples: v1, v2
- * @param language The language of the documentation. Examples: en-US, nl-NL
- * @param type Documentation (Doc) or Guides (Guide)
- * @returns HTML data as string or status code on error.
- */
-export async function getDefaultFile(folder: string, version: string, language: string, type: string): Promise<DocumentationFileParent | number> {
-    try {
-        // Retrieve Correct Folder
-        const rawFolders: Array<Dirent> = readDirectory(folder, version, language, type);
-        if (rawFolders.length === 0) return 404;
-
-        // Retrieve Correct File
-        const rawFile: Array<Dirent> = readdirSync(`${__dirname}/../../data/html/${version}/${language}/${type}/${rawFolders[0].name}`, { withFileTypes: true })
-            .filter(entity => entity.isFile() && entity.name === "00_Default.html");
-        if (rawFile.length === 0) return 404;
-        const fileContents: string = readFileSync(`${rawFile[0].parentPath}/${rawFile[0].name}`, "utf8");
-        const root = parse(fileContents);
-
-        // Retrieve & Send File
-        const fileMetaData: Stats = statSync(`${rawFile[0].parentPath}/${rawFile[0].name}`);
-        const databaseMetaData: Array<any> | number = await queryDatabase("SELECT * FROM documentation_page WHERE category = ? AND name = 'Default' UNION ALL SELECT dp.* FROM documentation_page dp JOIN ( SELECT related FROM documentation_page WHERE category = ? AND name = 'Default') AS target_related ON FIND_IN_SET(dp.id, target_related.related) > 0;", [folder, folder]);
-        if (typeof databaseMetaData === "number") return databaseMetaData;
-        return {
-            "file": {
-                "name": rawFile[0].name,
-                "fileContents": fileContents,
-                "size": fileMetaData.size,
-                "viewCount": 0,
-                "accessTime": new Date(fileMetaData.atimeMs),
-                "modificationTime": new Date(fileMetaData.mtimeMs),
-                "creationTime": new Date(fileMetaData.birthtimeMs),
-                "chapters": [],
-                "description": root.querySelector(".page-description")?.innerText.replace(/\\n/g, " ").replace(/\s+/g, " ") || ""
-            },
-            "metadata": databaseMetaData
+            "name": rawFile[0].name,
+            "fileContents": fileContents,
+            "size": fileMetaData.size,
+            "viewCount": 0,
+            "accessTime": new Date(fileMetaData.atimeMs),
+            "modificationTime": new Date(fileMetaData.mtimeMs),
+            "creationTime": new Date(fileMetaData.birthtimeMs),
+            "chapters": chapters,
+            "description": root.querySelector(".page-description")?.innerText.replace(/\\n/g, " ").replace(/\s+/g, " ") || "",
+            "products": databaseMetaData.length ? parseDocumentationProducts(databaseMetaData[0].products, version, language) : [],
+            "related": databaseMetaData.length ? parseRelatedItems(databaseMetaData.slice(1), databaseMetaData[0].products) : []
         }
     } catch (error: any) {
         if (error.code === "ENOENT") {
@@ -132,7 +90,7 @@ export function getIndex(version: string, language: string, type: string): Array
             const indexItem: IndexItem = {
                 "categoryIcon": getFolderIcon(rawFolderName.slice(3)),
                 "category": rawFolderName.slice(3),
-                "children": readdirSync(folderPath).filter(fileName => fileName.endsWith(".html") && fileName !== "00_Default.html").map(fileName => fileName.slice(3, -5))
+                "children": readdirSync(folderPath).filter((fileName: string) => fileName.endsWith(".html")).map(fileName => fileName.slice(3, -5))
             }
             index.push(indexItem);
         }
@@ -219,4 +177,80 @@ export function getRecommendedItems(language: string, type: string): Array<Recom
     } catch (error: any) {
         return 404;
     }
+}
+
+/**
+ * Convert the API response to a RecommendedItem typed object.
+ * @param rawRelatedItems Raw related items from the database.
+ * @param rawProducts Raw products from the database.
+ * @returns The processed related items.
+ */
+function parseRelatedItems(rawRelatedItems: Array<RawRelatedItem>, rawProducts: string): Array<RelatedItem> {
+    const relatedItems: Array<RelatedItem> = [];
+    rawRelatedItems.forEach((item: RawRelatedItem) => {
+        // Random Product Image
+        let imageUrl: string | null = null;
+        if (rawProducts !== "") {
+            const parsedProducts: Array<string> = rawProducts.split(",");
+            const randomProduct: string = parsedProducts[Math.floor(Math.random() * parsedProducts.length)];
+            imageUrl = `https://files.stefankruik.com/Products/100/${randomProduct}.png`;
+        }
+
+        relatedItems.push({
+            "id": item.id,
+            "category": item.category,
+            "page": item.name,
+            "icon": item.icon,
+            "type": item.type,
+            "imageUrl": imageUrl
+        });
+    });
+    return relatedItems;
+}
+
+/**
+ * Convert the API response to a DocumentationProduct typed object.
+ * @param input The raw product string from the database.
+ * @param version The version number of the index. Examples: v1, v2
+ * @param language The language of the documentation. Examples: en-US, nl-NL
+ * @returns The list of products with their documentation URLs.
+ */
+function parseDocumentationProducts(input: string, version: string, language: string): Array<DocumentationProduct> {
+    // Setup
+    const rawProducts: Array<string> = input.split(",");
+    if (rawProducts.length === 0) return [];
+    const parsedProducts: Array<DocumentationProduct> = [];
+    const index = getIndex(version, language, "Doc");
+    if (typeof index === "number") throw new Error(index.toString());
+
+    // Valid Products
+    const validBots: Array<string> = ["Apricaria", "Stelleri", "Ispidina", "Interpres"];
+    const vOneValidBots: Array<string> = ["Luscinia", "Ciconia"];
+    const products: Array<string> = index.find((item: any) => item.category === "Products")?.children || [];
+    const services: Array<string> = index.find((item: any) => item.category === "Services")?.children || [];
+
+    rawProducts.forEach((product: string) => {
+        let productURL: string = "/documentation/read/Doc/";
+        if (validBots.includes(product)) {
+            productURL += `Products/Bots#${product}`;
+        } else if (vOneValidBots.includes(product)) {
+            productURL += `More/V_One#${product}`;
+        } else if (products.includes(product)) {
+            productURL += `Products/${product}`;
+        } else if (services.includes(product)) {
+            productURL += `Services/${product}`;
+
+            // Exclude Invalid Products
+        } else return;
+
+        parsedProducts.push({
+            "name": product,
+            "url": productURL
+        });
+    });
+
+    // Filter Duplicate Products
+    if (parsedProducts.length > 1) {
+        return parsedProducts.filter((product, index, self) => self.findIndex(p => p.name === product.name) === index);
+    } else return parsedProducts;
 }

@@ -2,8 +2,12 @@
 import type { NuxtError } from '#app';
 
 // Props
-defineProps({
+const props = defineProps({
     "error": Object as () => NuxtError
+});
+
+onMounted(() => {
+    console.error(props.error);
 });
 
 // Methods
@@ -20,8 +24,8 @@ function handleError(): void {
             <p>This might happen due to a network error or some server struggling to keep up.</p>
             <p class="back-link link-text" @click.prevent="handleError">Go back</p>
             <div class="flex">
-                <p class="light-text">For the devs, this is want went wrong: {{ `${error?.message || "No message"}
-                    ${error?.statusCode || 500}` }}</p>
+                <p class="light-text">For the devs, this is want went wrong: {{ `${props.error?.message || "No message"}
+                    ${props.error?.statusCode || 500}` }}</p>
             </div>
         </article>
     </div>

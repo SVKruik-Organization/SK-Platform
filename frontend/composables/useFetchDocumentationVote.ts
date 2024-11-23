@@ -7,8 +7,8 @@ export const useFetchDocumentationVote = async (version: string, language: strin
                 method: "POST"
             });
             if (response.ok) documentationVote.value = 200;
-        } catch (error) {
-            documentationVote.value = "Error";
+        } catch (error: any) {
+            documentationVote.value = "Something went wrong while submitting your vote. Please try again later.";
         }
         resolve();
     });

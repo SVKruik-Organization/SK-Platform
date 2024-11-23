@@ -1,8 +1,8 @@
 import express, { Express, Request, Response } from "express";
 import dotenv from "dotenv";
 import cors from "cors";
-import { DocumentationFileParent, FileRequest, IndexItem, RecommendedItem, UplinkMessage } from "./customTypes";
-import { getDefaultFile, getFile, getIndex, getRecommendedItems } from "./utils/file";
+import { DocumentationFile, FileRequest, IndexItem, RecommendedItem, UplinkMessage } from "./customTypes";
+import { getFile, getIndex, getRecommendedItems } from "./utils/file";
 import { SearchRoutes } from "./routes/searchRoutes";
 import { apiMiddleware, log } from "./utils/logger";
 import { rateLimit } from 'express-rate-limit';
@@ -66,17 +66,9 @@ app.get("/refresh/:version/:language", refreshLimit, async (req: Request, res: R
 // Get File
 app.get("/getFile/:version/:language/:type", async (req: Request, res: Response) => {
     const searchQuery: FileRequest = req.query as FileRequest;
-    const parent: DocumentationFileParent | number = await getFile(searchQuery.folder, searchQuery.name, req.params.version, req.params.language, req.params.type);
+    const file: DocumentationFile | number = await getFile(searchQuery.folder, searchQuery.name, req.params.version, req.params.language, req.params.type, false);
     if (typeof parent === "number") return res.sendStatus(parent);
-    return res.json({ "file": parent.file, "meta": parent.metadata ? parent.metadata[0] : null, "related": parent.metadata ? parent.metadata.slice(1) : null });
-});
-
-// Get Category Default
-app.get("/getDefault/:version/:language/:type", async (req: Request, res: Response) => {
-    const searchQuery: FileRequest = req.query as FileRequest;
-    const parent: DocumentationFileParent | number = await getDefaultFile(searchQuery.folder, req.params.version, req.params.language, req.params.type);
-    if (typeof parent === "number") return res.sendStatus(parent);
-    return res.json({ "file": parent.file, "meta": parent.metadata ? parent.metadata[0] : null, "related": parent.metadata ? parent.metadata.slice(1) : null });
+    return res.json({ "file": file });
 });
 
 // Get Index

@@ -17,8 +17,8 @@ export const useFetchLogin = async (username: string, password: string): Promise
                     })
                 });
                 if (response.ok) login.value = await response.json();
-            } catch (error) {
-                login.value = "Error";
+            } catch (error: any) {
+                login.value = "Something went wrong while logging in. Please try again later.";
             }
             resolve();
         });

@@ -14,8 +14,8 @@ export const useFetchDocumentationComment = async (ticket: string, comment: stri
                     })
                 });
                 if (response.ok) documentationComment.value = 200;
-            } catch (error) {
-                documentationComment.value = "Error";
+            } catch (error: any) {
+                documentationComment.value = "Something went wrong while submitting your comment. Please try again later.";
             }
             resolve();
         });

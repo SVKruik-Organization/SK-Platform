@@ -34,10 +34,10 @@ if (page.value === "Default") {
 
 // Load Reactive Data
 const { data: rawFileData } = await useAsyncData<DocumentationFile>("fileData",
-    () => $fetch(`${runtimeConfig.public.docsApiBase}/${props.page ? 'getFile' : 'getDefault'}/${documentationStore.version}/${documentationStore.language}/${props.type}`, {
+    () => $fetch(`${runtimeConfig.public.docsApiBase}/getFile/${documentationStore.version}/${documentationStore.language}/${props.type}`, {
         params: {
             "folder": props.category,
-            "name": props.page,
+            "name": props.page || "Default",
         },
         onRequestError() {
             useRouter().push("/documentation/error");
@@ -253,7 +253,8 @@ function nextPage(): void {
  * Convert DDMMYYYY to YYYYMMDD for Open Graph article dates.
  * @param input The date string to convert.
  */
-function seoDateConverter(input: string): string {
+function seoDateConverter(input: string): string | null {
+    if (!input.length) return null;
     const split: Array<string> = input.slice(6).split("-");
     const day: string = split[0];
     const month: string = split[1];
@@ -274,8 +275,8 @@ const links: Array<HeadLink> = [
 ];
 const metaItems = [
     { property: "article:section", content: props.type === "Doc" ? "Documentation" : "Guide" },
-    { property: "article:published_time", content: seoDateConverter(fileData.value.creationTime) },
-    { property: "article:modified_time", content: seoDateConverter(fileData.value.modificationTime) },
+    { property: "article:published_time", content: seoDateConverter(fileData.value ? fileData.value.creationTime : "") },
+    { property: "article:modified_time", content: seoDateConverter(fileData.value ? fileData.value.modificationTime : "") },
     { property: "article:tag", content: props.category.replace(/_/g, " ") },
 ];
 if (props.page) {
@@ -525,7 +526,7 @@ useHead({
                     </aside>
                 </section>
             </div>
-            <section v-if="page && fileData.related.length" class="flex-col related-container">
+            <section v-if="fileData.related.length" class="flex-col related-container">
                 <div class="flex-col section-title-container">
                     <h3>Also Read</h3>
                     <p class="light-text">Other popular and related pages that you might find useful as well.</p>

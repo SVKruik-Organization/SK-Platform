@@ -10,8 +10,8 @@ export const useFetchDocumentationIndex = async (version: string, language: stri
                     method: "GET"
                 });
                 if (response.ok) documentationIndex.value = await response.json();
-            } catch (error) {
-                documentationIndex.value = "Error";
+            } catch (error: any) {
+                documentationIndex.value = "Something went wrong while fetching the documentation index. Please try again later.";
             }
             resolve();
         });

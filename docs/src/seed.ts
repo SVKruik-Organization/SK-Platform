@@ -82,6 +82,6 @@ try {
     log(`Successfully wrote Documentation index to the exports directory: ../exports/${version}_${language}.json`, "info");
 } catch (error: any) {
     if (error.code === "EEXIST") throw new Error("File already exists, and overwriting is disabled with option 'ax'. Use 'w' to overwrite existing files.");
-    console.log(error);
+    console.error(error);
 }
 

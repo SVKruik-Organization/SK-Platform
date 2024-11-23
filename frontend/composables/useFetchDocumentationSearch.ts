@@ -10,8 +10,8 @@ export const useFetchDocumentationSearch = async (version: string, language: str
                     method: "GET"
                 });
                 if (response.ok) documentationSearch.value = await response.json();
-            } catch (error) {
-                documentationSearch.value = "An error occurred while fetching the search results.";
+            } catch (error: any) {
+                documentationSearch.value = "Something went wrong while fetching the search results. Please try again later.";
             }
             resolve();
         });

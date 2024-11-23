@@ -19,29 +19,47 @@ export type CommentRequest = {
     "commment": string
 }
 
-export type DocumentationFileParent = {
-    "file": DocumentationFile,
-    "metadata": Array<DocumentationFileMetadata> | null
+// Documentation Product
+export type DocumentationProduct = {
+    "name": string,
+    "url": string
 }
 
 // Single Documentation File
 export type DocumentationFile = {
     "name": string,
     "fileContents": string,
+    "description": string,
     "size": number,
     "viewCount": number,
     "accessTime": Date,
     "modificationTime": Date,
     "creationTime": Date,
     "chapters": Array<string>,
-    "description": string
+    "products": Array<DocumentationProduct>,
+    "related": Array<RelatedItem>
 }
 
-// Database-Persisted Metadata
-export type DocumentationFileMetadata = {
-    "description": string,
-    "products": string,
+// Raw Documentation Readpage Related
+export type RawRelatedItem = {
+    "id": number
+    "type": string
+    "category": string
+    "name": string
+    "products": string
     "related": string
+    "icon": string
+    "view_count": number
+}
+
+// Documentation Readpage Related
+export type RelatedItem = {
+    "id": number,
+    "category": string,
+    "page": string,
+    "icon": string,
+    "type": string,
+    "imageUrl": string | null
 }
 
 // Get Files
@@ -67,7 +85,6 @@ export type RecommendedItem = {
     "id": number,
     "category": string,
     "page": string,
-    "title": string,
     "anchor": string | null,
     "icon": string,
     "time": number | null,

@@ -102,7 +102,6 @@ export type RecommendedItem = {
     "id": number,
     "category": string,
     "page": string,
-    "title": string,
     "anchor": string | null,
     "icon": string,
     "time": number | null,
@@ -114,10 +113,8 @@ export type RelatedItem = {
     "id": number,
     "category": string,
     "page": string,
-    "title": string,
     "icon": string,
     "type": string,
-    "description": string,
     "imageUrl": string | null
 }
 
@@ -171,12 +168,14 @@ export type DocumentationProduct = {
     "url": string
 }
 
+// Documentation Category Placeholder
 export const IndexPlaceholder: Array<DocumentationIndexItem> = [{
     "categoryIcon": "",
     "category": "None_Available",
     "children": []
-}]
+}];
 
+// Documentation Folder Placeholder
 export const RecommendedPlaceholder: Array<RecommendedItem> = [{
     "id": 1,
     "title": "None_Available",
@@ -187,3 +186,19 @@ export const RecommendedPlaceholder: Array<RecommendedItem> = [{
     "icon": "",
     "type": ""
 }];
+
+// Toast Message Item
+export type ToastItem = {
+    "id": string,
+    "type": ToastTypes,
+    "duration": number,
+    "message": string
+}
+
+// Toast Message Types
+export enum ToastTypes {
+    success = "success",
+    warning = "warning",
+    error = "error",
+    info = "info"
+}
