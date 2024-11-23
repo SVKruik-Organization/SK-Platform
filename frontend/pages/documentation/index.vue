@@ -81,24 +81,29 @@ function handleDropdownState(name: DropdownStates, newValue: boolean): void {
                 <h3 class="content-splitter-header light-text ">Explore information about SK Platform
                     and related product lines.
                 </h3>
-                <img class="mesh" src="/img/graphics/Mesh_1.png" alt="Abstract Mesh">
+                <NuxtImg width="1200" height="1200" class="mesh" src="/img/graphics/Mesh_1.png" alt="Abstract Mesh"
+                    loading="lazy" />
             </div>
             <div class="hero-right flex">
                 <NuxtLink to="/documentation/read/Doc/Products/Bots#Interpres">
-                    <img src="https://files.stefankruik.com/Products/500/Interpres.png" class="hero-bot-image"
-                        title="Interpres, GitHub API proxy bot." alt="Interpres Profile Picture">
+                    <NuxtImg height="150" width="150" src="https://files.stefankruik.com/Products/500/Interpres.png"
+                        class="hero-bot-image" title="Interpres, GitHub API proxy bot." alt="Interpres Profile Picture"
+                        loading="lazy" />
                 </NuxtLink>
                 <NuxtLink to="/documentation/read/Doc/Products/Bots#Ispidina">
-                    <img src="https://files.stefankruik.com/Products/500/Ispidina.png" class="hero-bot-image"
-                        title="Ispidina, TypeScript pioneer bot." alt="Ispidina Profile Picture">
+                    <NuxtImg height="150" width="150" src="https://files.stefankruik.com/Products/500/Ispidina.png"
+                        class="hero-bot-image" title="Ispidina, TypeScript pioneer bot." alt="Ispidina Profile Picture"
+                        loading="lazy" />
                 </NuxtLink>
                 <NuxtLink to="/documentation/read/Doc/Products/Bots#Stelleri">
-                    <img src="https://files.stefankruik.com/Products/500/Stelleri.png" class="hero-bot-image"
-                        title="Stelleri, early-access features bot." alt="Stelleri Profile Picture">
+                    <NuxtImg height="150" width="150" src="https://files.stefankruik.com/Products/500/Stelleri.png"
+                        class="hero-bot-image" title="Stelleri, early-access features bot."
+                        alt="Stelleri Profile Picture" loading="lazy" />
                 </NuxtLink>
                 <NuxtLink to="/documentation/read/Doc/Products/Bots#Apricaria">
-                    <img src="https://files.stefankruik.com/Products/500/Apricaria.png" class="hero-bot-image"
-                        title="Apricaria, second gen main production bot." alt="Apricaria Profile Picture">
+                    <NuxtImg height="150" width="150" src="https://files.stefankruik.com/Products/500/Apricaria.png"
+                        class="hero-bot-image" title="Apricaria, second gen main production bot."
+                        alt="Apricaria Profile Picture" loading="lazy" />
                 </NuxtLink>
             </div>
         </div>
@@ -184,14 +189,16 @@ function handleDropdownState(name: DropdownStates, newValue: boolean): void {
                 <a href="https://github.com/SVKruik">
                     <p class="disabled-text">© {{ new Date().getFullYear() }} Stefan Kruik. All rights reserved</p>
                 </a>
-                <i class="fa-regular fa-circle-small disabled-text"></i>
+                <NuxtImg class="icon icon-dark" width="10" height="10" src="/svg/circle-small-regular.svg"
+                    loading="lazy" alt="Icon" />
                 <a href="https://github.com/SVKruik-Organization/SK-Platform" target="_blank">
                     <p class="disabled-text">v2_dev_beta</p>
                 </a>
             </div>
             <div class="flex footer-note">
                 <p class="disabled-text">Made with</p>
-                <i class="fa-solid fa-heart disabled-text"></i>
+                <NuxtImg class="icon icon-dark" width="10" height="10" src="/svg/heart-regular.svg" loading="lazy"
+                    alt="Icon" />
                 <p class="disabled-text">by 🇺🇦, hosted in 🇳🇱</p>
             </div>
         </div>
@@ -223,7 +230,6 @@ function handleDropdownState(name: DropdownStates, newValue: boolean): void {
     position: absolute;
     left: -550px;
     top: -400px;
-    width: 1200px;
     opacity: 0.2;
     -webkit-user-select: none;
     user-select: none;
@@ -274,8 +280,6 @@ h1 {
 .hero-bot-image {
     border-radius: 50%;
     border: 5px solid var(--fill);
-    aspect-ratio: 1 / 1;
-    height: 150px;
     object-fit: cover;
     margin-left: -75px;
     -webkit-user-select: none;
@@ -304,10 +308,6 @@ h1 {
 
 .footer-note p {
     font-size: small
-}
-
-.footer-note i {
-    font-size: 10px;
 }
 
 .error-message {
@@ -359,6 +359,7 @@ h1 {
 
     .hero-bot-image {
         height: 100px;
+        width: 100px;
         margin-left: -50px;
     }
 
@@ -395,6 +396,7 @@ h1 {
 
     .hero-bot-image {
         height: 70px;
+        width: 70px;
         margin-left: -35px;
     }
 

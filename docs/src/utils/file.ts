@@ -90,7 +90,7 @@ export function getIndex(version: string, language: string, type: string): Array
             const indexItem: IndexItem = {
                 "categoryIcon": getFolderIcon(rawFolderName.slice(3)),
                 "category": rawFolderName.slice(3),
-                "children": readdirSync(folderPath).filter((fileName: string) => fileName.endsWith(".html")).map(fileName => fileName.slice(3, -5))
+                "children": readdirSync(folderPath).filter((fileName: string) => fileName.endsWith(".html") && fileName !== "00_Default.html").map(fileName => fileName.slice(3, -5))
             }
             index.push(indexItem);
         }
@@ -127,41 +127,41 @@ export function getFolderIcon(name: string): string {
     switch (name) {
         // Docs
         case "Get_Started":
-            return "fa-rocket-launch";
+            return "rocket-launch";
         case "Products":
-            return "fa-conveyor-belt";
+            return "conveyor-belt";
         case "Services":
-            return "fa-tower-cell";
+            return "tower-cell";
         case "Community":
-            return "fa-users";
+            return "users";
         case "Developers":
-            return "fa-code";
+            return "code";
         case "Operator":
-            return "fa-user-crown";
+            return "user-crown";
         case "Parties":
-            return "fa-user-group-crown";
+            return "user-group-crown";
         case "Operations":
-            return "fa-gear";
+            return "gear";
         case "Contributing":
-            return "fa-handshake-angle";
+            return "handshake-angle";
         case "Plans":
-            return "fa-gem";
+            return "gem";
         case "More":
-            return "fa-cloud";
+            return "cloud";
         case "Legal":
-            return "fa-scale-balanced"
+            return "scale-balanced"
 
         // Guides
         case "Technical":
-            return "fa-compass-drafting";
+            return "compass-drafting";
         case "Management":
-            return "fa-chart-mixed";
+            return "chart-mixed";
         case "Customization":
-            return "fa-swatchbook"
+            return "swatchbook"
         case "Self_Hosting":
-            return "fa-server"
+            return "server"
         default:
-            return "fa-check";
+            return "check";
     }
 }
 

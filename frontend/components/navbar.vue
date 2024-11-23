@@ -10,7 +10,8 @@ const userStore = useUserStore();
         <nav>
             <section>
                 <NuxtLink to="/">
-                    <img alt="Logo" src="/seo/apple/Platform.png" title="Home">
+                    <NuxtImg loading="lazy" alt="Logo" width="40" fit="cover" height="40" src="/seo/apple/Platform.png"
+                        title="Home" />
                 </NuxtLink>
             </section>
             <section>
@@ -47,9 +48,6 @@ nav {
 
 img {
     border-radius: 50%;
-    object-fit: cover;
-    height: 40px;
-    aspect-ratio: 1 / 1;
 }
 
 .nav-links {

@@ -16,7 +16,7 @@
     background-clip: text;
 }
 
-.chapter i {
+.chapter .icon {
     opacity: 0;
     transition: opacity 0.3s;
     position: absolute;
@@ -27,7 +27,7 @@
     text-decoration: underline;
 }
 
-.chapter:hover i {
+.chapter:hover .icon {
     opacity: 1;
 }
 
@@ -73,40 +73,37 @@
     align-items: flex-start;
 }
 
-.note-container i {
-    font-size: 20px;
-}
-
 .note-container-info {
     border-color: #51829B;
 }
 
-.note-container-info i {
-    color: #51829B;
+/* Color the blank svg image */
+.note-container-info .icon {
+    filter: invert(50%) sepia(26%) saturate(670%) hue-rotate(156deg) brightness(90%) contrast(86%);
 }
 
 .note-container-warning {
     border-color: #EF9C66;
 }
 
-.note-container-warning i {
-    color: #EF9C66;
+.note-container-warning .icon {
+    filter: invert(62%) sepia(89%) saturate(351%) hue-rotate(331deg) brightness(99%) contrast(89%);
 }
 
 .note-container-success {
     border-color: #658147;
 }
 
-.note-container-success i {
-    color: #658147;
+.note-container-success .icon {
+    filter: invert(47%) sepia(32%) saturate(524%) hue-rotate(46deg) brightness(92%) contrast(90%);
 }
 
 .note-container-error {
     border-color: #d7654b;
 }
 
-.note-container-error i {
-    color: #D7654B;
+.note-container-error .icon {
+    filter: invert(52%) sepia(49%) saturate(763%) hue-rotate(322deg) brightness(88%) contrast(90%);
 }
 
 table {
@@ -154,11 +151,11 @@ table th[table-sortable-item] div {
     position: relative;
 }
 
-table th[table-sortable-item] div i {
+table th[table-sortable-item] div .icon {
     opacity: 0;
     transition: opacity 0.3s;
 }
 
-table th[table-sortable-item]:hover div i {
+table th[table-sortable-item]:hover div .icon {
     opacity: 1;
 }

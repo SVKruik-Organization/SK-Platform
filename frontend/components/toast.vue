@@ -57,7 +57,7 @@ function closeMessage(id: string | MouseEvent): void {
             <span :class="`toast-color-indicator toast-color-${item.type}`"></span>
             <div class="flex toast-item-content">
                 <p>{{ item.message }}</p>
-                <i class="fa-regular fa-xmark"></i>
+                <NuxtImg class="icon" width="15" height="15" src="/svg/xmark-regular.svg" loading="lazy" alt="Icon" />
             </div>
             <span class="click-item" @click="closeMessage($event)"></span>
         </div>
@@ -116,12 +116,12 @@ function closeMessage(id: string | MouseEvent): void {
     width: 100%;
 }
 
-.toast-item i {
+.toast-item .icon {
     opacity: 0;
     transition: opacity 0.2s;
 }
 
-.toast-item:hover i {
+.toast-item:hover .icon {
     opacity: 1;
 }
 

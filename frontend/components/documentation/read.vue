@@ -338,7 +338,8 @@ useHead({
                 <div class="flex category-title" :class="{ 'disable-close': navigationDropdownVisible }">
                     <div class="flex">
                         <NuxtLink to="/documentation" title="Go back to the documentation home page.">
-                            <i class="fa-regular fa-arrow-left"></i>
+                            <NuxtImg class="icon" width="20" height="20" src="/svg/arrow-left-regular.svg"
+                                loading="lazy" alt="Icon" />
                         </NuxtLink>
                         <ClientOnly>
                             <NuxtLink :to="`/documentation/Read/${type}/${category}`"
@@ -349,7 +350,8 @@ useHead({
                     </div>
                     <button type="button" class="navigation-button navigation-close navbar-pill"
                         title="Close the navigation bar.">
-                        <i class="fa-regular fa-xmark"></i>
+                        <NuxtImg class="icon" width="20" height="20" src="/svg/xmark-regular.svg" loading="lazy"
+                            alt="Icon" />
                     </button>
                 </div>
                 <ClientOnly>
@@ -379,16 +381,17 @@ useHead({
                         <div class="flex featured-product-title-container"
                             :class="{ 'disable-close': navigationDropdownVisible }">
                             <strong :class="{ 'disable-close': navigationDropdownVisible }">Featured Products</strong>
-                            <i class="fa-regular fa-circle-info"
-                                :class="{ 'disable-close': navigationDropdownVisible }"></i>
+                            <NuxtImg class="icon" width="15" height="15" src="/svg/circle-info-regular.svg"
+                                :class="{ 'disable-close': navigationDropdownVisible }" loading="lazy" alt="Icon" />
                             <span :class="{ 'disable-close': navigationDropdownVisible }">Products that have been used
                                 in this {{ type }}.</span>
                         </div>
                         <ClientOnly>
                             <NuxtLink class="flex featured-product-item" v-for="product of fileData.products"
                                 :to="product.url">
-                                <img :src="`https://files.stefankruik.com/Products/100/${product.name}.png`"
-                                    @error="handleFallbackImage($event, 'icon')" alt="Product Icon">
+                                <NuxtImg height="30" width="30" loading="lazy"
+                                    :src="`https://files.stefankruik.com/Products/100/${product.name}.png`"
+                                    @error="handleFallbackImage($event, 'icon')" alt="Product Icon" />
                                 <p>{{ product.name.replace(/_/g, " ") }}</p>
                             </NuxtLink>
                         </ClientOnly>
@@ -406,13 +409,15 @@ useHead({
                         <button title="Go to the previous page." class="flex navbar-pill control-pill" type="button"
                             :class="{ 'disabled-button': !hasPreviousPage }" @click="previousPage()">
                             <p>Previous</p>
-                            <i class="fa-regular fa-diagram-previous"></i>
+                            <NuxtImg class="icon icon-light" width="15" height="15"
+                                src="/svg/diagram-previous-regular.svg" loading="lazy" alt="Icon" />
                         </button>
                     </ClientOnly>
                     <button title="Share this article." class="flex navbar-pill control-pill" type="button"
                         :class="{ 'disable-close': navigationDropdownVisible }" @click="share()">
                         <p :class="{ 'disable-close': navigationDropdownVisible }" ref="shareButtonContents">Share</p>
-                        <i :class="{ 'disable-close': navigationDropdownVisible }" class="fa-regular fa-share"></i>
+                        <NuxtImg class="icon icon-light" width="15" height="15" src="/svg/share-regular.svg"
+                            :class="{ 'disable-close': navigationDropdownVisible }" loading="lazy" alt="Icon" />
                     </button>
                     <button hide title="View page information." type="button" v-if="typeof fileData === 'object'"
                         class="flex dropdown-container justify-center navbar-pill disable-close"
@@ -420,7 +425,8 @@ useHead({
                         :class="{ 'navbar-pill-expand': informationDropdownVisible, 'disable-close': navigationDropdownVisible }">
                         <p class="disable-close" :class="{ 'navbar-pill-text-expand': informationDropdownVisible }">
                             Information</p>
-                        <i class="fa-regular fa-circle-info disable-close"></i>
+                        <NuxtImg class="icon icon-light disable-close" width="15" height="15"
+                            src="/svg/circle-info-regular.svg" loading="lazy" alt="Icon" />
                         <menu
                             :class="{ 'dropdown-expand': informationDropdownVisible, 'information-dropdown-expand': informationDropdownVisible }"
                             class="dropdown-menu dropdown-menu-right information-dropdown-menu flex-col disable-close">
@@ -455,7 +461,8 @@ useHead({
                         <button title="Go to the next page." class="flex navbar-pill control-pill" type="button"
                             :class="{ 'disabled-button': !hasNextPage }" @click="nextPage()">
                             <p>Next</p>
-                            <i class="fa-regular fa-diagram-next"></i>
+                            <NuxtImg class="icon icon-light" width="15" height="15" src="/svg/diagram-next-regular.svg"
+                                loading="lazy" alt="Icon" />
                         </button>
                     </ClientOnly>
                 </div>
@@ -466,7 +473,8 @@ useHead({
                 <div class="breadcrumbs-container flex">
                     <button type="button" class="navigation-button navbar-pill disable-close"
                         @click="toggleNavigationBar($event)" title="Open the navigation bar.">
-                        <i class="fa-regular fa-arrow-right-from-line disable-close"></i>
+                        <NuxtImg class="icon icon-light disable-close" width="15" height="15"
+                            src="/svg/arrow-right-from-line-regular.svg" loading="lazy" alt="Icon" />
                     </button>
                     <ClientOnly>
                         <NuxtLink :to="`/documentation${type === 'Doc' ? '#Information' : '/#Guides'}`"
@@ -508,7 +516,8 @@ useHead({
                         <div class="flex-col" v-if="fileData.products.length">
                             <div class="flex featured-product-title-container">
                                 <strong>Featured Products</strong>
-                                <i class="fa-regular fa-circle-info"></i>
+                                <NuxtImg class="icon" width="15" height="15" src="/svg/circle-info-regular.svg"
+                                    loading="lazy" alt="Icon" />
                                 <span>
                                     <p>Products that have been used</p>
                                     <p>and/or mentioned in this {{ type }}.</p>
@@ -517,8 +526,9 @@ useHead({
                             <ClientOnly>
                                 <NuxtLink class="flex featured-product-item" v-for="product of fileData.products"
                                     :to="product.url">
-                                    <img :src="`https://files.stefankruik.com/Products/100/${product.name}.png`"
-                                        @error="handleFallbackImage($event, 'icon')" alt="Product Icon">
+                                    <NuxtImg height="30" width="30" loading="lazy"
+                                        :src="`https://files.stefankruik.com/Products/100/${product.name}.png`"
+                                        @error="handleFallbackImage($event, 'icon')" alt="Product Icon" />
                                     <p>{{ product.name.replace(/_/g, " ") }}</p>
                                 </NuxtLink>
                             </ClientOnly>
@@ -582,6 +592,7 @@ nav {
 
 .navigation-button {
     display: none;
+    align-items: center;
 }
 
 .navigation {
@@ -734,8 +745,7 @@ aside a,
     gap: 10px;
 }
 
-.featured-product-title-container i {
-    color: var(--font-light);
+.featured-product-title-container .icon {
     cursor: pointer;
 }
 
@@ -760,7 +770,7 @@ aside a,
     text-wrap: nowrap;
 }
 
-.featured-product-title-container i:hover + span {
+.featured-product-title-container .icon:hover + span {
     opacity: 1;
     height: 60px;
     width: 250px;
@@ -776,8 +786,6 @@ aside a,
 
 .featured-product-item img {
     border-radius: 50%;
-    height: 30px;
-    aspect-ratio: 1 / 1;
 }
 
 .related-container,
@@ -845,7 +853,7 @@ footer {
     }
 
     .featured-product-title-container span,
-    .featured-product-title-container i {
+    .featured-product-title-container .icon {
         display: none;
     }
 
@@ -973,7 +981,7 @@ footer {
 
 @media (width <=990px) {
     .navigation-button {
-        display: block;
+        display: flex;
         position: fixed;
         top: 61px;
         left: 5px;
@@ -986,8 +994,8 @@ footer {
         position: unset;
     }
 
-    .navigation-button i {
-        margin-right: unset;
+    .navigation-button .icon {
+        margin-right: -4px;
     }
 
     nav {

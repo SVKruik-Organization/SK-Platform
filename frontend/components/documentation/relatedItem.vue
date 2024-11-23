@@ -11,7 +11,8 @@ defineProps({
 <template>
     <NuxtLink :to="`/documentation/read/${data.type}/${data.category}/${data.page}`" class="related-item flex">
         <section class="related-item-left flex">
-            <i :class="`fa-regular ${data.icon}`"></i>
+            <NuxtImg class="icon" width="15" height="15" :src="`/svg/tailor/${data.icon}-regular.svg`" loading="lazy"
+                alt="Icon" />
         </section>
         <article class="related-item-right flex-col">
             <strong>{{ data.page.replace(/_/g, " ") }}</strong>
@@ -20,12 +21,14 @@ defineProps({
                     class="related-sub-item">
                     {{ data.type }}
                 </NuxtLink>
-                <i class="fa-regular fa-circle-small related-sub-item"></i>
+                <NuxtImg class="icon icon-light recommended-sub-item" width="10" height="10"
+                    src="/svg/circle-small-regular.svg" loading="lazy" alt="Icon" />
                 <NuxtLink :to="`/documentation/read/${data.type}/${data.category}`" class="related-sub-item">
                     {{ data.category.replace(/_/g, " ") }}
                 </NuxtLink>
             </div>
-            <img v-if="data.imageUrl" :src="data.imageUrl" alt="Related Product Image">
+            <NuxtImg v-if="data.imageUrl" height="500" width="500" class="product-image" :src="data.imageUrl"
+                alt="Related Product Image" loading="lazy" />
         </article>
     </NuxtLink>
 </template>
@@ -72,11 +75,9 @@ defineProps({
     z-index: 1;
 }
 
-.related-item-right img {
+.related-item-right .product-image {
     position: absolute;
     left: 50%;
-    height: 500px;
-    aspect-ratio: 1 / 1;
     filter: blur(100px) saturate(300%) contrast(150%);
     top: 30px;
     transition: transform 0.5s, left 0.5s;
@@ -87,7 +88,7 @@ defineProps({
     transform: translateX(20%);
 }
 
-.related-item:hover .related-item-right img {
+.related-item:hover .related-item-right .product-image {
     transform: translateX(0);
 }
 
@@ -96,10 +97,6 @@ defineProps({
     font-size: small;
     position: sticky;
     z-index: 2;
-}
-
-.related-sub i {
-    font-size: 10px;
 }
 
 @media (width <=990px) {

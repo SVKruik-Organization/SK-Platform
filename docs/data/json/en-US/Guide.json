@@ -5,7 +5,7 @@
         "category": "Management",
         "page": "Server_Setup",
         "anchor": null,
-        "icon": "fa-code-pull-request",
+        "icon": "code-pull-request",
         "time": 2,
         "type": "Guide"
     },
@@ -15,7 +15,7 @@
         "category": "Operator",
         "page": "Account",
         "anchor": null,
-        "icon": "fa-user-crown",
+        "icon": "user-crown",
         "time": 5,
         "type": "Guide"
     }

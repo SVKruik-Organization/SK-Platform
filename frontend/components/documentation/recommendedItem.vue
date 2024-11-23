@@ -13,7 +13,8 @@ defineProps({
         :to="`/documentation/read/${data.type}/${data.category}/${data.page}${data.anchor ? `#${data.anchor}` : ''}`"
         class="recommended-item flex">
         <section class="recommended-item-left flex">
-            <i :class="`fa-regular ${data.icon}`"></i>
+            <NuxtImg class="icon" width="15" height="15" :src="`/svg/tailor/${data.icon}-regular.svg`" loading="lazy"
+                alt="Icon" />
         </section>
         <article class="recommended-item-right flex-col">
             <p class="recommended-title ellipsis">{{ data.page.replace(/_/g, " ") }}</p>
@@ -22,11 +23,14 @@ defineProps({
                     class="recommended-sub-item">
                     {{ data.type }}
                 </NuxtLink>
-                <i class="fa-regular fa-circle-small recommended-sub-item"></i>
+                <NuxtImg class="icon icon-light recommended-sub-item" width="10" height="10"
+                    src="/svg/circle-small-regular.svg" loading="lazy" alt="Icon" />
                 <NuxtLink :to="`/documentation/read/${data.type}/${data.category}`" class="recommended-sub-item">
                     {{ data.category.replace(/_/g, " ") }}
                 </NuxtLink>
-                <i class="fa-regular fa-circle-small recommended-sub-item" v-if="typeof data.time === 'number'"></i>
+                <NuxtImg class="icon icon-light recommended-sub-item" width="10" height="10"
+                    v-if="typeof data.time === 'number'" src="/svg/circle-small-regular.svg" loading="lazy"
+                    alt="Icon" />
                 <p class="recommended-sub-item" v-if="typeof data.time === 'number'">{{ data.time }} min read</p>
             </div>
         </article>
@@ -76,10 +80,6 @@ defineProps({
     font-size: small;
     position: sticky;
     z-index: 2;
-}
-
-.recommended-sub i {
-    font-size: 10px;
 }
 
 @media (width <=1280px) {

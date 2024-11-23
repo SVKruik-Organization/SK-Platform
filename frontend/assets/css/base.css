@@ -99,10 +99,13 @@ body {
     pointer-events: none;
 }
 
-.disabled-button p,
-.disabled-button i {
+.disabled-button p {
     color: var(--font-light);
     pointer-events: none;
+}
+
+.disabled-button .icon {
+    filter: invert(0.35);
 }
 
 .light-text {
@@ -123,6 +126,19 @@ body {
     background-position: center;
 }
 
+.icon {
+    background-color: transparent;
+    filter: invert(1);
+}
+
+.icon-light {
+    filter: invert(0.7);
+}
+
+.icon-dark {
+    filter: invert(0.35);
+}
+
 /* HTML Tags */
 a,
 button,
@@ -134,8 +150,7 @@ button *,
     cursor: pointer;
 }
 
-*,
-i {
+* {
     color: var(--font);
     margin: 0;
     padding: 0;

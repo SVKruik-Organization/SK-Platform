@@ -35,9 +35,14 @@
     --glass: rgba(239, 239, 239, 0.65);
 }
 
-.mokka .gradient-button i,
-.north .gradient-button i {
-    color: var(--main) !important;
+.mokka .gradient-button p,
+.north .gradient-button p {
+    color: var(--main);
+}
+
+.mokka .gradient-button .icon-light,
+.north .gradient-button .icon {
+    filter: invert(1);
 }
 
 :root.mokka {

@@ -11,7 +11,7 @@ export default defineNuxtConfig({
         uplink_username: process.env.AMQP_USERNAME,
         uplink_password: process.env.AMQP_PASSWORD
     },
-    modules: ['@pinia/nuxt'],
+    modules: ['@pinia/nuxt', "@nuxt/image"],
     ssr: true,
     app: {
         head: {
@@ -29,9 +29,6 @@ export default defineNuxtConfig({
                 { property: "og:image:width", content: "1280" },
                 { property: "og:image:height", content: "640" },
                 { property: "twitter:card", content: "summary_large_image" },
-            ],
-            script: [
-                { src: 'https://kit.fontawesome.com/ffc90f94bc.js', crossorigin: 'anonymous' }
             ]
         }
     },

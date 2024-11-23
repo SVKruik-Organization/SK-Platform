@@ -135,20 +135,23 @@ const commentCastCurrentPage = computed<boolean>(() => {
                     <button @click="submitDocumentationVote(true)" class="flex footer-button footer-button-like"
                         :class="{ 'active-button-like': pressedButton === 'like', 'disabled-button': voteCastCurrentPage }"
                         type="button" title="Click this if you like the design and information available.">
-                        <i class="fa-regular fa-heart light-text"></i>
+                        <NuxtImg class="icon icon-light" width="18" height="18" src="/svg/heart-regular.svg"
+                            loading="lazy" alt="Icon" />
                         <p>Yes</p>
                     </button>
                     <button @click="submitDocumentationVote(false)" class="flex footer-button footer-button-dislike"
                         :class="{ 'active-button-dislike': pressedButton === 'dislike', 'disabled-button': voteCastCurrentPage }"
                         type="button" title="Click this if you think some things could be better.">
-                        <i class="fa-regular fa-heart-crack light-text"></i>
+                        <NuxtImg class="icon icon-light" width="18" height="18" src="/svg/heart-crack-regular.svg"
+                            loading="lazy" alt="Icon" />
                         <p>No</p>
                     </button>
                     <button v-if="pressedButton.length || voteCastCurrentPage"
                         class="flex footer-button footer-button-comment disable-close" type="button"
                         :class="{ 'disabled-button': commentCastCurrentPage }" @click="commentDocumentationVote"
                         title="Leave a comment so I can take a look at your feedback.">
-                        <i class="fa-regular fa-comment light-text disable-close"></i>
+                        <NuxtImg class="icon icon-light disable-close" width="18" height="18"
+                            src="/svg/comment-regular.svg" loading="lazy" alt="Icon" />
                         <p class="disable-close">Comment</p>
                     </button>
                 </ClientOnly>
@@ -162,7 +165,8 @@ const commentCastCurrentPage = computed<boolean>(() => {
             <div class="flex-col">
                 <NuxtLink to="/documentation/read/Doc/Contributing/SK_Docs"
                     class="flex footer-button footer-button-contribute">
-                    <i class="fa-regular fa-handshake-angle light-text"></i>
+                    <NuxtImg class="icon icon-light" width="18" height="18" src="/svg/handshake-angle-regular.svg"
+                        loading="lazy" alt="Icon" />
                     <p>Help writing SK Docs</p>
                 </NuxtLink>
             </div>
@@ -173,11 +177,13 @@ const commentCastCurrentPage = computed<boolean>(() => {
                 personally if you need anything. I am always happy to have a chat.</p>
             <div class="flex-col">
                 <NuxtLink to="/documentation/read/Doc/Community/Support" class="flex footer-link">
-                    <i class="fa-regular fa-mailbox-flag-up"></i>
+                    <NuxtImg class="icon" width="18" height="18" src="/svg/mailbox-flag-up-regular.svg" loading="lazy"
+                        alt="Icon" />
                     <p class="link-text">Contact support</p>
                 </NuxtLink>
                 <NuxtLink to="/documentation/read/Doc/Community/Links#Discord" class="flex footer-link">
-                    <i class="fa-brands fa-discord"></i>
+                    <NuxtImg class="icon" width="18" height="18" src="/svg/discord-brands-solid.svg" loading="lazy"
+                        alt="Icon" />
                     <p class="link-text">Join the Discord</p>
                 </NuxtLink>
             </div>
@@ -222,6 +228,14 @@ footer {
     color: var(--font-light);
 }
 
+.footer-button:hover p {
+    color: var(--font);
+}
+
+.footer-button:hover .icon {
+    filter: invert(1);
+}
+
 .footer-button-like:hover {
     border: 1px solid #345a32;
     background-color: #5c7f5d;
@@ -236,17 +250,6 @@ footer {
 .footer-button-comment:hover {
     border: 1px solid #355667;
     background-color: #5b6b78;
-}
-
-.footer-button-like:hover p,
-.footer-button-like:hover i,
-.footer-button-dislike:hover p,
-.footer-button-dislike:hover i,
-.footer-button-contribute:hover p,
-.footer-button-contribute:hover i,
-.footer-button-comment:hover p,
-.footer-button-comment:hover i {
-    color: var(--font);
 }
 
 .active-button-like {
