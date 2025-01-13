@@ -229,18 +229,20 @@ footer {
 }
 
 .footer-button:hover p {
-    color: var(--font);
+    color: var(--white);
 }
 
 .footer-button:hover .icon {
     filter: invert(1);
 }
 
+.active-button-like,
 .footer-button-like:hover {
     border: 1px solid #345a32;
     background-color: #5c7f5d;
 }
 
+.active-button-dislike,
 .footer-button-dislike:hover {
     border: 1px solid #9f4c4c;
     background-color: #8e4444;
@@ -250,16 +252,6 @@ footer {
 .footer-button-comment:hover {
     border: 1px solid #355667;
     background-color: #5b6b78;
-}
-
-.active-button-like {
-    border: 1px solid #1d331c;
-    background-color: #324633;
-}
-
-.active-button-dislike {
-    border: 1px solid #703434;
-    background-color: #572929;
 }
 
 .footer-link {

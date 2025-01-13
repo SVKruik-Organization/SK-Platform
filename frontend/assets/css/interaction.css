@@ -17,6 +17,10 @@
     width: 120px;
 }
 
+.navbar-pill-expand > .icon {
+    filter: invert(1);
+}
+
 .navbar-pill > p {
     overflow: hidden;
     text-align: left;
@@ -87,5 +91,5 @@
 }
 
 .theme-dropdown-expand {
-    height: 102px;
+    height: 105px;
 }

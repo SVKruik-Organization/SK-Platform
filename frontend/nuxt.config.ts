@@ -1,6 +1,11 @@
 export default defineNuxtConfig({
     compatibilityDate: '2024-04-03',
     devtools: { enabled: true },
+    nitro: {
+        compressPublicAssets: {
+            brotli: true,
+        }
+    },
     runtimeConfig: {
         public: {
             authApiBase: process.env.AUTH_API_BASE,

@@ -97,15 +97,15 @@ body {
     cursor: not-allowed;
     opacity: 0.5;
     pointer-events: none;
-}
 
-.disabled-button p {
-    color: var(--font-light);
-    pointer-events: none;
-}
+    p {
+        color: var(--font-disabled);
+        pointer-events: none;
+    }
 
-.disabled-button .icon {
-    filter: invert(0.35);
+    .icon {
+        filter: invert(0.35);
+    }
 }
 
 .light-text {

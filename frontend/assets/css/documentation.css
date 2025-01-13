@@ -1,4 +1,8 @@
 /* Themes */
+:root {
+    --white: #FFFFFF;
+}
+
 :root.cobalt {
     --main: #0D1116;
     --font: #EDEDED;
@@ -30,19 +34,9 @@
     --font-disabled: #919191;
     --fill: #FFFFFF;
     --fill-light: #F4F4F4;
-    --border: #E5E5E5;
+    --border: #cecece;
     --link: #004EBC;
     --glass: rgba(239, 239, 239, 0.65);
-}
-
-.mokka .gradient-button p,
-.north .gradient-button p {
-    color: var(--main);
-}
-
-.mokka .gradient-button .icon-light,
-.north .gradient-button .icon {
-    filter: invert(1);
 }
 
 :root.mokka {
@@ -55,6 +49,25 @@
     --border: #C3B8A5;
     --link: #004EBC;
     --glass: rgba(234, 229, 219, 0.65);
+}
+
+.mokka,
+.north {
+    .gradient-button .icon {
+        filter: invert(1);
+    }
+
+    .gradient-button p {
+        color: var(--main);
+    }
+
+    .icon-light {
+        filter: invert(0.3);
+    }
+
+    .icon {
+        filter: invert(0);
+    }
 }
 
 /* Theme Selector */
