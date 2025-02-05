@@ -172,6 +172,17 @@ function handleInput(): void {
 }
 
 /**
+ * Handle the keydown event.
+ * @param event The keydown event.
+ */
+function handleDown(event: KeyboardEvent): void {
+    if (event.key === "Escape" && searchInput.value) {
+        document.documentElement.click();
+        searchInput.value.blur();
+    };
+}
+
+/**
  * Perform several checks before querying the search engine to prevent unnecessary requests.
  * @param force Overwrite the same search query check.
  * @param newOffset The offset to start the search from.
@@ -210,7 +221,7 @@ function searchInputChecks(force: boolean, newOffset: number): boolean {
                                 @click="searchInput?.focus()" />
                             <input class=" disable-nav-close" ref="searchInput" @focus="searchFocusHandler" type="text"
                                 @blur="searchBlurHandler" maxlength="60" placeholder="Search through everything"
-                                @keyup="handleInput">
+                                @keyup="handleInput" @keydown="handleDown($event)">
                             <menu class="flex-col input-results-container disable-nav-close">
                                 <div class="flex-col full-width disable-nav-close">
                                     <small class="light-text disable-nav-close">Search Mode</small>

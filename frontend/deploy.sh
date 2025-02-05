@@ -1,10 +1,9 @@
 #!/bin/sh
-export HOME=/home/SVKruik
-export PATH=/root/.nvm/versions/node/v20.15.1/bin:$PATH
+export HOME=/home/svkruik
 
 # Git
 cd ..
-git config --global --add safe.directory /home/SVKruik/Documents/GitHub/SK-Platform
+git config --global --add safe.directory "$HOME/Documents/GitHub/SK-Platform"
 git reset --hard
 git pull
 echo "Git setup complete."

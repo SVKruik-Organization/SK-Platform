@@ -23,8 +23,10 @@ const props = defineProps({
 // Reactive Data
 const page = ref<string | undefined>(props.page);
 const chapterData: Ref<Array<DocChapterItem>> = ref([]);
-const hasPreviousPage: Ref<boolean> = ref(true);
-const hasNextPage: Ref<boolean> = ref(true);
+const hasPreviousPage: Ref<boolean> = ref(false);
+const hasNextPage: Ref<boolean> = ref(false);
+const categoryList: Ref<Array<string>> = ref([]);
+const seoCategory: Ref<DocumentationIndexItem | undefined> = ref(undefined);
 let fileData: Ref<DocumentationFile | null> = ref(null);
 
 // Prevent Default Page
@@ -53,8 +55,12 @@ const { data: rawFileData } = await useAsyncData<DocumentationFile>("fileData",
 if (rawFileData.value === null) useRouter().push(`/documentation/notfound?type=${props.type}&category=${props.category}&page=${page.value}`);
 fileData.value = await parseDocumentationFile(rawFileData.value) as DocumentationFile;
 
-hasPreviousPage.value = documentationStore.hasPreviousPage(props.type, props.category, props.page);
-hasNextPage.value = documentationStore.hasNextPage(props.type, props.category, props.page);
+onBeforeMount(async () => {
+    hasPreviousPage.value = await documentationStore.hasPreviousPage(props.type, props.category, props.page);
+    hasNextPage.value = await documentationStore.hasNextPage(props.type, props.category, props.page);
+    categoryList.value = await documentationStore.getCategoryList(props.type, props.category);
+    seoCategory.value = await documentationStore.getCategory(props.type, props.category);
+});
 
 // HTML Elements
 const shareButtonContents: Ref<HTMLParagraphElement | null> = ref(null);
@@ -217,8 +223,8 @@ function setActiveChapter(): void {
 /**
  * Go to the previous page in the category.
  */
-function previousPage(): void {
-    const currentCategory: DocumentationIndexItem | undefined = documentationStore.getCategory(props.type, props.category);
+async function previousPage(): Promise<void> {
+    const currentCategory: DocumentationIndexItem | undefined = await documentationStore.getCategory(props.type, props.category);
     if (!currentCategory || !currentCategory.children.length) return;
     const router = useRouter();
     if (props.page) {
@@ -232,8 +238,8 @@ function previousPage(): void {
 /**
  * Go to the next page in the category.
  */
-function nextPage(): void {
-    const currentCategory: DocumentationIndexItem | undefined = documentationStore.getCategory(props.type, props.category);
+async function nextPage(): Promise<void> {
+    const currentCategory: DocumentationIndexItem | undefined = await documentationStore.getCategory(props.type, props.category);
     if (!currentCategory || !currentCategory.children.length) return;
     const router = useRouter();
     if (props.page) {
@@ -281,7 +287,7 @@ const metaItems = [
 ];
 if (props.page) {
     metaItems.push({ property: "article:tag", content: props.page.replace(/_/g, " ") });
-    const currentCategory: DocumentationIndexItem | undefined = documentationStore.getCategory(props.type, props.category);
+    const currentCategory: DocumentationIndexItem | undefined = seoCategory.value;
     if (currentCategory) {
         const nextPageName = currentCategory.children[currentCategory.children.indexOf(props.page) + 1];
         if (nextPageName) links.push({
@@ -356,8 +362,7 @@ useHead({
                 </div>
                 <ClientOnly>
                     <NuxtLink :to="`/documentation/read/${type}/${category}/${link}`" class="navigation-link"
-                        :class="{ 'active-navigation-link': link === page }"
-                        v-for="link in documentationStore.getCategoryList(type, category)">
+                        :class="{ 'active-navigation-link': link === page }" v-for="link in categoryList" :key="link">
                         {{ link.replace(/_/g, " ") }}
                     </NuxtLink>
                 </ClientOnly>

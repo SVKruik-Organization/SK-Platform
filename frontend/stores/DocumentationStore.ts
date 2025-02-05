@@ -148,9 +148,10 @@ export const useDocumentationStore = defineStore("documentationStore", {
         },
         /**
          * Reload all store keys.
+         * @param background If this is a background refresh. If so, don't show a toast.
          * @returns Void, return on error.
          */
-        async refresh(): Promise<void> {
+        async refresh(background: boolean = false): Promise<void> {
             const data: string | DocumentationRefreshResponse = await useFetchDocumentationRefresh(this.version, this.language);
             const { $event } = useNuxtApp();
 
@@ -161,12 +162,14 @@ export const useDocumentationStore = defineStore("documentationStore", {
                 "duration": 3
             } as ToastItem);
 
-            $event("emit-toast", {
-                "id": createTicket(),
-                "type": "success",
-                "message": "Refreshed indices and recommended pages.",
-                "duration": 3
-            } as ToastItem);
+            if (!background) {
+                $event("emit-toast", {
+                    "id": createTicket(),
+                    "type": "success",
+                    "message": "Refreshed indices and recommended pages.",
+                    "duration": 3
+                } as ToastItem);
+            }
 
             if (data.docIndex.length === 0) {
                 this.docIndex = IndexPlaceholder;
@@ -188,7 +191,9 @@ export const useDocumentationStore = defineStore("documentationStore", {
          * @param categoryName The name of the folder.
          * @returns The list of pages as primitive strings.
          */
-        getCategoryList(type: string, categoryName: string): Array<string> {
+        async getCategoryList(type: string, categoryName: string): Promise<Array<string>> {
+            if (!this.docIndex.length || !this.guideIndex.length) await this.refresh(true);
+
             let convertedType: "docIndex" | "guideIndex" = "docIndex";
             if (type === "Guide") convertedType = "guideIndex";
             return this[convertedType].filter((indexItem: DocumentationIndexItem) => indexItem.category === categoryName)[0]?.children;
@@ -199,7 +204,9 @@ export const useDocumentationStore = defineStore("documentationStore", {
          * @param name The name of the category to get.
          * @returns The category item.
          */
-        getCategory(type: string, name: string): DocumentationIndexItem | undefined {
+        async getCategory(type: string, name: string): Promise<DocumentationIndexItem | undefined> {
+            if (!this.docIndex.length || !this.guideIndex.length) await this.refresh(true);
+
             let convertedType: "docIndex" | "guideIndex" = "docIndex";
             if (type === "Guide") convertedType = "guideIndex";
             return this[convertedType].filter((indexItem: DocumentationIndexItem) => indexItem.category === name)[0];
@@ -211,7 +218,9 @@ export const useDocumentationStore = defineStore("documentationStore", {
          * @param page The name of the page to validate.
          * @returns If this page has a previous page.
          */
-        hasPreviousPage(type: string, category: string, page: string | undefined): boolean {
+        async hasPreviousPage(type: string, category: string, page: string | undefined): Promise<boolean> {
+            if (!this.docIndex.length || !this.guideIndex.length) await this.refresh(true);
+
             let convertedType: "docIndex" | "guideIndex" = "docIndex";
             if (type === "Guide") convertedType = "guideIndex";
             const categoryItem: DocumentationIndexItem | null = this[convertedType].filter((indexItem: DocumentationIndexItem) => indexItem.category === category)[0];
@@ -231,7 +240,9 @@ export const useDocumentationStore = defineStore("documentationStore", {
          * @param page The name of the page to validate.
          * @returns If this page has a next page.
          */
-        hasNextPage(type: string, category: string, page: string | undefined): boolean {
+        async hasNextPage(type: string, category: string, page: string | undefined): Promise<boolean> {
+            if (!this.docIndex.length || !this.guideIndex.length) await this.refresh(true);
+
             let convertedType: "docIndex" | "guideIndex" = "docIndex";
             if (type === "Guide") convertedType = "guideIndex";
             const categoryItem: DocumentationIndexItem | null = this[convertedType].filter((indexItem: DocumentationIndexItem) => indexItem.category === category)[0];
