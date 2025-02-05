@@ -24,6 +24,7 @@ app.use(cors(corsOptions));
 app.use(apiMiddleware);
 app.use("/search", SearchRoutes);
 app.use("/votes", VoteRoutes);
+app.enable("trust proxy");
 
 // Base Route
 app.get("/", (_req: Request, res: Response) => {
