@@ -141,3 +141,10 @@ export type SitemapFile = {
     "url": string,
     "modificationDate": string
 }
+
+// Validation Object
+export type UrlParams = {
+    "version": string,
+    "language": string,
+    "type": string
+}

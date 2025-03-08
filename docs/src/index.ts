@@ -1,7 +1,8 @@
 import express, { Express, Request, Response } from "express";
 import dotenv from "dotenv";
+import helmet from "helmet";
 import cors from "cors";
-import { DocumentationFile, FileRequest, IndexItem, RecommendedItem, UplinkMessage } from "./customTypes";
+import { DocumentationFile, FileRequest, IndexItem, RecommendedItem, UplinkMessage, UrlParams } from "./customTypes";
 import { getFile, getIndex, getRecommendedItems } from "./utils/file";
 import { SearchRoutes } from "./routes/searchRoutes";
 import { apiMiddleware, log } from "./utils/logger";
@@ -11,8 +12,6 @@ import shell from "shelljs";
 import { getUplinkConnection } from "./utils/networking";
 import { VoteRoutes } from "./routes/voteRoutes";
 dotenv.config();
-const app: Express = express();
-app.use(express.json());
 
 // CORS Config
 if (!process.env.CORS) throw new Error("Missing CORS configuration.");
@@ -20,40 +19,92 @@ const corsOptions = {
     origin: process.env.CORS.split(","),
     optionsSuccessStatus: 200
 }
+
+// App Config
+const app: Express = express();
+app.use(express.json());
 app.use(cors(corsOptions));
 app.use(apiMiddleware);
 app.use("/search", SearchRoutes);
 app.use("/votes", VoteRoutes);
 app.enable("trust proxy");
+app.set('trust proxy', 1);
+app.use(helmet());
 
 // Base Route
 app.get("/", (_req: Request, res: Response) => {
     res.redirect(308, "https://platform.stefankruik.com/documentation");
 });
 
+// DEBUG
+app.get('/ip', (request, response) => response.send(request.ip));
+
 // Status Shield
 app.get("/api/status/badge", (_req: Request, res: Response) => {
     res.json({ "schemaVersion": 1, "label": "Docs Status", "message": "online", "color": "brightgreen" });
 });
+
+// Valid Url Params
+const validVersions: Array<string> = ["v1"];
+const validLanguages: Array<string> = ["en-US"];
+const validTypes: Array<string> = ["Doc", "Guide"];
+
+/**
+ * Validate url params.
+ * @param version The version to check, if any.
+ * @param language The language to check, if any.
+ * @param type The type to check, if any.
+ * @returns False if invalid and the checked url params if valid.
+ */
+function validateUrlParams(version?: string, language?: string, type?: string): UrlParams | false {
+    const data: UrlParams = {
+        "version": "",
+        "language": "",
+        "type": ""
+    };
+
+    if (version) {
+        if (!validVersions.includes(version)) return false;
+        data["version"] = version;
+    }
+
+    if (language) {
+        if (!validLanguages.includes(language)) return false;
+        data["language"] = language;
+    }
+
+    if (type) {
+        if (!validTypes.includes(type)) return false;
+        data["type"] = type;
+    }
+
+    return data;
+}
 
 // Refresh
 const refreshLimit = rateLimit({
     windowMs: 2 * 60 * 1000,
     limit: 5,
     standardHeaders: true,
-    legacyHeaders: false
+    legacyHeaders: false,
+    validate: {
+        trustProxy: false
+    }
 });
 app.get("/refresh/:version/:language", refreshLimit, async (req: Request, res: Response) => {
+    const params: UrlParams | false = validateUrlParams(req.params.version, req.params.language);
+    if (!params) return res.sendStatus(400);
+
     // Indices
-    const docIndex: Array<IndexItem> | number = getIndex(req.params.version, req.params.language, "Doc");
+    const docIndex: Array<IndexItem> | number = getIndex(params.version, params.language, "Doc");
     if (typeof docIndex === "number") return res.sendStatus(docIndex);
-    const guideIndex: Array<IndexItem> | number = getIndex(req.params.version, req.params.language, "Guide");
+    const guideIndex: Array<IndexItem> | number = getIndex(params.version, params.language, "Guide");
     if (typeof guideIndex === "number") return res.sendStatus(guideIndex);
 
     // Recommended Items
-    const recommendedDocItems: Array<RecommendedItem> | number = getRecommendedItems(req.params.language, "Doc");
+    const recommendedDocItems: Array<RecommendedItem> | number = getRecommendedItems(params.language, "Doc");
     if (typeof recommendedDocItems === "number") return res.sendStatus(recommendedDocItems);
-    const recommendedGuideItems: Array<RecommendedItem> | number = getRecommendedItems(req.params.language, "Guide");
+    const recommendedGuideItems: Array<RecommendedItem> | number = getRecommendedItems(params.language, "Guide");
     if (typeof recommendedGuideItems === "number") return res.sendStatus(recommendedGuideItems);
 
     return res.json({
@@ -67,21 +118,30 @@ app.get("/refresh/:version/:language", refreshLimit, async (req: Request, res: R
 // Get File
 app.get("/getFile/:version/:language/:type", async (req: Request, res: Response) => {
     const searchQuery: FileRequest = req.query as FileRequest;
-    const file: DocumentationFile | number = await getFile(searchQuery.folder, searchQuery.name, req.params.version, req.params.language, req.params.type, false);
+    const params: UrlParams | false = validateUrlParams(req.params.version, req.params.language, req.params.type);
+    if (!params) return res.sendStatus(400);
+
+    const file: DocumentationFile | number = await getFile(searchQuery.folder, searchQuery.name, params.version, params.language, params.type, false);
     if (typeof parent === "number") return res.sendStatus(parent);
     return res.json({ "file": file });
 });
 
 // Get Index
 app.get("/getIndex/:version/:language/:type", async (req: Request, res: Response) => {
-    const index: Array<IndexItem> | number = getIndex(req.params.version, req.params.language, req.params.type);
+    const params: UrlParams | false = validateUrlParams(req.params.version, req.params.language, req.params.type);
+    if (!params) return res.sendStatus(400);
+
+    const index: Array<IndexItem> | number = getIndex(params.version, params.language, params.type);
     if (typeof index === "number") return res.sendStatus(index);
     return res.json({ "index": index });
 });
 
 // Get Recommended Items
 app.get("/getRecommendedItems/:language/:type", async (req: Request, res: Response) => {
-    const data: Array<RecommendedItem> | number = getRecommendedItems(req.params.language, req.params.type);
+    const params: UrlParams | false = validateUrlParams(undefined, req.params.language, req.params.type);
+    if (!params) return res.sendStatus(400);
+
+    const data: Array<RecommendedItem> | number = getRecommendedItems(params.language, params.type);
     if (typeof data === "number") return res.sendStatus(data);
     return res.json({ "recommendedItems": data });
 });
