@@ -36,9 +36,6 @@ app.get("/", (_req: Request, res: Response) => {
     res.redirect(308, "https://platform.stefankruik.com/documentation");
 });
 
-// DEBUG
-app.get('/ip', (request, response) => response.send(request.ip));
-
 // Status Shield
 app.get("/api/status/badge", (_req: Request, res: Response) => {
     res.json({ "schemaVersion": 1, "label": "Docs Status", "message": "online", "color": "brightgreen" });
@@ -57,28 +54,15 @@ const validTypes: Array<string> = ["Doc", "Guide"];
  * @returns False if invalid and the checked url params if valid.
  */
 function validateUrlParams(version?: string, language?: string, type?: string): UrlParams | false {
-    const data: UrlParams = {
-        "version": "",
-        "language": "",
-        "type": ""
+    if (version && !validVersions.includes(version)) return false;
+    if (language && !validLanguages.includes(language)) return false;
+    if (type && !validTypes.includes(type)) return false;
+
+    return {
+        "version": version ? version.replace("..", "") : "",
+        "language": language ? language.replace("..", "") : "",
+        "type": type ? type.replace("..", "") : ""
     };
-
-    if (version) {
-        if (!validVersions.includes(version)) return false;
-        data["version"] = version;
-    }
-
-    if (language) {
-        if (!validLanguages.includes(language)) return false;
-        data["language"] = language;
-    }
-
-    if (type) {
-        if (!validTypes.includes(type)) return false;
-        data["type"] = type;
-    }
-
-    return data;
 }
 
 // Refresh
@@ -86,10 +70,7 @@ const refreshLimit = rateLimit({
     windowMs: 2 * 60 * 1000,
     limit: 5,
     standardHeaders: true,
-    legacyHeaders: false,
-    validate: {
-        trustProxy: false
-    }
+    legacyHeaders: false
 });
 app.get("/refresh/:version/:language", refreshLimit, async (req: Request, res: Response) => {
     const params: UrlParams | false = validateUrlParams(req.params.version, req.params.language);
@@ -164,8 +145,8 @@ app.listen(PORT, "0.0.0.0", async () => {
                 const messageContent: UplinkMessage = JSON.parse(message.content.toString());
                 if (messageContent.task === "Deploy" && process.platform === "linux") {
                     log(`Received new deploy task from ${messageContent.sender}. Running Documentation deployment script.`, "info");
-                    shell.exec("bash deploy.sh");
                     channel.ack(message);
+                    shell.exec("bash deploy.sh");
                 }
             }
         }, {
