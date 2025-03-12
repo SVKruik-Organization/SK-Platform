@@ -21,7 +21,7 @@
     },
     "dependencies": {
         "@nuxt/image": "^1.8.1",
-        "@pinia/nuxt": "^0.5.4",
+        "@pinia/nuxt": "^0.10.1",
         "@vueuse/core": "^5.0.0",
         "@vueuse/nuxt": "^11.1.0",
         "amqplib": "^0.10.4",
