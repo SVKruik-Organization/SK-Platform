@@ -29,7 +29,7 @@
         "mitt": "^3.0.1",
         "nuxt": "^3.13.0",
         "pinia": "2.2.2",
-        "shelljs": "^0.8.5",
+        "shelljs": "^0.9.0",
         "vue": "latest",
         "vue-router": "latest"
     },
