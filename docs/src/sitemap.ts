@@ -1,11 +1,11 @@
 import { Dirent, readdirSync, Stats, statSync, writeFileSync } from "fs";
-import { log } from "./utils/logger";
 import { SitemapFile } from "./customTypes";
+import { logData } from "@svkruik/sk-platform-formatters";
 const XMLWriter = require('xml-writer');
 
 // Setup
 const baseURL = "https://platform.stefankruik.com/documentation";
-log("Starting sitemap export.", "info");
+logData("Starting sitemap export.", "info");
 
 /**
  * Formats a date into a YYYY-MM-DD format.
@@ -35,7 +35,7 @@ if (!validLanguages.includes(language)) throw new Error("Invalid language provid
 const documentationTypes: Array<Dirent> = readdirSync(`${__dirname}/../data/html/${version}/${language}`, {
     withFileTypes: true
 }).filter(entity => entity.isDirectory());
-log(`Found ${documentationTypes.length} documentation types.`, "info");
+logData(`Found ${documentationTypes.length} documentation types.`, "info");
 
 // Categories
 let categories: Array<Dirent> = [];
@@ -44,7 +44,7 @@ documentationTypes.forEach((folder: Dirent) => {
         withFileTypes: true
     }).filter(entity => entity.isDirectory()));
 });
-log(`Found ${categories.length} categories.`, "info");
+logData(`Found ${categories.length} categories.`, "info");
 
 // Raw Pages
 let rawPages: Array<Dirent> = [];
@@ -73,7 +73,7 @@ pages.unshift({
     "url": baseURL,
     "modificationDate": dateFormatter(null)
 });
-log(`Found ${pages.length} pages.`, "info");
+logData(`Found ${pages.length} pages.`, "info");
 
 // XML
 const xw = new XMLWriter(true);
@@ -95,7 +95,7 @@ pages.forEach((page: SitemapFile) => {
 });
 xw.endElement().endDocument();
 const xml: string = xw.toString();
-log(`Exporting sitemap with ${xml.length} characters with options: ${version} ${language}`, "info");
+logData(`Exporting sitemap with ${xml.length} characters with options: ${version} ${language}`, "info");
 
 // Write
 writeFileSync(`${__dirname}/../exports/${version}_${language}_sitemap.xml`, xml, {

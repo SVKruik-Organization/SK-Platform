@@ -125,17 +125,6 @@ export type SeedIndexItem = {
     "content": string
 }
 
-// Uplink Network Payload
-export type UplinkMessage = {
-    "sender": string,
-    "recipient": string,
-    "triggerSource": string,
-    "reason": string,
-    "task": string,
-    "content": string,
-    "timestamp": Date
-}
-
 // Sitemap Export Item
 export type SitemapFile = {
     "url": string,

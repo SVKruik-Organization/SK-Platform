@@ -1,7 +1,7 @@
 import { Dirent, readdirSync, readFileSync, writeFileSync } from "fs";
-import { log } from "./utils/logger";
 import { SeedIndexItem, SeedItem } from "./customTypes";
-log("Starting search index export.", "info");
+import { logData } from "@svkruik/sk-platform-formatters";
+logData("Starting search index export.", "info");
 
 // Command Arguments Setup
 const args: Array<string> = process.argv.slice(2);
@@ -25,7 +25,7 @@ const validOverwrites: Array<string> = ["w", "ax"];
 if (!validOverwrites.includes(overwrite)) throw new Error("Invalid overwrite option provided. Use 'w' to enable overwriting existing files, 'ax' to disable.");
 
 // Root Folder
-log(`Search indexing export in version ${version} in ${humanLanguage}@${language}.`, "info");
+logData(`Search indexing export in version ${version} in ${humanLanguage}@${language}.`, "info");
 const rootFolders: Array<Dirent> = readdirSync(`${__dirname}/../data/html/${version}/${language}`, {
     withFileTypes: true
 }).filter(entity => entity.isDirectory());
@@ -34,7 +34,7 @@ const rootFolders: Array<Dirent> = readdirSync(`${__dirname}/../data/html/${vers
 // Types (Doc, Guide)
 const seedItems: Array<SeedItem> = [];
 for (const rootFolder of rootFolders) {
-    log(`Reading ${rootFolder.name} sub-folder.`, "info");
+    logData(`Reading ${rootFolder.name} sub-folder.`, "info");
     const subRoots: Array<Dirent> = readdirSync(`${__dirname}/../data/html/${version}/${language}/${rootFolder.name}`, {
         withFileTypes: true
     }).filter(entity => entity.isDirectory());
@@ -79,7 +79,7 @@ try {
         "encoding": "utf-8",
         "flag": overwrite
     });
-    log(`Successfully wrote Documentation index to the exports directory: ../exports/${version}_${language}.json`, "info");
+    logData(`Successfully wrote Documentation index to the exports directory: ../exports/${version}_${language}.json`, "info");
 } catch (error: any) {
     if (error.code === "EEXIST") throw new Error("File already exists, and overwriting is disabled with option 'ax'. Use 'w' to overwrite existing files.");
     console.error(error);

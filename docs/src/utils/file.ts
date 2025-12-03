@@ -1,11 +1,13 @@
 import { Dirent, readdirSync, readFileSync, Stats, statSync } from "fs";
-import { logError } from "./logger";
 import { DocumentationFile, DocumentationProduct, IndexItem, RawRelatedItem, RecommendedItem, RelatedItem } from "../customTypes";
 import { parse } from "node-html-parser";
-import { queryDatabase } from "./networking";
+import { logError } from "@svkruik/sk-platform-formatters";
+import { database } from "./networking";
+import { Pool } from "mariadb";
 
 /**
  * Fetch a specific Documentation page from the file system.
+ * 
  * @param folder The name of the folder with underscores instead of spaces. Examples: Get_Started, Community
  * @param name The name of the specific HTML file to retrieve, without `.html`. Examples: Introduction, Collaborating
  * @param version The version number of the index. Examples: v1, v2
@@ -41,9 +43,10 @@ export async function getFile(folder: string, name: string, version: string, lan
         // Query & View Count
         let query = "SELECT * FROM documentation_page WHERE type = ? AND category = ? AND name = ? UNION ALL SELECT dp.* FROM documentation_page dp JOIN ( SELECT related FROM documentation_page WHERE type = ? AND category = ? AND name = ?) AS target_related ON FIND_IN_SET(dp.id, target_related.related) > 0;";
         if (newFetch) query += " UPDATE documentation_page SET view_count = view_count + 1 WHERE type = ? AND category = ? AND name = ?;";
+        const connection: Pool = await database("bots");
 
         // Retrieve Database File Data
-        const rawDatabaseMetaData: Array<any> | number = await queryDatabase(query, [type, folder, name, type, folder, name, type, folder, name]);
+        const rawDatabaseMetaData: Array<any> | number = await connection.query(query, [type, folder, name, type, folder, name, type, folder, name]);
         if (typeof rawDatabaseMetaData === "number") return rawDatabaseMetaData;
         const databaseMetaData = newFetch ? rawDatabaseMetaData[0] : rawDatabaseMetaData;
         return {
@@ -71,6 +74,7 @@ export async function getFile(folder: string, name: string, version: string, lan
 
 /**
  * Fetch the index/table of contents.
+ * 
  * @param version The version number of the index. Examples: v1, v2
  * @param language The language of the documentation. Examples: en-US, nl-NL
  * @param type Documentation (Doc) or Guides (Guide)
@@ -107,6 +111,7 @@ export function getIndex(version: string, language: string, type: string): Array
 
 /**
  * Read the contents of a specified directory.
+ * 
  * @param folder The name of the folder with underscores instead of spaces. Examples: Get_Started, Community
  * @param version The version number of the index. Examples: v1, v2
  * @param language The language of the documentation. Examples: en-US, nl-NL
@@ -120,8 +125,9 @@ function readDirectory(folder: string, version: string, language: string, type: 
 
 /**
  * Get the icon for the specified folder/category.
+ * 
  * @param name The folder name excluding order number including underscores.
- * @returns 
+ * @returns The icon name.
  */
 export function getFolderIcon(name: string): string {
     switch (name) {
@@ -167,6 +173,7 @@ export function getFolderIcon(name: string): string {
 
 /**
  * Retrieve recommended items from the JSON file.
+ * 
  * @param language The language of the documentation. Examples: en-US, nl-NL
  * @param type Documentation (Doc) or Guides (Guide)
  * @returns The current recommended items.
@@ -181,6 +188,7 @@ export function getRecommendedItems(language: string, type: string): Array<Recom
 
 /**
  * Convert the API response to a RecommendedItem typed object.
+ * 
  * @param rawRelatedItems Raw related items from the database.
  * @param rawProducts Raw products from the database.
  * @returns The processed related items.
@@ -210,6 +218,7 @@ function parseRelatedItems(rawRelatedItems: Array<RawRelatedItem>, rawProducts: 
 
 /**
  * Convert the API response to a DocumentationProduct typed object.
+ * 
  * @param input The raw product string from the database.
  * @param version The version number of the index. Examples: v1, v2
  * @param language The language of the documentation. Examples: en-US, nl-NL

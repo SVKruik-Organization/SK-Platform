@@ -1,17 +1,17 @@
 import express, { Express, Request, Response } from "express";
-import dotenv from "dotenv";
+import { config } from "dotenv";
 import helmet from "helmet";
 import cors from "cors";
-import { DocumentationFile, FileRequest, IndexItem, RecommendedItem, UplinkMessage, UrlParams } from "./customTypes";
-import { getFile, getIndex, getRecommendedItems } from "./utils/file";
-import { SearchRoutes } from "./routes/searchRoutes";
-import { apiMiddleware, log } from "./utils/logger";
+import { logData } from "@svkruik/sk-platform-formatters";
+import { mountUplink } from "@svkruik/sk-uplink-connector";
 import { rateLimit } from 'express-rate-limit';
-import { Channel, Message } from "amqplib";
-import shell from "shelljs";
-import { getUplinkConnection } from "./utils/networking";
+
+import { DocumentationFile, FileRequest, IndexItem, RecommendedItem, UrlParams } from "./customTypes";
+import { getFile, getIndex, getRecommendedItems } from "./utils/file";
+import { apiRequest } from "./utils/middleware";
+import { SearchRoutes } from "./routes/searchRoutes";
 import { VoteRoutes } from "./routes/voteRoutes";
-dotenv.config();
+config();
 
 // CORS Config
 if (!process.env.CORS) throw new Error("Missing CORS configuration.");
@@ -24,7 +24,7 @@ const corsOptions = {
 const app: Express = express();
 app.use(express.json());
 app.use(cors(corsOptions));
-app.use(apiMiddleware);
+app.use(apiRequest);
 app.use("/search", SearchRoutes);
 app.use("/votes", VoteRoutes);
 app.enable("trust proxy");
@@ -129,31 +129,7 @@ app.get("/getRecommendedItems/:language/:type", async (req: Request, res: Respon
 
 // Start
 const PORT: number = parseInt(process.env.PORT as string) || 3002;
-app.listen(PORT, "0.0.0.0", async () => {
-    // Uplink Connection
-    try {
-        const channel: Channel | null = await getUplinkConnection();
-        if (!channel) throw new Error("Uplink connection missing. Starting server without Uplink connection.");
-        channel.assertExchange("unicast-products", "direct", { durable: false });
-        const queue = await channel.assertQueue("", { exclusive: true });
-        await channel.bindQueue(queue.queue, "unicast-products", "Docs");
-
-        // Listen
-        log(`Uplink consumer listening on exchange 'unicast-products' binded to 'Docs'.`, "info");
-        channel.consume(queue.queue, (message: Message | null) => {
-            if (message) {
-                const messageContent: UplinkMessage = JSON.parse(message.content.toString());
-                if (messageContent.task === "Deploy" && process.platform === "linux") {
-                    log(`Received new deploy task from ${messageContent.sender}. Running Documentation deployment script.`, "info");
-                    channel.ack(message);
-                    shell.exec("bash deploy.sh");
-                }
-            }
-        }, {
-            noAck: false
-        });
-    } catch (error: any) {
-        log(`Error connecting to Uplink: ${error.message}`, "error");
-    }
-    log(`Documentation server listening on port ${PORT}`, "info");
+app.listen(PORT, async () => {
+    await mountUplink();
+    logData(`Documentation server listening on port ${PORT}`, "info");
 });

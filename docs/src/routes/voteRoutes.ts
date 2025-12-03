@@ -1,9 +1,8 @@
-import dotenv from "dotenv";
 import express, { Request, Response, Router } from "express";
 import { CommentRequest, VoteRequest } from "../customTypes";
-import { logError } from "../utils/logger";
-import { queryDatabase } from "../utils/networking";
-dotenv.config();
+import { logError } from "@svkruik/sk-platform-formatters";
+import { Pool } from "mariadb";
+import { database } from "../utils/networking";
 const router: Router = express.Router();
 
 // Cast Vote
@@ -20,7 +19,8 @@ router.post("/new/:version/:language", async (req: Request, res: Response) => {
             "page": voteParams.page === "null" ? null : voteParams.page
         };
 
-        await queryDatabase("INSERT INTO documentation_vote (ticket, value, type, category, page) VALUES (?, ?, ?, ?, ?)", [voteRequest.ticket, voteRequest.value, voteRequest.type, voteRequest.category, voteRequest.page]);
+        const connection: Pool = await database("bots");
+        await connection.query("INSERT INTO documentation_vote (ticket, value, type, category, page) VALUES (?, ?, ?, ?, ?)", [voteRequest.ticket, voteRequest.value, voteRequest.type, voteRequest.category, voteRequest.page]);
         return res.sendStatus(200);
     } catch (error: any) {
         logError(error);
@@ -39,7 +39,8 @@ router.put("/comment", async (req: Request, res: Response) => {
             "commment": req.body.comment
         };
 
-        await queryDatabase("UPDATE documentation_vote SET comment = ? WHERE ticket = ?", [commentRequest.commment, commentRequest.ticket]);
+        const connection: Pool = await database("bots");
+        await connection.query("UPDATE documentation_vote SET comment = ? WHERE ticket = ?", [commentRequest.commment, commentRequest.ticket]);
         return res.sendStatus(200);
     } catch (error: any) {
         logError(error);
