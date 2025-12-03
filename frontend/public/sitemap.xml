@@ -2,163 +2,163 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
     <url>
         <loc>https://platform.stefankruik.com/documentation</loc>
-        <lastmod>2024-11-17</lastmod>
+        <lastmod>2025-12-03</lastmod>
         <changefreq>weekly</changefreq>
         <priority>1.0</priority>
     </url>
     <url>
         <loc>https://platform.stefankruik.com/documentation/read/Doc/Get_Started</loc>
-        <lastmod>2024-09-10</lastmod>
+        <lastmod>2024-09-11</lastmod>
         <changefreq>monthly</changefreq>
         <priority>0.8</priority>
     </url>
     <url>
         <loc>https://platform.stefankruik.com/documentation/read/Doc/Get_Started/Introduction</loc>
-        <lastmod>2024-09-10</lastmod>
+        <lastmod>2024-09-11</lastmod>
         <changefreq>monthly</changefreq>
         <priority>0.8</priority>
     </url>
     <url>
         <loc>https://platform.stefankruik.com/documentation/read/Doc/Get_Started/Product_Choice</loc>
-        <lastmod>2024-09-10</lastmod>
+        <lastmod>2024-09-11</lastmod>
         <changefreq>monthly</changefreq>
         <priority>0.8</priority>
     </url>
     <url>
         <loc>https://platform.stefankruik.com/documentation/read/Doc/Get_Started/Integration</loc>
-        <lastmod>2024-09-10</lastmod>
+        <lastmod>2024-09-11</lastmod>
         <changefreq>monthly</changefreq>
         <priority>0.8</priority>
     </url>
     <url>
         <loc>https://platform.stefankruik.com/documentation/read/Doc/Get_Started/Next_Steps</loc>
-        <lastmod>2024-09-10</lastmod>
+        <lastmod>2024-09-11</lastmod>
         <changefreq>monthly</changefreq>
         <priority>0.8</priority>
     </url>
     <url>
         <loc>https://platform.stefankruik.com/documentation/read/Doc/Get_Started/Not_Convinced</loc>
-        <lastmod>2024-09-10</lastmod>
+        <lastmod>2024-09-11</lastmod>
         <changefreq>monthly</changefreq>
         <priority>0.8</priority>
     </url>
     <url>
         <loc>https://platform.stefankruik.com/documentation/read/Doc/Products</loc>
-        <lastmod>2024-09-10</lastmod>
+        <lastmod>2024-09-11</lastmod>
         <changefreq>monthly</changefreq>
         <priority>0.8</priority>
     </url>
     <url>
         <loc>https://platform.stefankruik.com/documentation/read/Doc/Products/Lines</loc>
-        <lastmod>2024-09-10</lastmod>
+        <lastmod>2024-09-11</lastmod>
         <changefreq>monthly</changefreq>
         <priority>0.8</priority>
     </url>
     <url>
         <loc>https://platform.stefankruik.com/documentation/read/Doc/Products/Bots</loc>
-        <lastmod>2024-09-10</lastmod>
+        <lastmod>2024-09-11</lastmod>
         <changefreq>monthly</changefreq>
         <priority>0.8</priority>
     </url>
     <url>
         <loc>https://platform.stefankruik.com/documentation/read/Doc/Products/Commander</loc>
-        <lastmod>2024-09-10</lastmod>
+        <lastmod>2024-09-11</lastmod>
         <changefreq>monthly</changefreq>
         <priority>0.8</priority>
     </url>
     <url>
         <loc>https://platform.stefankruik.com/documentation/read/Doc/Products/Platform</loc>
-        <lastmod>2024-09-10</lastmod>
+        <lastmod>2024-09-11</lastmod>
+        <changefreq>monthly</changefreq>
+        <priority>0.8</priority>
+    </url>
+    <url>
+        <loc>https://platform.stefankruik.com/documentation/read/Doc/Products/Overway</loc>
+        <lastmod>2024-09-24</lastmod>
         <changefreq>monthly</changefreq>
         <priority>0.8</priority>
     </url>
     <url>
         <loc>https://platform.stefankruik.com/documentation/read/Doc/Products/Administrator</loc>
-        <lastmod>2024-09-10</lastmod>
-        <changefreq>monthly</changefreq>
-        <priority>0.8</priority>
-    </url>
-    <url>
-        <loc>https://platform.stefankruik.com/documentation/read/Doc/Products/Metrics</loc>
-        <lastmod>2024-09-10</lastmod>
+        <lastmod>2024-09-11</lastmod>
         <changefreq>monthly</changefreq>
         <priority>0.8</priority>
     </url>
     <url>
         <loc>https://platform.stefankruik.com/documentation/read/Doc/Products/Docs</loc>
-        <lastmod>2024-09-10</lastmod>
+        <lastmod>2024-09-11</lastmod>
+        <changefreq>monthly</changefreq>
+        <priority>0.8</priority>
+    </url>
+    <url>
+        <loc>https://platform.stefankruik.com/documentation/read/Doc/Products/Horizon</loc>
+        <lastmod>2025-12-03</lastmod>
         <changefreq>monthly</changefreq>
         <priority>0.8</priority>
     </url>
     <url>
         <loc>https://platform.stefankruik.com/documentation/read/Doc/Services</loc>
-        <lastmod>2024-09-10</lastmod>
+        <lastmod>2024-09-11</lastmod>
         <changefreq>monthly</changefreq>
         <priority>0.8</priority>
     </url>
     <url>
         <loc>https://platform.stefankruik.com/documentation/read/Doc/Services/Uplink</loc>
-        <lastmod>2024-11-09</lastmod>
-        <changefreq>monthly</changefreq>
-        <priority>0.8</priority>
-    </url>
-    <url>
-        <loc>https://platform.stefankruik.com/documentation/read/Doc/Services/Overway</loc>
-        <lastmod>2024-09-23</lastmod>
+        <lastmod>2025-12-03</lastmod>
         <changefreq>monthly</changefreq>
         <priority>0.8</priority>
     </url>
     <url>
         <loc>https://platform.stefankruik.com/documentation/read/Doc/Services/Amplify</loc>
-        <lastmod>2024-09-23</lastmod>
+        <lastmod>2024-09-24</lastmod>
         <changefreq>monthly</changefreq>
         <priority>0.8</priority>
     </url>
     <url>
         <loc>https://platform.stefankruik.com/documentation/read/Doc/Services/Lumen</loc>
-        <lastmod>2024-09-10</lastmod>
-        <changefreq>monthly</changefreq>
-        <priority>0.8</priority>
-    </url>
-    <url>
-        <loc>https://platform.stefankruik.com/documentation/read/Doc/Services/Pivot</loc>
-        <lastmod>2024-09-10</lastmod>
-        <changefreq>monthly</changefreq>
-        <priority>0.8</priority>
-    </url>
-    <url>
-        <loc>https://platform.stefankruik.com/documentation/read/Doc/Services/Horizon</loc>
-        <lastmod>2024-10-08</lastmod>
-        <changefreq>monthly</changefreq>
-        <priority>0.8</priority>
-    </url>
-    <url>
-        <loc>https://platform.stefankruik.com/documentation/read/Doc/Services/Tempo</loc>
-        <lastmod>2024-11-09</lastmod>
-        <changefreq>monthly</changefreq>
-        <priority>0.8</priority>
-    </url>
-    <url>
-        <loc>https://platform.stefankruik.com/documentation/read/Doc/Services/Orbit</loc>
-        <lastmod>2024-09-23</lastmod>
-        <changefreq>monthly</changefreq>
-        <priority>0.8</priority>
-    </url>
-    <url>
-        <loc>https://platform.stefankruik.com/documentation/read/Doc/Services/Flare</loc>
-        <lastmod>2024-09-25</lastmod>
+        <lastmod>2024-09-11</lastmod>
         <changefreq>monthly</changefreq>
         <priority>0.8</priority>
     </url>
     <url>
         <loc>https://platform.stefankruik.com/documentation/read/Doc/Services/Monitor</loc>
-        <lastmod>2024-09-25</lastmod>
+        <lastmod>2025-12-03</lastmod>
+        <changefreq>monthly</changefreq>
+        <priority>0.8</priority>
+    </url>
+    <url>
+        <loc>https://platform.stefankruik.com/documentation/read/Doc/Services/Pivot</loc>
+        <lastmod>2025-12-03</lastmod>
+        <changefreq>monthly</changefreq>
+        <priority>0.8</priority>
+    </url>
+    <url>
+        <loc>https://platform.stefankruik.com/documentation/read/Doc/Services/Lexicon</loc>
+        <lastmod>2024-09-24</lastmod>
+        <changefreq>monthly</changefreq>
+        <priority>0.8</priority>
+    </url>
+    <url>
+        <loc>https://platform.stefankruik.com/documentation/read/Doc/Services/Orbit</loc>
+        <lastmod>2024-09-24</lastmod>
+        <changefreq>monthly</changefreq>
+        <priority>0.8</priority>
+    </url>
+    <url>
+        <loc>https://platform.stefankruik.com/documentation/read/Doc/Services/Flare</loc>
+        <lastmod>2024-09-26</lastmod>
+        <changefreq>monthly</changefreq>
+        <priority>0.8</priority>
+    </url>
+    <url>
+        <loc>https://platform.stefankruik.com/documentation/read/Doc/Services/Tempo</loc>
+        <lastmod>2025-12-03</lastmod>
         <changefreq>monthly</changefreq>
         <priority>0.8</priority>
     </url>
     <url>
         <loc>https://platform.stefankruik.com/documentation/read/Doc/Services/Forge</loc>
-        <lastmod>2024-09-26</lastmod>
+        <lastmod>2024-09-27</lastmod>
         <changefreq>monthly</changefreq>
         <priority>0.8</priority>
     </url>
@@ -170,313 +170,307 @@
     </url>
     <url>
         <loc>https://platform.stefankruik.com/documentation/read/Doc/Services/Render</loc>
-        <lastmod>2024-09-26</lastmod>
-        <changefreq>monthly</changefreq>
-        <priority>0.8</priority>
-    </url>
-    <url>
-        <loc>https://platform.stefankruik.com/documentation/read/Doc/Services/Lexicon</loc>
-        <lastmod>2024-09-23</lastmod>
+        <lastmod>2024-09-27</lastmod>
         <changefreq>monthly</changefreq>
         <priority>0.8</priority>
     </url>
     <url>
         <loc>https://platform.stefankruik.com/documentation/read/Doc/Community</loc>
-        <lastmod>2024-09-10</lastmod>
+        <lastmod>2024-09-11</lastmod>
         <changefreq>monthly</changefreq>
         <priority>0.8</priority>
     </url>
     <url>
         <loc>https://platform.stefankruik.com/documentation/read/Doc/Community/Support</loc>
-        <lastmod>2024-09-10</lastmod>
+        <lastmod>2024-09-11</lastmod>
         <changefreq>monthly</changefreq>
         <priority>0.8</priority>
     </url>
     <url>
         <loc>https://platform.stefankruik.com/documentation/read/Doc/Community/FAQ</loc>
-        <lastmod>2024-09-10</lastmod>
+        <lastmod>2024-09-11</lastmod>
         <changefreq>monthly</changefreq>
         <priority>0.8</priority>
     </url>
     <url>
         <loc>https://platform.stefankruik.com/documentation/read/Doc/Community/Links</loc>
-        <lastmod>2024-09-10</lastmod>
+        <lastmod>2024-09-11</lastmod>
         <changefreq>monthly</changefreq>
         <priority>0.8</priority>
     </url>
     <url>
         <loc>https://platform.stefankruik.com/documentation/read/Doc/Developers</loc>
-        <lastmod>2024-09-10</lastmod>
+        <lastmod>2024-09-11</lastmod>
         <changefreq>monthly</changefreq>
         <priority>0.8</priority>
     </url>
     <url>
         <loc>https://platform.stefankruik.com/documentation/read/Doc/Developers/Authentication</loc>
-        <lastmod>2024-09-10</lastmod>
+        <lastmod>2024-09-11</lastmod>
         <changefreq>monthly</changefreq>
         <priority>0.8</priority>
     </url>
     <url>
         <loc>https://platform.stefankruik.com/documentation/read/Doc/Developers/REST_API</loc>
-        <lastmod>2024-09-10</lastmod>
+        <lastmod>2024-09-11</lastmod>
         <changefreq>monthly</changefreq>
         <priority>0.8</priority>
     </url>
     <url>
         <loc>https://platform.stefankruik.com/documentation/read/Doc/Developers/Webhooks</loc>
-        <lastmod>2024-09-10</lastmod>
+        <lastmod>2024-09-11</lastmod>
         <changefreq>monthly</changefreq>
         <priority>0.8</priority>
     </url>
     <url>
         <loc>https://platform.stefankruik.com/documentation/read/Doc/Developers/Rate_Limits</loc>
-        <lastmod>2024-09-10</lastmod>
+        <lastmod>2024-09-11</lastmod>
         <changefreq>monthly</changefreq>
         <priority>0.8</priority>
     </url>
     <url>
         <loc>https://platform.stefankruik.com/documentation/read/Doc/Operator</loc>
-        <lastmod>2024-09-10</lastmod>
+        <lastmod>2024-09-11</lastmod>
         <changefreq>monthly</changefreq>
         <priority>0.8</priority>
     </url>
     <url>
         <loc>https://platform.stefankruik.com/documentation/read/Doc/Operator/Account</loc>
-        <lastmod>2024-09-10</lastmod>
+        <lastmod>2024-09-11</lastmod>
         <changefreq>monthly</changefreq>
         <priority>0.8</priority>
     </url>
     <url>
         <loc>https://platform.stefankruik.com/documentation/read/Doc/Operator/Managing_Guilds</loc>
-        <lastmod>2024-09-10</lastmod>
+        <lastmod>2024-09-11</lastmod>
         <changefreq>monthly</changefreq>
         <priority>0.8</priority>
     </url>
     <url>
         <loc>https://platform.stefankruik.com/documentation/read/Doc/Operator/Customization</loc>
-        <lastmod>2024-09-10</lastmod>
+        <lastmod>2024-09-11</lastmod>
         <changefreq>monthly</changefreq>
         <priority>0.8</priority>
     </url>
     <url>
         <loc>https://platform.stefankruik.com/documentation/read/Doc/Operator/Teams</loc>
-        <lastmod>2024-09-10</lastmod>
+        <lastmod>2024-09-11</lastmod>
         <changefreq>monthly</changefreq>
         <priority>0.8</priority>
     </url>
     <url>
         <loc>https://platform.stefankruik.com/documentation/read/Doc/Operator/Team_Owner</loc>
-        <lastmod>2024-09-10</lastmod>
+        <lastmod>2024-09-11</lastmod>
         <changefreq>monthly</changefreq>
         <priority>0.8</priority>
     </url>
     <url>
         <loc>https://platform.stefankruik.com/documentation/read/Doc/Parties</loc>
-        <lastmod>2024-09-26</lastmod>
+        <lastmod>2024-09-27</lastmod>
         <changefreq>monthly</changefreq>
         <priority>0.8</priority>
     </url>
     <url>
         <loc>https://platform.stefankruik.com/documentation/read/Doc/Parties/Operator</loc>
-        <lastmod>2024-09-26</lastmod>
+        <lastmod>2024-09-27</lastmod>
         <changefreq>monthly</changefreq>
         <priority>0.8</priority>
     </url>
     <url>
         <loc>https://platform.stefankruik.com/documentation/read/Doc/Parties/Operator_Team</loc>
-        <lastmod>2024-09-26</lastmod>
+        <lastmod>2024-09-27</lastmod>
         <changefreq>monthly</changefreq>
         <priority>0.8</priority>
     </url>
     <url>
         <loc>https://platform.stefankruik.com/documentation/read/Doc/Parties/Administrator</loc>
-        <lastmod>2024-09-26</lastmod>
+        <lastmod>2024-09-27</lastmod>
         <changefreq>monthly</changefreq>
         <priority>0.8</priority>
     </url>
     <url>
         <loc>https://platform.stefankruik.com/documentation/read/Doc/Parties/Server</loc>
-        <lastmod>2024-09-26</lastmod>
+        <lastmod>2024-09-27</lastmod>
         <changefreq>monthly</changefreq>
         <priority>0.8</priority>
     </url>
     <url>
         <loc>https://platform.stefankruik.com/documentation/read/Doc/Parties/Blocked</loc>
-        <lastmod>2024-09-26</lastmod>
+        <lastmod>2024-09-27</lastmod>
         <changefreq>monthly</changefreq>
         <priority>0.8</priority>
     </url>
     <url>
         <loc>https://platform.stefankruik.com/documentation/read/Doc/Parties/Blinded</loc>
-        <lastmod>2024-09-26</lastmod>
+        <lastmod>2024-09-27</lastmod>
         <changefreq>monthly</changefreq>
         <priority>0.8</priority>
     </url>
     <url>
         <loc>https://platform.stefankruik.com/documentation/read/Doc/Operations</loc>
-        <lastmod>2024-09-10</lastmod>
+        <lastmod>2024-09-11</lastmod>
         <changefreq>monthly</changefreq>
         <priority>0.8</priority>
     </url>
     <url>
         <loc>https://platform.stefankruik.com/documentation/read/Doc/Operations/Rules</loc>
-        <lastmod>2024-09-10</lastmod>
+        <lastmod>2024-09-11</lastmod>
         <changefreq>monthly</changefreq>
         <priority>0.8</priority>
     </url>
     <url>
         <loc>https://platform.stefankruik.com/documentation/read/Doc/Operations/Hosting</loc>
-        <lastmod>2024-09-10</lastmod>
+        <lastmod>2024-09-11</lastmod>
         <changefreq>monthly</changefreq>
         <priority>0.8</priority>
     </url>
     <url>
         <loc>https://platform.stefankruik.com/documentation/read/Doc/Operations/Billing</loc>
-        <lastmod>2024-09-10</lastmod>
+        <lastmod>2024-09-11</lastmod>
         <changefreq>monthly</changefreq>
         <priority>0.8</priority>
     </url>
     <url>
         <loc>https://platform.stefankruik.com/documentation/read/Doc/Operations/Commissions</loc>
-        <lastmod>2024-09-10</lastmod>
+        <lastmod>2024-09-11</lastmod>
         <changefreq>monthly</changefreq>
         <priority>0.8</priority>
     </url>
     <url>
         <loc>https://platform.stefankruik.com/documentation/read/Doc/Contributing</loc>
-        <lastmod>2024-09-10</lastmod>
+        <lastmod>2024-09-11</lastmod>
         <changefreq>monthly</changefreq>
         <priority>0.8</priority>
     </url>
     <url>
         <loc>https://platform.stefankruik.com/documentation/read/Doc/Contributing/Workflow</loc>
-        <lastmod>2024-09-10</lastmod>
+        <lastmod>2024-09-11</lastmod>
         <changefreq>monthly</changefreq>
         <priority>0.8</priority>
     </url>
     <url>
         <loc>https://platform.stefankruik.com/documentation/read/Doc/Contributing/SK_Bots</loc>
-        <lastmod>2024-09-10</lastmod>
+        <lastmod>2024-09-11</lastmod>
         <changefreq>monthly</changefreq>
         <priority>0.8</priority>
     </url>
     <url>
-        <loc>https://platform.stefankruik.com/documentation/read/Doc/Contributing/SK_Apps</loc>
-        <lastmod>2024-09-10</lastmod>
+        <loc>https://platform.stefankruik.com/documentation/read/Doc/Contributing/SK_Products</loc>
+        <lastmod>2025-12-03</lastmod>
         <changefreq>monthly</changefreq>
         <priority>0.8</priority>
     </url>
     <url>
         <loc>https://platform.stefankruik.com/documentation/read/Doc/Contributing/SK_Docs</loc>
-        <lastmod>2024-09-10</lastmod>
+        <lastmod>2024-09-11</lastmod>
         <changefreq>monthly</changefreq>
         <priority>0.8</priority>
     </url>
     <url>
         <loc>https://platform.stefankruik.com/documentation/read/Doc/Contributing/SK_Services</loc>
-        <lastmod>2024-11-16</lastmod>
+        <lastmod>2024-11-17</lastmod>
         <changefreq>monthly</changefreq>
         <priority>0.8</priority>
     </url>
     <url>
         <loc>https://platform.stefankruik.com/documentation/read/Doc/Plans</loc>
-        <lastmod>2024-09-10</lastmod>
+        <lastmod>2024-09-11</lastmod>
         <changefreq>monthly</changefreq>
         <priority>0.8</priority>
     </url>
     <url>
         <loc>https://platform.stefankruik.com/documentation/read/Doc/Plans/Basic</loc>
-        <lastmod>2024-09-10</lastmod>
+        <lastmod>2024-09-11</lastmod>
         <changefreq>monthly</changefreq>
         <priority>0.8</priority>
     </url>
     <url>
         <loc>https://platform.stefankruik.com/documentation/read/Doc/Plans/Professional</loc>
-        <lastmod>2024-09-10</lastmod>
+        <lastmod>2024-09-11</lastmod>
         <changefreq>monthly</changefreq>
         <priority>0.8</priority>
     </url>
     <url>
         <loc>https://platform.stefankruik.com/documentation/read/Doc/Plans/Enterprise</loc>
-        <lastmod>2024-09-10</lastmod>
+        <lastmod>2024-09-11</lastmod>
         <changefreq>monthly</changefreq>
         <priority>0.8</priority>
     </url>
     <url>
         <loc>https://platform.stefankruik.com/documentation/read/Doc/Plans/Custom</loc>
-        <lastmod>2024-09-10</lastmod>
+        <lastmod>2024-09-11</lastmod>
         <changefreq>monthly</changefreq>
         <priority>0.8</priority>
     </url>
     <url>
         <loc>https://platform.stefankruik.com/documentation/read/Doc/Plans/Dedicated</loc>
-        <lastmod>2024-09-10</lastmod>
+        <lastmod>2024-09-11</lastmod>
         <changefreq>monthly</changefreq>
         <priority>0.8</priority>
     </url>
     <url>
         <loc>https://platform.stefankruik.com/documentation/read/Doc/More</loc>
-        <lastmod>2024-09-10</lastmod>
+        <lastmod>2024-09-11</lastmod>
         <changefreq>monthly</changefreq>
         <priority>0.8</priority>
     </url>
     <url>
         <loc>https://platform.stefankruik.com/documentation/read/Doc/More/Status</loc>
-        <lastmod>2024-09-10</lastmod>
+        <lastmod>2024-09-11</lastmod>
         <changefreq>monthly</changefreq>
         <priority>0.8</priority>
     </url>
     <url>
         <loc>https://platform.stefankruik.com/documentation/read/Doc/More/About</loc>
-        <lastmod>2024-09-10</lastmod>
+        <lastmod>2024-09-11</lastmod>
         <changefreq>monthly</changefreq>
         <priority>0.8</priority>
     </url>
     <url>
         <loc>https://platform.stefankruik.com/documentation/read/Doc/More/V_One</loc>
-        <lastmod>2024-09-10</lastmod>
+        <lastmod>2024-09-11</lastmod>
         <changefreq>monthly</changefreq>
         <priority>0.8</priority>
     </url>
     <url>
         <loc>https://platform.stefankruik.com/documentation/read/Doc/More/Template</loc>
-        <lastmod>2024-09-26</lastmod>
+        <lastmod>2024-11-24</lastmod>
         <changefreq>monthly</changefreq>
         <priority>0.8</priority>
     </url>
     <url>
         <loc>https://platform.stefankruik.com/documentation/read/Doc/More/Roadmap</loc>
-        <lastmod>2024-09-10</lastmod>
+        <lastmod>2024-09-11</lastmod>
         <changefreq>monthly</changefreq>
         <priority>0.8</priority>
     </url>
     <url>
         <loc>https://platform.stefankruik.com/documentation/read/Doc/Legal</loc>
-        <lastmod>2024-07-17</lastmod>
+        <lastmod>2024-07-18</lastmod>
         <changefreq>monthly</changefreq>
         <priority>0.8</priority>
     </url>
     <url>
         <loc>https://platform.stefankruik.com/documentation/read/Doc/Legal/Terms_of_Service</loc>
-        <lastmod>2024-07-17</lastmod>
+        <lastmod>2024-07-18</lastmod>
         <changefreq>monthly</changefreq>
         <priority>0.8</priority>
     </url>
     <url>
         <loc>https://platform.stefankruik.com/documentation/read/Doc/Legal/Privacy_Policy</loc>
-        <lastmod>2024-07-17</lastmod>
+        <lastmod>2024-07-18</lastmod>
         <changefreq>monthly</changefreq>
         <priority>0.8</priority>
     </url>
     <url>
         <loc>https://platform.stefankruik.com/documentation/read/Doc/Legal/Contact</loc>
-        <lastmod>2024-07-19</lastmod>
+        <lastmod>2024-07-20</lastmod>
         <changefreq>monthly</changefreq>
         <priority>0.8</priority>
     </url>
     <url>
         <loc>https://platform.stefankruik.com/documentation/read/Guide/Operator</loc>
-        <lastmod>2024-09-25</lastmod>
+        <lastmod>2024-09-26</lastmod>
         <changefreq>monthly</changefreq>
         <priority>0.8</priority>
     </url>

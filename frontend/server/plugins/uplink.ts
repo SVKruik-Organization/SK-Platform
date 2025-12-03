@@ -15,8 +15,8 @@ export default defineNitroPlugin(async (_nitroApp) => {
     if (!channel) throw new Error("Uplink connection missing.");
     channel.assertExchange("unicast-products", "direct", { durable: false });
     const queue: Replies.AssertQueue = await channel.assertQueue("", { exclusive: true });
-    await channel.bindQueue(queue.queue, "unicast-products", "platform");
-    console.log("Uplink consumer listening on exchange 'unicast-products' binded to 'platform'.");
+    await channel.bindQueue(queue.queue, "unicast-products", "Platform");
+    console.log("Uplink consumer listening on exchange 'unicast-products' binded to 'Platform'.");
 
     // Listen
     channel.consume(queue.queue, (message: Message | null) => {

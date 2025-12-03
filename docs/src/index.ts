@@ -136,10 +136,10 @@ app.listen(PORT, "0.0.0.0", async () => {
         if (!channel) throw new Error("Uplink connection missing. Starting server without Uplink connection.");
         channel.assertExchange("unicast-products", "direct", { durable: false });
         const queue = await channel.assertQueue("", { exclusive: true });
-        await channel.bindQueue(queue.queue, "unicast-products", "platform");
+        await channel.bindQueue(queue.queue, "unicast-products", "Docs");
 
         // Listen
-        log(`Uplink consumer listening on exchange 'unicast-products' binded to 'platform'.`, "info");
+        log(`Uplink consumer listening on exchange 'unicast-products' binded to 'Docs'.`, "info");
         channel.consume(queue.queue, (message: Message | null) => {
             if (message) {
                 const messageContent: UplinkMessage = JSON.parse(message.content.toString());
