@@ -2,9 +2,9 @@ import { defineStore } from "pinia";
 import { IndexPlaceholder, RecommendedPlaceholder, ToastTypes, type DocumentationIndexItem, type DocumentationIndexResponse, type DocumentationRecommendedItemsResponse, type DocumentationRefreshResponse, type RecommendedItem, type ToastItem } from "@/assets/customTypes";
 import { themeData, themeMeta } from "@/assets/config/theme";
 import { createTicket } from "@svkruik/sk-platform-formatters";
-import { useFetchDocumentationRefresh } from "~/utils/fetch/documentation/useFetchDocumentationRefresh";
-import { useFetchDocumentationRecommendedItems } from "~/utils/fetch/documentation/useFetchDocumentationRecommendedItems";
-import { useFetchDocumentationIndex } from "~/utils/fetch/documentation/useFetchDocumentationIndex";
+import { useFetchDocumentationRefresh } from "@/utils/fetch/documentation/useFetchDocumentationRefresh";
+import { useFetchDocumentationRecommendedItems } from "@/utils/fetch/documentation/useFetchDocumentationRecommendedItems";
+import { useFetchDocumentationIndex } from "@/utils/fetch/documentation/useFetchDocumentationIndex";
 
 const defaultVersion: string = "v1";
 const defaultLanguage: string = "en-US";

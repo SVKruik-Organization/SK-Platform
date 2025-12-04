@@ -1,7 +1,7 @@
-import type { DocumentationFile } from "~/assets/customTypes";
-import { formatError } from "~/utils/format";
+import type { DocumentationFile } from "@/assets/customTypes";
+import { formatError } from "@/utils/format";
 
-export const useFetchDocumentationFile = async (version: string, language: string, type: string, folder: string, name: string): Promise<DocumentationFile> => {
+export const useFetchDocumentationFile = async (version: string, language: string, type: string, folder: string, name?: string): Promise<DocumentationFile> => {
     try {
         const runtimeConfig = useRuntimeConfig();
         return await $fetch(`${runtimeConfig.public.docsApiBase}/getFile/${version}/${language}/${type}`, {

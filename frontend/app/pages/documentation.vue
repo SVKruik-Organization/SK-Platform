@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import type { DocumentationTypes, DropdownStates } from "@/assets/customTypes";
-import { useDocumentationStore } from "~/stores/DocumentationStore";
+import { useDocumentationStore } from "@/stores/DocumentationStore";
 
 // Setup
 const documentationStore = useDocumentationStore();

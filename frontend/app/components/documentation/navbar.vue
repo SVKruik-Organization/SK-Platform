@@ -2,7 +2,7 @@
 import { DropdownStates, ToastTypes, type DocumentationSearchResponse, type ToastItem } from "@/assets/customTypes";
 import { useDocumentationStore } from "@/stores/DocumentationStore";
 import { createTicket } from "@svkruik/sk-platform-formatters";
-import { useFetchDocumentationSearch } from "~/utils/fetch/documentation/useFetchDocumentationSearch";
+import { useFetchDocumentationSearch } from "@/utils/fetch/documentation/useFetchDocumentationSearch";
 
 // Setup
 const documentationStore = useDocumentationStore();

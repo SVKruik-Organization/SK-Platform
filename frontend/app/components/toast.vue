@@ -8,18 +8,21 @@ const { $listen } = useNuxtApp();
 const toastItems: Ref<Array<ToastItem>> = ref([]);
 
 $listen("emit-toast", (event: any) => {
-    const toastEvent = event as ToastItem;
-    console.log(toastEvent);
-    toastItems.value.push(toastEvent);
+    try {
+        const toastEvent = event as ToastItem;
+        toastItems.value.push(toastEvent);
 
-    setTimeout(() => {
-        const toastItem = document.getElementById(`toast-item-${toastEvent.id}`) as HTMLDivElement;
-        toastItem.classList.add("toast-open");
-    }, 100);
+        setTimeout(() => {
+            const toastItem = document.getElementById(`toast-item-${toastEvent.id}`) as HTMLDivElement | null;
+            if (toastItem) toastItem.classList.add("toast-open");
+        }, 100);
 
-    setTimeout(() => {
-        closeMessage(toastEvent.id);
-    }, toastEvent.duration * 1000);
+        setTimeout(() => {
+            closeMessage(toastEvent.id);
+        }, toastEvent.duration * 1000);
+    } catch {
+        return;
+    }
 });
 
 // Methods
@@ -29,20 +32,24 @@ $listen("emit-toast", (event: any) => {
  * @param id The id of the toast to close.
  */
 function closeMessage(id: string | MouseEvent): void {
-    let toastItem: HTMLDivElement;
-    if (typeof id === "object") {
-        toastItem = (id.target as HTMLElement).parentElement as HTMLDivElement;
-    } else {
-        const toastItemFetch = document.getElementById(`toast-item-${id}`) as HTMLDivElement | null;
-        if (!toastItemFetch) return;
-        toastItem = toastItemFetch;
-    }
+    try {
+        let toastItem: HTMLDivElement;
+        if (typeof id === "object") {
+            toastItem = (id.target as HTMLElement).parentElement as HTMLDivElement;
+        } else {
+            const toastItemFetch = document.getElementById(`toast-item-${id}`) as HTMLDivElement | null;
+            if (!toastItemFetch) return;
+            toastItem = toastItemFetch;
+        }
 
-    toastItem.classList.remove("toast-open");
-    const toastId = typeof id === "object" ? toastItem.id.split("-")[2] : id;
-    setTimeout(() => {
-        toastItems.value = toastItems.value.filter((item) => item.id !== toastId);
-    }, 500);
+        toastItem.classList.remove("toast-open");
+        const toastId = typeof id === "object" ? toastItem.id.split("-")[2] : id;
+        setTimeout(() => {
+            toastItems.value = toastItems.value.filter((item) => item.id !== toastId);
+        }, 500);
+    } catch {
+        return;
+    }
 }
 </script>
 

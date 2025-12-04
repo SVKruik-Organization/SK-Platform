@@ -2,7 +2,7 @@
 import { DropdownStates, type DocChapterItem, type DocumentationTypes, type DocumentationFile, type DocumentationIndexItem, type HeadLink, ToastTypes, type ToastItem } from "@/assets/customTypes";
 import { useDocumentationStore } from "@/stores/DocumentationStore";
 import { createTicket, formatToISO } from "@svkruik/sk-platform-formatters";
-import { useFetchDocumentationFile } from "~/utils/fetch/documentation/useFetchDocumentationFile";
+import { useFetchDocumentationFile } from "@/utils/fetch/documentation/useFetchDocumentationFile";
 
 // Setup
 const documentationStore = useDocumentationStore();
@@ -14,7 +14,7 @@ const handleFallbackImage: Function = inject("handleFallbackImage") as Function;
 const props = defineProps<{
     type: DocumentationTypes;
     category: string;
-    page?: string;
+    page?: string; // Undefined for category page
     informationDropdownVisible?: boolean;
     productDropdownVisible?: boolean;
     navigationDropdownVisible?: boolean;
@@ -30,61 +30,71 @@ const categoryList: Ref<Array<string>> = ref([]);
 const seoCategory: Ref<DocumentationIndexItem | undefined> = ref(undefined);
 let fileData: Ref<DocumentationFile | null> = ref(null);
 
-// Prevent Default Page
-if (page.value === "Default") {
-    useRouter().push(`/documentation/read/${props.type}/${props.category}`);
-}
+// Category Page
+if (props.page === "Default") useRouter().push(`/documentation/read/${props.type}/${props.category}`);
+if (!props.page) page.value = "Default";
 
-watch(() => props.page, async (newValue: any) => {
-    try {
-        const rawFile = await useFetchDocumentationFile(documentationStore.version, documentationStore.language, props.type, props.category, newValue);
-        fileData.value = await parseDocumentationFile(rawFile) as DocumentationFile;
-        page.value = newValue;
-    } catch (error: any) {
+// Fetch Documentation File
+const currentPage = computed(() => page.value);
+const { data: asyncFileData, error: fileError } = await useAsyncData(
+    () => `documentation-${documentationStore.version}-${documentationStore.language}-${props.type}-${props.category}-${currentPage.value}`,
+    async () => {
+        const rawFile = await useFetchDocumentationFile(
+            documentationStore.version,
+            documentationStore.language,
+            props.type,
+            props.category,
+            currentPage.value
+        );
+
+        return await parseDocumentationFile(rawFile) as DocumentationFile;
+    },
+    {
+        watch: [currentPage, () => documentationStore.version, () => documentationStore.language],
+        server: true,
+        lazy: false
+    }
+);
+
+watchEffect(() => {
+    fileData.value = asyncFileData.value ?? null;
+});
+
+if (fileError.value) {
+    const err: any = fileError.value;
+    if (err.statusCode === 404) {
+        await navigateTo(`/documentation/notfound?type=${props.type}&category=${props.category}&page=${currentPage.value}`);
+    } else {
         $event("emit-toast", {
             id: createTicket(4),
             type: ToastTypes.danger,
-            message: error.message,
+            message: err.message || "Something went wrong while retrieving this page. Please try again later.",
             duration: 3,
         } as ToastItem);
     }
-});
-
-onBeforeMount(async () => {
-    hasPreviousPage.value = await documentationStore.hasPreviousPage(props.type, props.category, props.page);
-    hasNextPage.value = await documentationStore.hasNextPage(props.type, props.category, props.page);
-    categoryList.value = await documentationStore.getCategoryList(props.type, props.category);
-    seoCategory.value = await documentationStore.getCategory(props.type, props.category);
-});
+}
 
 // HTML Elements
 const shareButtonContents: Ref<HTMLParagraphElement | null> = ref(null);
 
 // Lifecycle
 onMounted(async () => {
-    try {
-        const rawFile = await useFetchDocumentationFile(documentationStore.version, documentationStore.language, props.type, props.category, page.value || "Default");
-        fileData.value = await parseDocumentationFile(rawFile) as DocumentationFile;
+    hasPreviousPage.value = await documentationStore.hasPreviousPage(props.type, props.category, props.page);
+    hasNextPage.value = await documentationStore.hasNextPage(props.type, props.category, props.page);
+    categoryList.value = await documentationStore.getCategoryList(props.type, props.category);
+    seoCategory.value = await documentationStore.getCategory(props.type, props.category);
 
-        if (fileData.value && fileData.value.chapters.length) {
-            window.addEventListener("scroll", setActiveChapter);
-            for (const chapter of fileData.value.chapters) {
-                const element: HTMLAnchorElement | null = document.getElementById(chapter.slice(1)) as HTMLAnchorElement | null;
-                if (!element) continue;
-                chapterData.value.push({ "title": element.id, "height": element.getBoundingClientRect().top, "active": false });
-            }
-
-            window.scrollBy(0, 0);
-            setActiveChapter();
-            scrollAnchor(null);
+    if (fileData.value && fileData.value.chapters.length) {
+        window.addEventListener("scroll", setActiveChapter);
+        for (const chapter of fileData.value.chapters) {
+            const element: HTMLAnchorElement | null = document.getElementById(chapter.slice(1)) as HTMLAnchorElement | null;
+            if (!element) continue;
+            chapterData.value.push({ "title": element.id, "height": element.getBoundingClientRect().top, "active": false });
         }
-    } catch (error: any) {
-        $event("emit-toast", {
-            id: createTicket(4),
-            type: ToastTypes.danger,
-            message: error.message,
-            duration: 3,
-        } as ToastItem);
+
+        window.scrollBy(0, 0);
+        setActiveChapter();
+        scrollAnchor(null);
     }
 });
 onUnmounted(() => {

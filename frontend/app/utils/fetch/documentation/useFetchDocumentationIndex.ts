@@ -1,5 +1,5 @@
 import type { DocumentationIndexResponse } from "@/assets/customTypes";
-import { formatError } from "~/utils/format";
+import { formatError } from "@/utils/format";
 
 export const useFetchDocumentationIndex = async (version: string, language: string, type: string): Promise<DocumentationIndexResponse> => {
     try {

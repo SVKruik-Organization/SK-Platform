@@ -1,5 +1,5 @@
 import type { DocumentationSearchResponse } from "@/assets/customTypes";
-import { formatError } from "~/utils/format";
+import { formatError } from "@/utils/format";
 
 export const useFetchDocumentationSearch = async (version: string, language: string, query: string, limit: number, offset: number, scope: string): Promise<DocumentationSearchResponse> => {
     try {

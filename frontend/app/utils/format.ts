@@ -1,5 +1,4 @@
 import { H3Error } from "h3";
-import { FetchError } from "ofetch";
 import { logError } from "@svkruik/sk-platform-formatters";
 
 /**
@@ -20,27 +19,16 @@ export function formatApiError(error: any): H3Error {
 }
 
 /**
- * Special formatting for inter-backend communication errors.
- * @param error The error to handle.
- * @returns Formatted H3 error or throws an error.
- */
-export function formatInterBackendError(error: any): H3Error | Error {
-    if (error instanceof FetchError) {
-        const status = (error.response?.status ?? error.status ?? 500);
-        const message = (error.data?.message ?? error.message ?? "Something went wrong on our end. Please try again later.");
-        throw createError({ statusCode: status, message });
-    }
-    throw new Error("Something went wrong on our end. Please try again later.", {
-        cause: { statusCode: 1500 },
-    });
-}
-
-/**
  * Formats an error for the popup notification.
  * @param error The error to handle.
  */
 export function formatError(error: any): Error {
-    return createError({
+    if (!error.statusCode) { // Unknown error
+        return createError({
+            "statusCode": 500,
+            "message": "Something went wrong. Please try again later.",
+        });
+    } else return createError({
         "statusCode": error.statusCode,
         "message": error?.data?.message || error?.message || "Something went wrong. Please try again later.",
     });

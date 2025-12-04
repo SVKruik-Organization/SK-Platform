@@ -1,5 +1,5 @@
 import type { DocumentationRefreshResponse } from "@/assets/customTypes";
-import { formatError } from "~/utils/format";
+import { formatError } from "@/utils/format";
 
 export const useFetchDocumentationRefresh = async (version: string, language: string): Promise<DocumentationRefreshResponse> => {
     try {

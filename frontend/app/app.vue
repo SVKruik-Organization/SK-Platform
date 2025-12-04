@@ -3,7 +3,7 @@ import "~/assets/css/base.css";
 import "~/assets/css/docpage.css";
 import "~/assets/css/documentation.css";
 import "~/assets/css/interaction.css";
-import "/node_modules/flag-icons/css/flag-icons.min.css";
+import { useDocumentationStore } from "./stores/DocumentationStore";
 
 // Setup
 const route = useRoute();
@@ -51,7 +51,7 @@ watch(() => route.path, (to: string) => metaUpdater(to));
  */
 function metaUpdater(newRoute: string): void {
     const split: Array<string> = newRoute.split("/");
-    if (split[1].length) {
+    if (split[1]?.length) {
         const join: string = split.slice(0).map((string) => ((string.charAt(0).toUpperCase() + string.slice(1))).replace(/_/g, " ")).join(" | ");
         document.title = `SK Platform ${join}`;
     } else document.title = "SK Platform";

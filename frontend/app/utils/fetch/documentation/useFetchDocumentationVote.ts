@@ -1,4 +1,4 @@
-import { formatError } from "~/utils/format";
+import { formatError } from "@/utils/format";
 
 export const useFetchDocumentationVote = async (version: string, language: string, value: boolean, type: string | null, category: string | null, page: string | null, ticket: string): Promise<void> => {
     try {

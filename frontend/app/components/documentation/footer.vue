@@ -2,8 +2,8 @@
 import { DropdownStates, ToastTypes, type DocumentationTypes, type ToastItem } from "@/assets/customTypes";
 import { useDocumentationStore } from "@/stores/DocumentationStore";
 import { createTicket } from "@svkruik/sk-platform-formatters";
-import { useFetchDocumentationComment } from "~/utils/fetch/documentation/useFetchDocumentationComment";
-import { useFetchDocumentationVote } from "~/utils/fetch/documentation/useFetchDocumentationVote";
+import { useFetchDocumentationComment } from "@/utils/fetch/documentation/useFetchDocumentationComment";
+import { useFetchDocumentationVote } from "@/utils/fetch/documentation/useFetchDocumentationVote";
 
 // Setup
 const documentationStore = useDocumentationStore();

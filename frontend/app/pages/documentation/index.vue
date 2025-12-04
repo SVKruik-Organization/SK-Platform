@@ -17,6 +17,9 @@ defineProps<{
     type?: DocumentationTypes;
     category?: string;
     page?: string;
+    informationDropdownVisible?: boolean;
+    productDropdownVisible?: boolean;
+    navigationDropdownVisible?: boolean;
     commentOverlayVisible: boolean;
 }>();
 

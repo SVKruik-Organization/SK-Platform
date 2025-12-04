@@ -1,4 +1,4 @@
-import { formatError } from "~/utils/format";
+import { formatError } from "@/utils/format";
 
 export const useFetchDocumentationComment = async (ticket: string, comment: string): Promise<void> => {
     try {

@@ -1,5 +1,5 @@
 import type { DocumentationRecommendedItemsResponse } from "@/assets/customTypes";
-import { formatError } from "~/utils/format";
+import { formatError } from "@/utils/format";
 
 export const useFetchDocumentationRecommendedItems = async (language: string, type: string): Promise<DocumentationRecommendedItemsResponse> => {
     try {
