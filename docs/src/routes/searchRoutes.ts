@@ -1,9 +1,9 @@
 import express, { Request, Response, Router } from "express";
-import { Index } from "meilisearch";
 import { SearchAllRequest, SearchPageRequest } from "../customTypes";
 import rateLimit from "express-rate-limit";
 import { logError } from "@svkruik/sk-platform-formatters";
 import { getSearchEngine } from "../utils/networking";
+import { Index } from "meilisearch";
 const router: Router = express.Router();
 
 // Global & Titles

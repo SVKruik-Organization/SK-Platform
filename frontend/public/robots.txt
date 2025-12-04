@@ -1,4 +1,3 @@
 User-agent: *
-Disallow: /account
 Allow: /
 Sitemap: https://platform.stefankruik.com/sitemap.xml

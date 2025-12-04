@@ -1,23 +1,37 @@
 export default defineNuxtConfig({
     compatibilityDate: '2024-04-03',
-    devtools: { enabled: true },
-    nitro: {
-        compressPublicAssets: {
-            brotli: true,
-        }
+    devtools: { enabled: false },
+    ssr: true,
+    css: [
+        "./app/assets/css/base.css",
+        "./app/assets/css/interaction.css",
+        "./app/assets/css/documentation.css",
+        "./app/assets/css/docpage.css",
+    ],
+    modules: [
+        "@pinia/nuxt",
+        "@nuxt/image",
+        "pinia-plugin-persistedstate/nuxt"
+    ],
+    piniaPluginPersistedstate: {
+        storage: "sessionStorage",
+        auto: true,
+    },
+    pinia: {
+        storesDirs: ["./app/stores/**"],
     },
     runtimeConfig: {
         public: {
-            authApiBase: process.env.AUTH_API_BASE,
-            docsApiBase: process.env.DOCS_API_BASE
+            authApiBase: "",
+            docsApiBase: ""
         },
-        uplink_host: process.env.AMQP_HOST,
-        uplink_port: process.env.AMQP_PORT,
-        uplink_username: process.env.AMQP_USERNAME,
-        uplink_password: process.env.AMQP_PASSWORD
+        uplinkHost: "",
+        uplinkPort: "",
+        uplinkUsername: "",
+        uplinkPassword: "",
+        uplinkExchange: "",
+        uplinkRouter: "",
     },
-    modules: ['@pinia/nuxt', "@nuxt/image"],
-    ssr: true,
     app: {
         head: {
             meta: [

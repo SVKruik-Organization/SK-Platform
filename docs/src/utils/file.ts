@@ -1,9 +1,7 @@
 import { Dirent, readdirSync, readFileSync, Stats, statSync } from "fs";
 import { DocumentationFile, DocumentationProduct, IndexItem, RawRelatedItem, RecommendedItem, RelatedItem } from "../customTypes";
 import { parse } from "node-html-parser";
-import { logError } from "@svkruik/sk-platform-formatters";
-import { database } from "./networking";
-import { Pool } from "mariadb";
+import { Pool, database } from "@svkruik/sk-platform-db-conn";
 
 /**
  * Fetch a specific Documentation page from the file system.
@@ -16,59 +14,49 @@ import { Pool } from "mariadb";
  * @param newFetch Whether to update the view count in the database.
  * @returns HTML data as string or status code on error.
  */
-export async function getFile(folder: string, name: string, version: string, language: string, type: string, newFetch: boolean): Promise<DocumentationFile | number> {
-    try {
-        // Retrieve Correct Folder
-        const rawFolders: Array<Dirent> = readDirectory(folder, version, language, type);
-        if (rawFolders.length === 0) return 404;
+export async function getFile(folder: string, name: string, version: string, language: string, type: string, newFetch: boolean): Promise<DocumentationFile> {
+    // Retrieve Correct Folder
+    const rawFolders: Array<Dirent> = readDirectory(folder, version, language, type);
+    if (rawFolders.length === 0) throw new Error("Category folder not found.", { cause: { statusCode: 1404 } });
 
-        // Retrieve Correct File
-        const rawFile: Array<Dirent> = readdirSync(`${__dirname}/../../data/html/${version}/${language}/${type}/${rawFolders[0].name}`, { withFileTypes: true })
-            .filter(entity => entity.isFile() && entity.name.slice(3, -5) === name);
-        if (rawFile.length === 0) return 404;
-        const fileContents: string = readFileSync(`${rawFile[0].parentPath}/${rawFile[0].name}`, "utf8");
+    // Retrieve Correct File
+    const rawFile: Array<Dirent> = readdirSync(`${__dirname}/../../data/html/${version}/${language}/${type}/${rawFolders[0].name}`, { withFileTypes: true })
+        .filter(entity => entity.isFile() && entity.name.slice(3, -5) === name);
+    if (rawFile.length === 0) throw new Error("File not found.", { cause: { statusCode: 1404 } });
+    const fileContents: string = readFileSync(`${rawFile[0].parentPath}/${rawFile[0].name}`, "utf8");
 
-        // Retrieve Chapters
-        const root = parse(fileContents);
-        const chapters: Array<string> = root.querySelectorAll("a.chapter")
-            .reduce((acc: Array<string>, link) => {
-                const href = link.getAttribute("href");
-                if (href) acc.push(href);
-                return acc;
-            }, []);
+    // Retrieve Chapters
+    const root = parse(fileContents);
+    const chapters: Array<string> = root.querySelectorAll("a.chapter")
+        .reduce((acc: Array<string>, link: any) => {
+            const href = link.getAttribute("href");
+            if (href) acc.push(href);
+            return acc;
+        }, []);
 
-        // Retrieve Local File Data
-        const fileMetaData: Stats = statSync(`${rawFile[0].parentPath}/${rawFile[0].name}`);
+    // Retrieve Local File Data
+    const fileMetaData: Stats = statSync(`${rawFile[0].parentPath}/${rawFile[0].name}`);
 
-        // Query & View Count
-        let query = "SELECT * FROM documentation_page WHERE type = ? AND category = ? AND name = ? UNION ALL SELECT dp.* FROM documentation_page dp JOIN ( SELECT related FROM documentation_page WHERE type = ? AND category = ? AND name = ?) AS target_related ON FIND_IN_SET(dp.id, target_related.related) > 0;";
-        if (newFetch) query += " UPDATE documentation_page SET view_count = view_count + 1 WHERE type = ? AND category = ? AND name = ?;";
-        const connection: Pool = await database("bots");
+    // Query & View Count
+    let query = "SELECT * FROM documentation_page WHERE type = ? AND category = ? AND name = ? UNION ALL SELECT dp.* FROM documentation_page dp JOIN ( SELECT related FROM documentation_page WHERE type = ? AND category = ? AND name = ?) AS target_related ON FIND_IN_SET(dp.id, target_related.related) > 0;";
+    if (newFetch) query += " UPDATE documentation_page SET view_count = view_count + 1 WHERE type = ? AND category = ? AND name = ?;";
+    const connection: Pool = await database("bots");
 
-        // Retrieve Database File Data
-        const rawDatabaseMetaData: Array<any> | number = await connection.query(query, [type, folder, name, type, folder, name, type, folder, name]);
-        if (typeof rawDatabaseMetaData === "number") return rawDatabaseMetaData;
-        const databaseMetaData = newFetch ? rawDatabaseMetaData[0] : rawDatabaseMetaData;
-        return {
-            "name": rawFile[0].name,
-            "fileContents": fileContents,
-            "size": fileMetaData.size,
-            "viewCount": 0,
-            "accessTime": new Date(fileMetaData.atimeMs),
-            "modificationTime": new Date(fileMetaData.mtimeMs),
-            "creationTime": new Date(fileMetaData.birthtimeMs),
-            "chapters": chapters,
-            "description": root.querySelector(".page-description")?.innerText.replace(/\\n/g, " ").replace(/\s+/g, " ") || "",
-            "products": databaseMetaData.length ? parseDocumentationProducts(databaseMetaData[0].products, version, language) : [],
-            "related": databaseMetaData.length ? parseRelatedItems(databaseMetaData.slice(1), databaseMetaData[0].products) : []
-        }
-    } catch (error: any) {
-        if (error.code === "ENOENT") {
-            return 404;
-        } else {
-            logError(error);
-            return 500;
-        }
+    // Retrieve Database File Data
+    const rawDatabaseMetaData: Array<any> = await connection.query(query, [type, folder, name, type, folder, name, type, folder, name]);
+    const databaseMetaData = newFetch ? rawDatabaseMetaData[0] : rawDatabaseMetaData;
+    return {
+        "name": rawFile[0].name,
+        "fileContents": fileContents,
+        "size": fileMetaData.size,
+        "viewCount": 0,
+        "accessTime": new Date(fileMetaData.atimeMs),
+        "modificationTime": new Date(fileMetaData.mtimeMs),
+        "creationTime": new Date(fileMetaData.birthtimeMs),
+        "chapters": chapters,
+        "description": root.querySelector(".page-description")?.innerText.replace(/\\n/g, " ").replace(/\s+/g, " ") || "",
+        "products": databaseMetaData.length ? parseDocumentationProducts(databaseMetaData[0].products, version, language) : [],
+        "related": databaseMetaData.length ? parseRelatedItems(databaseMetaData.slice(1), databaseMetaData[0].products) : []
     }
 }
 
@@ -80,33 +68,25 @@ export async function getFile(folder: string, name: string, version: string, lan
  * @param type Documentation (Doc) or Guides (Guide)
  * @returns Data or status code on error.
  */
-export function getIndex(version: string, language: string, type: string): Array<IndexItem> | number {
-    try {
-        // Retrieve Folder Names
-        const rawFolders: Array<string> = readdirSync(`${__dirname}/../../data/html/${version}/${language}/${type}`, { withFileTypes: true })
-            .filter(entity => entity.isDirectory())
-            .map(directory => directory.name);
+export function getIndex(version: string, language: string, type: string): Array<IndexItem> {
+    // Retrieve Folder Names
+    const rawFolders: Array<string> = readdirSync(`${__dirname}/../../data/html/${version}/${language}/${type}`, { withFileTypes: true })
+        .filter(entity => entity.isDirectory())
+        .map(directory => directory.name);
+    if (rawFolders.length === 0) throw new Error("No categories found.", { cause: { statusCode: 1404 } });
 
-        // Retrieve & Format Files
-        const index: Array<IndexItem> = [];
-        for (const rawFolderName of rawFolders) {
-            const folderPath = `${__dirname}/../../data/html/${version}/${language}/${type}/${rawFolderName}`;
-            const indexItem: IndexItem = {
-                "categoryIcon": getFolderIcon(rawFolderName.slice(3)),
-                "category": rawFolderName.slice(3),
-                "children": readdirSync(folderPath).filter((fileName: string) => fileName.endsWith(".html") && fileName !== "00_Default.html").map(fileName => fileName.slice(3, -5))
-            }
-            index.push(indexItem);
+    // Retrieve & Format Files
+    const index: Array<IndexItem> = [];
+    for (const rawFolderName of rawFolders) {
+        const folderPath = `${__dirname}/../../data/html/${version}/${language}/${type}/${rawFolderName}`;
+        const indexItem: IndexItem = {
+            "categoryIcon": getFolderIcon(rawFolderName.slice(3)),
+            "category": rawFolderName.slice(3),
+            "children": readdirSync(folderPath).filter((fileName: string) => fileName.endsWith(".html") && fileName !== "00_Default.html").map(fileName => fileName.slice(3, -5))
         }
-        return index;
-    } catch (error: any) {
-        if (error.code === "ENOENT") {
-            return 404;
-        } else {
-            logError(error);
-            return 500;
-        }
+        index.push(indexItem);
     }
+    return index;
 }
 
 /**
@@ -178,12 +158,8 @@ export function getFolderIcon(name: string): string {
  * @param type Documentation (Doc) or Guides (Guide)
  * @returns The current recommended items.
  */
-export function getRecommendedItems(language: string, type: string): Array<RecommendedItem> | number {
-    try {
-        return JSON.parse(readFileSync(`${__dirname}/../../data/json/${language}/${type}.json`, "utf8"));
-    } catch (error: any) {
-        return 404;
-    }
+export function getRecommendedItems(language: string, type: string): Array<RecommendedItem> {
+    return JSON.parse(readFileSync(`${__dirname}/../../data/json/${language}/${type}.json`, "utf8"));
 }
 
 /**
@@ -230,7 +206,6 @@ function parseDocumentationProducts(input: string, version: string, language: st
     if (rawProducts.length === 0) return [];
     const parsedProducts: Array<DocumentationProduct> = [];
     const index = getIndex(version, language, "Doc");
-    if (typeof index === "number") throw new Error(index.toString());
 
     // Valid Products
     const validBots: Array<string> = ["Apricaria", "Stelleri", "Ispidina", "Interpres"];

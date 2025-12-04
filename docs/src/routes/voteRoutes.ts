@@ -1,8 +1,7 @@
 import express, { Request, Response, Router } from "express";
 import { CommentRequest, VoteRequest } from "../customTypes";
 import { logError } from "@svkruik/sk-platform-formatters";
-import { Pool } from "mariadb";
-import { database } from "../utils/networking";
+import { Pool, database } from "@svkruik/sk-platform-db-conn";
 const router: Router = express.Router();
 
 // Cast Vote

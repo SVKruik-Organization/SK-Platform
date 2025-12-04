@@ -1,32 +1,24 @@
-import amqp, { Channel, Message, Replies } from "amqplib";
-import shell from "shelljs";
-import { UplinkMessage } from "~/assets/customTypes";
+import { mountUplink } from "@svkruik/sk-uplink-connector";
+import { logError } from "@svkruik/sk-platform-formatters";
 
+/**
+ * Uplink is a RabbitMQ consumer that listens for messages from the Uplink network.
+ * It is used to receive deployment tasks and execute them on the server.
+ * 
+ * @see https://github.com/SVKruik-Organization/Uplink
+ */
 export default defineNitroPlugin(async (_nitroApp) => {
-    const runtimeConfig = useRuntimeConfig();
-    const channel: Channel | null = await (await amqp.connect({
-        "protocol": "amqp",
-        "hostname": runtimeConfig.uplink_host,
-        "port": parseInt(runtimeConfig.uplink_port as string),
-        "username": runtimeConfig.uplink_username,
-        "password": runtimeConfig.uplink_password
-    })).createChannel();
-
-    if (!channel) throw new Error("Uplink connection missing.");
-    channel.assertExchange("unicast-products", "direct", { durable: false });
-    const queue: Replies.AssertQueue = await channel.assertQueue("", { exclusive: true });
-    await channel.bindQueue(queue.queue, "unicast-products", "Platform");
-    console.log("Uplink consumer listening on exchange 'unicast-products' binded to 'Platform'.");
-
-    // Listen
-    channel.consume(queue.queue, (message: Message | null) => {
-        if (message) {
-            const messageContent: UplinkMessage = JSON.parse(message.content.toString());
-            if (messageContent.task === "Deploy" && process.platform === "linux") {
-                console.log(`Received new deploy task from ${messageContent.sender}. Running Server deployment script.`);
-                shell.exec("bash deploy.sh");
-                channel.ack(message);
-            }
-        }
-    }, { noAck: false });
+    try {
+        const runtimeConfig = useRuntimeConfig();
+        await mountUplink(undefined, undefined, {
+            "host": runtimeConfig.uplinkHost,
+            "port": runtimeConfig.uplinkPort,
+            "username": runtimeConfig.uplinkUsername,
+            "password": runtimeConfig.uplinkPassword,
+            "exchangeName": runtimeConfig.uplinkExchange,
+            "routingKey": runtimeConfig.uplinkRouter
+        });
+    } catch (error: any) {
+        logError(error);
+    }
 });
