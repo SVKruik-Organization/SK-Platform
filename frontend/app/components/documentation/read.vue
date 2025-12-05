@@ -23,6 +23,7 @@ const props = defineProps<{
 
 // Reactive Data
 const page = ref<string | undefined>(props.page);
+const isPage = ref<boolean>(!props.page || props.page === "Default" ? false : true);
 const chapterData: Ref<Array<DocChapterItem>> = ref([]);
 const hasPreviousPage: Ref<boolean> = ref(false);
 const hasNextPage: Ref<boolean> = ref(false);
@@ -493,12 +494,14 @@ useHead({
                             {{ type === 'Doc' ? 'Documentation' : 'Guides' }}
                         </NuxtLink>
                         <p class="breadcrumb-item">/</p>
-                        <NuxtLink :to="`/documentation/read/${type}/${category}`"
-                            class="breadcrumb-item breadcrumb-link">
-                            {{ category.replace(/_/g, " ") }}
-                        </NuxtLink>
+                        <template v-if="isPage">
+                            <NuxtLink :to="`/documentation/read/${type}/${category}`"
+                                class="breadcrumb-item breadcrumb-link">
+                                {{ category.replace(/_/g, " ") }}
+                            </NuxtLink>
+                            <p class="breadcrumb-item">/</p>
+                        </template>
                     </ClientOnly>
-                    <p v-if="page" class="breadcrumb-item">/</p>
                 </div>
                 <section class="flex documentation-content-container">
                     <div class="documentation-content-child" v-if="typeof fileData === 'object'"

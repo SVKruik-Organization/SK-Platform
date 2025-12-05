@@ -19,11 +19,6 @@ if (!validLanguages.includes(language)) throw new Error("Invalid language provid
 const validFullLanguages: Array<string> = ["English"];
 const humanLanguage: string = validFullLanguages[validLanguages.indexOf(language)];
 
-// Overwrite Setup
-const overwrite: string = args[2];
-const validOverwrites: Array<string> = ["w", "ax"];
-if (!validOverwrites.includes(overwrite)) throw new Error("Invalid overwrite option provided. Use 'w' to enable overwriting existing files, 'ax' to disable.");
-
 // Root Folder
 logData(`Search indexing export in version ${version} in ${humanLanguage}@${language}.`, "info");
 const rootFolders: Array<Dirent> = readdirSync(`${__dirname}/../data/html/${version}/${language}`, {
@@ -74,14 +69,11 @@ for (let i = 0; i < seedItems.length; i++) {
 }
 
 // Write Output
-try {
-    writeFileSync(`${__dirname}/../exports/${version}_${language}.json`, JSON.stringify(index).replace(/\\n\s*/ig, " "), {
-        "encoding": "utf-8",
-        "flag": overwrite
-    });
-    logData(`Successfully wrote Documentation index to the exports directory: ../exports/${version}_${language}.json`, "info");
-} catch (error: any) {
-    if (error.code === "EEXIST") throw new Error("File already exists, and overwriting is disabled with option 'ax'. Use 'w' to overwrite existing files.");
-    console.error(error);
-}
+writeFileSync(`${__dirname}/../exports/${version}_${language}.json`, JSON.stringify(index).replace(/\\n\s*/ig, " "), {
+    "encoding": "utf-8",
+    "flag": "w"
+});
+
+logData(`Successfully wrote Documentation index to the exports directory: ../exports/${version}_${language}.json`, "info");
+
 

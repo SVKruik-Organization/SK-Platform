@@ -95,10 +95,12 @@ pages.forEach((page: SitemapFile) => {
 });
 xw.endElement().endDocument();
 const xml: string = xw.toString();
-logData(`Exporting sitemap with ${xml.length} characters with options: ${version} ${language}`, "info");
+logData(`Exporting sitemap with ${xml.length} characters.`, "info");
 
-// Write
+// Write Output
 writeFileSync(`${__dirname}/../exports/${version}_${language}_sitemap.xml`, xml, {
     "encoding": "utf-8",
     "flag": "w"
 });
+
+logData(`Successfully wrote sitemap to the exports directory: ../exports/${version}_${language}_sitemap.xml`, "info");
