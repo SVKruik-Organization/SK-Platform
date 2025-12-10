@@ -32,6 +32,7 @@ export type DocumentationFile = {
     "description": string,
     "size": number,
     "viewCount": number,
+    "voteCount": number,
     "accessTime": Date,
     "modificationTime": Date,
     "creationTime": Date,
@@ -42,29 +43,22 @@ export type DocumentationFile = {
 
 // Raw Documentation Readpage Related
 export type RawRelatedItem = {
-    "id": number
-    "type": string
-    "category": string
-    "name": string
-    "products": string
-    "related": string
+    "id": number,
+    "type": string,
+    "category": string,
+    "name": string,
     "icon": string
-    "view_count": number
+    "products": string,
 }
 
 // Documentation Readpage Related
 export type RelatedItem = {
     "id": number,
+    "type": string,
     "category": string,
     "page": string,
     "icon": string,
-    "type": string,
     "imageUrl": string | null
-}
-
-// Get Files
-export type FilesRequest = {
-    "folder": string
 }
 
 // File Index/TOC Item
@@ -72,12 +66,6 @@ export type IndexItem = {
     "categoryIcon": string,
     "category": string,
     "children": Array<string>
-}
-
-// Folder-Only
-export type FolderItem = {
-    "categoryIcon": string,
-    "category": string
 }
 
 // Documentation Homepage Featured

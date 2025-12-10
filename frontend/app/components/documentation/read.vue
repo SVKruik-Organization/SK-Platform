@@ -1,13 +1,14 @@
 <script setup lang="ts">
 import { DropdownStates, type DocChapterItem, type DocumentationTypes, type DocumentationFile, type DocumentationIndexItem, type HeadLink, ToastTypes, type ToastItem } from "@/assets/customTypes";
 import { useDocumentationStore } from "@/stores/DocumentationStore";
-import { createTicket, formatToISO } from "@svkruik/sk-platform-formatters";
+import { createTicket, formatDate, formatToISO } from "@svkruik/sk-platform-formatters";
 import { useFetchDocumentationFile } from "@/utils/fetch/documentation/useFetchDocumentationFile";
 
 // Setup
 const documentationStore = useDocumentationStore();
 const { $event } = useNuxtApp();
 const route = useRoute();
+const router = useRouter();
 const handleFallbackImage: Function = inject("handleFallbackImage") as Function;
 
 // Props
@@ -29,6 +30,8 @@ const hasPreviousPage: Ref<boolean> = ref(false);
 const hasNextPage: Ref<boolean> = ref(false);
 const categoryList: Ref<Array<string>> = ref([]);
 const seoCategory: Ref<DocumentationIndexItem | undefined> = ref(undefined);
+const shareButtonContents: Ref<HTMLParagraphElement | null> = ref(null);
+let chapterObserver: IntersectionObserver | null = null;
 let fileData: Ref<DocumentationFile | null> = ref(null);
 
 // Category Page
@@ -39,17 +42,13 @@ if (!props.page) page.value = "Default";
 const currentPage = computed(() => page.value);
 const { data: asyncFileData, error: fileError } = await useAsyncData(
     () => `documentation-${documentationStore.version}-${documentationStore.language}-${props.type}-${props.category}-${currentPage.value}`,
-    async () => {
-        const rawFile = await useFetchDocumentationFile(
-            documentationStore.version,
-            documentationStore.language,
-            props.type,
-            props.category,
-            currentPage.value
-        );
-
-        return await parseDocumentationFile(rawFile) as DocumentationFile;
-    },
+    async () => await useFetchDocumentationFile(
+        documentationStore.version,
+        documentationStore.language,
+        props.type,
+        props.category,
+        currentPage.value
+    ),
     {
         watch: [currentPage, () => documentationStore.version, () => documentationStore.language],
         server: true,
@@ -75,8 +74,24 @@ if (fileError.value) {
     }
 }
 
-// HTML Elements
-const shareButtonContents: Ref<HTMLParagraphElement | null> = ref(null);
+// Rebuild chapters and observer whenever the file data changes (client-side only)
+if (import.meta.client) watch(() => fileData.value, () => {
+    nextTick(() => {
+        buildChapterData();
+        nextTick(() => {
+            setupChapterObserver();
+
+            // If there is a hash in the URL, scroll directly to that chapter
+            if (route.hash) {
+                const id = route.hash.startsWith("#")
+                    ? route.hash.slice(1)
+                    : route.hash;
+                scrollToChapter(id, "auto");
+            }
+        });
+    });
+}, { immediate: true });
+
 
 // Lifecycle
 onMounted(async () => {
@@ -84,36 +99,104 @@ onMounted(async () => {
     hasNextPage.value = await documentationStore.hasNextPage(props.type, props.category, props.page);
     categoryList.value = await documentationStore.getCategoryList(props.type, props.category);
     seoCategory.value = await documentationStore.getCategory(props.type, props.category);
-
-    if (fileData.value && fileData.value.chapters.length) {
-        window.addEventListener("scroll", setActiveChapter);
-        for (const chapter of fileData.value.chapters) {
-            const element: HTMLAnchorElement | null = document.getElementById(chapter.slice(1)) as HTMLAnchorElement | null;
-            if (!element) continue;
-            chapterData.value.push({ "title": element.id, "height": element.getBoundingClientRect().top, "active": false });
-        }
-
-        window.scrollBy(0, 0);
-        setActiveChapter();
-        scrollAnchor(null);
-    }
 });
-onUnmounted(() => {
-    window.removeEventListener("scroll", setActiveChapter);
-});
+onUnmounted(() => disconnectChapterObserver());
+
 
 // Computed
 const isAnchored = (title: string) => {
     return computed<boolean>(() => route.hash === "#" + title).value;
 };
 
-// Watchers
-watch(() => route.fullPath, () => {
-    scrollAnchor(0);
-    setActiveChapter();
-});
-
 // Methods
+
+/**
+ * Build the chapter data array based on the chapters provided by the file data.
+ */
+function buildChapterData(): void {
+    chapterData.value = [];
+
+    if (!fileData.value || !Array.isArray(fileData.value.chapters)) return;
+
+    chapterData.value = fileData.value.chapters.map((raw: string) => {
+        const id = raw.startsWith("#") ? raw.slice(1) : raw;
+        return { title: id, height: 0, active: false };
+    });
+}
+
+/**
+ * Scroll to a chapter element with an offset to account for sticky headers.
+ * @param id The chapter element ID.
+ * @param behavior The scroll behavior.
+ */
+function scrollToChapter(id: string, behavior: ScrollBehavior = "smooth"): void {
+    if (!import.meta.client) return;
+
+    const title: HTMLAnchorElement | undefined = document.getElementById(id) as HTMLAnchorElement | undefined;
+    if (!title) return;
+
+    const offset: number = 100;
+    const top: number = window.scrollY + title.getBoundingClientRect().top - offset;
+    window.scrollTo({ top, behavior });
+}
+
+/**
+ * Handle navigation to a chapter from the table of contents.
+ * @param id The chapter element ID.
+ */
+function goToChapter(id: string): void {
+    scrollToChapter(id, "smooth");
+
+    const hash: string = `#${id}`;
+    if (route.hash !== hash) router.replace({ hash });
+}
+
+/**
+ * Setup an IntersectionObserver to determine which chapter is currently active.
+ */
+function setupChapterObserver(): void {
+    if (!import.meta.client) return;
+    if (chapterObserver) disconnectChapterObserver();
+    if (!chapterData.value.length) return;
+
+    const offset: number = 130;
+
+    chapterObserver = new IntersectionObserver(
+        (entries) => {
+            const visible = entries
+                .filter((e) => e.isIntersecting)
+                .sort((a, b) => (a.target as HTMLElement).offsetTop - (b.target as HTMLElement).offsetTop);
+            if (!visible.length) return;
+
+            const topMost = visible[0]?.target as HTMLElement;
+            const activeId = topMost.id;
+
+            for (const chapter of chapterData.value) {
+                chapter.active = chapter.title === activeId;
+            }
+        },
+        {
+            root: null,
+            rootMargin: `-${offset}px 0px -60% 0px`,
+            threshold: 0.1
+        }
+    );
+
+    for (const chapter of chapterData.value) {
+        const title: HTMLAnchorElement | undefined = document.getElementById(chapter.title) as HTMLAnchorElement | undefined;
+        if (title) chapterObserver.observe(title);
+    }
+}
+
+/**
+ * Disconnect the chapter IntersectionObserver.
+ */
+function disconnectChapterObserver(): void {
+    if (chapterObserver) {
+        chapterObserver.disconnect();
+        chapterObserver = null;
+    }
+}
 
 /**
  * Handles any click event on the document content.
@@ -189,59 +272,6 @@ function share(): void {
 }
 
 /**
- * Scroll the URL anchor into view.
- * @param timeout The timeout before scrolling.
- */
-function scrollAnchor(timeout: number | null): void {
-    setTimeout(() => {
-        if (typeof fileData.value === "object") {
-            const chapters: Array<string> = (fileData.value as DocumentationFile).chapters;
-            if (!chapters.includes(route.hash)) return;
-            const element: HTMLAnchorElement | null = document.getElementById(route.hash.slice(1)) as HTMLAnchorElement | null;
-            const chapterMarker: HTMLAnchorElement | null = document.getElementById(`${route.hash.slice(1)}_aside`) as HTMLAnchorElement | null;
-            if (element && chapterMarker) {
-                window.scrollBy(0, element.getBoundingClientRect().top - 100);
-                document.querySelectorAll(".anchored-chapter").forEach((element) => element.classList.remove("anchored-chapter"));
-                element.classList.add("anchored-chapter");
-                chapterMarker.classList.add("anchored-chapter");
-            }
-        }
-    }, timeout || 100);
-}
-
-/**
- * Set the active chapter based on the scroll position.
- */
-function setActiveChapter(): void {
-    if (!chapterData.value.length) return;
-    let activeChapterFound = false;
-    const offset: number = 130;
-
-    // First Chapter
-    const firstChapter: DocChapterItem | undefined = chapterData.value[0];
-    if (!firstChapter) return;
-    if (window.scrollY < firstChapter.height - offset) {
-        firstChapter.active = true;
-        activeChapterFound = true;
-        return;
-    }
-
-    // Other Chapters
-    for (let i = 0; i < chapterData.value.length; i++) {
-        // Setup
-        const chapter: DocChapterItem | undefined = chapterData.value[i];
-        if (!chapter) continue;
-        chapter.active = false;
-
-        // Not yet found and within bounds.
-        if (!activeChapterFound && chapter.height < window.scrollY + offset && (chapterData.value[i + 1]?.height || Infinity) > window.scrollY + offset) {
-            chapter.active = true;
-            activeChapterFound = true;
-        }
-    }
-}
-
-/**
  * Go to the previous page in the category.
  */
 async function previousPage(): Promise<void> {
@@ -289,8 +319,8 @@ const links: Array<HeadLink> = [
 ];
 const metaItems = [
     { property: "article:section", content: props.type === "Doc" ? "Documentation" : "Guide" },
-    { property: "article:published_time", content: formatToISO(fileData.value ? fileData.value.creationTime : "") },
-    { property: "article:modified_time", content: formatToISO(fileData.value ? fileData.value.modificationTime : "") },
+    { property: "article:published_time", content: formatToISO(fileData.value ? formatDate(fileData.value.creationTime).date : "") },
+    { property: "article:modified_time", content: formatToISO(fileData.value ? formatDate(fileData.value.modificationTime).date : "") },
     { property: "article:tag", content: props.category.replace(/_/g, " ") },
 ];
 if (props.page) {
@@ -380,10 +410,11 @@ useHead({
                         :class="{ 'disable-close': navigationDropdownVisible }">
                         <strong :class="{ 'disable-close': navigationDropdownVisible }">On This Page</strong>
                         <ClientOnly>
-                            <a :href="`#${chapter.title}`" v-for="(chapter, index) of chapterData"
+                            <a v-for="chapter in chapterData" :key="chapter.title" :href="`#${chapter.title}`"
                                 :id="`${chapter.title}_aside`" class="responsive-nav-item-link"
-                                :class="{ 'active-chapter': chapterData[index]?.active, 'anchored-chapter': isAnchored(chapter.title) }">
-                                {{ chapter.title.replace(/_/g, " ") }}
+                                :class="{ 'active-chapter': chapter.active, 'anchored-chapter': isAnchored(chapter.title) }"
+                                @click.prevent="goToChapter(chapter.title)">
+                                {{ chapter.title.replace(/_/g, ' ') }}
                             </a>
                         </ClientOnly>
                     </div>
@@ -453,19 +484,23 @@ useHead({
                             </div>
                             <div class="menu-item flex disable-close">
                                 <label class="light-text disable-close">Last Read</label>
-                                <label>{{ fileData.accessTime }}</label>
+                                <label>{{ formatDate(fileData.accessTime).fullDate }}</label>
                             </div>
                             <div class="menu-item flex disable-close">
                                 <label class="light-text disable-close">Last Modification</label>
-                                <label>{{ fileData.modificationTime }}</label>
+                                <label>{{ formatDate(fileData.modificationTime).fullDate }}</label>
                             </div>
                             <div class="menu-item flex disable-close">
                                 <label class="light-text disable-close">Created On</label>
-                                <label>{{ fileData.creationTime }}</label>
+                                <label>{{ formatDate(fileData.creationTime).fullDate }}</label>
                             </div>
                             <div class="menu-item flex disable-close">
                                 <label class="light-text disable-close">View Count</label>
                                 <label>{{ fileData.viewCount }}</label>
+                            </div>
+                            <div class="menu-item flex disable-close">
+                                <label class="light-text disable-close">Vote Count</label>
+                                <label>{{ fileData.voteCount }}</label>
                             </div>
                         </menu>
                     </button>
@@ -521,10 +556,11 @@ useHead({
                         v-if="typeof fileData === 'object' && (chapterData.length || fileData.products.length)">
                         <div class="flex-col" v-if="chapterData.length">
                             <strong>On This Page</strong>
-                            <a :href="`#${chapter.title}`" v-for="(chapter, index) of chapterData"
+                            <a v-for="chapter in chapterData" :key="chapter.title" :href="`#${chapter.title}`"
                                 :id="`${chapter.title}_aside`"
-                                :class="{ 'active-chapter': chapterData[index]?.active, 'anchored-chapter': isAnchored(chapter.title) }">
-                                {{ chapter.title.replace(/_/g, " ") }}
+                                :class="{ 'active-chapter': chapter.active, 'anchored-chapter': isAnchored(chapter.title) }"
+                                @click.prevent="goToChapter(chapter.title)">
+                                {{ chapter.title.replace(/_/g, ' ') }}
                             </a>
                         </div>
                         <div class="flex-col" v-if="fileData.products.length">
@@ -550,10 +586,10 @@ useHead({
                     </aside>
                 </section>
             </div>
-            <section v-if="fileData.related.length" class="flex-col related-container">
+            <section v-if="fileData.related?.length" class="flex-col related-container">
                 <div class="flex-col section-title-container">
                     <h3>Also Read</h3>
-                    <p class="light-text">Other popular and related pages that you might find useful as well.</p>
+                    <p class="light-text">Related pages that you might find useful as well.</p>
                 </div>
                 <div class="flex related-item-container">
                     <ClientOnly>
@@ -662,7 +698,7 @@ nav {
 }
 
 .information-dropdown-expand {
-    height: 160px;
+    height: 182px;
     width: 320px;
 }
 
@@ -1046,11 +1082,6 @@ footer {
     .related-item-container {
         flex-direction: column;
         gap: 10px;
-    }
-
-    .information-dropdown-expand {
-        top: -96px;
-        left: 124px;
     }
 }
 

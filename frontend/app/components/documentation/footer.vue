@@ -179,7 +179,7 @@ const commentCastCurrentPage = computed<boolean>(() => {
             </div>
         </div>
         <div class="flex-col documentation-footer-item">
-            <h4>Docs didn't cut it?</h4>
+            <h4>SK Docs didn't cut it?</h4>
             <p class="light-text small-text documentation-footer-item-description">Seek community help or contact me
                 personally if you need anything. I am always happy to have a chat.</p>
             <div class="flex-col">

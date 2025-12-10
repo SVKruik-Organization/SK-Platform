@@ -111,8 +111,9 @@ app.get("/getFile/:version/:language/:type", async (req: Request, res: Response,
         const params: UrlParams | false = validateUrlParams(req.params.version, req.params.language, req.params.type);
         if (!params) return res.sendStatus(400);
 
-        const file: DocumentationFile = await getFile(searchQuery.folder, searchQuery.name, params.version, params.language, params.type, false);
-        return res.json({ "file": file });
+        const updateViewCount: boolean = false; // TODO: Refresh should not update view count
+        const file: DocumentationFile = await getFile(searchQuery.folder, searchQuery.name, params.version, params.language, params.type, updateViewCount);
+        return res.json(file);
     } catch (error: any) {
         next(error);
     }
@@ -125,7 +126,7 @@ app.get("/getIndex/:version/:language/:type", async (req: Request, res: Response
         if (!params) return res.sendStatus(400);
 
         const index: Array<IndexItem> = getIndex(params.version, params.language, params.type);
-        return res.json({ "index": index });
+        return res.json(index);
     } catch (error: any) {
         next(error);
     }
@@ -138,7 +139,7 @@ app.get("/getFeaturedItems/:language/:type", async (req: Request, res: Response,
         if (!params) return res.sendStatus(400);
 
         const data: Array<FeaturedItem> = getFeaturedItems(params.language, params.type);
-        return res.json({ "featuredItems": data });
+        return res.json(data);
     } catch (error: any) {
         next(error);
     }
@@ -147,7 +148,7 @@ app.get("/getFeaturedItems/:language/:type", async (req: Request, res: Response,
 // Error Handler
 app.use((err: any, _req: Request, res: Response, _next: NextFunction) => {
     const { statusCode, message } = formatApiError(err);
-    res.status(statusCode).json({ message });
+    res.status(statusCode).json(message);
 });
 
 // Start

@@ -1,4 +1,4 @@
-import MeiliSearch from "meilisearch";
+import { MeiliSearch } from "meilisearch";
 
 /**
  * Get Meilisearch client instance.

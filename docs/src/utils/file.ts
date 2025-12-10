@@ -2,6 +2,7 @@ import { Dirent, readdirSync, readFileSync, Stats, statSync } from "fs";
 import { DocumentationFile, DocumentationProduct, IndexItem, RawRelatedItem, FeaturedItem, RelatedItem } from "../customTypes";
 import { parse } from "node-html-parser";
 import { Pool, database } from "@svkruik/sk-platform-db-conn";
+import { formatDate } from "@svkruik/sk-platform-formatters";
 
 /**
  * Fetch a specific Documentation page from the file system.
@@ -49,7 +50,8 @@ export async function getFile(folder: string, name: string, version: string, lan
         "name": rawFile[0].name,
         "fileContents": fileContents,
         "size": fileMetaData.size,
-        "viewCount": 0,
+        "viewCount": databaseMetaData.length ? databaseMetaData[0].view_count : 0,
+        "voteCount": 0, // TODO: Implement vote count tracking
         "accessTime": new Date(fileMetaData.atimeMs),
         "modificationTime": new Date(fileMetaData.mtimeMs),
         "creationTime": new Date(fileMetaData.birthtimeMs),

@@ -1,10 +1,3 @@
-<script setup lang="ts">
-import { useUserStore } from "@/stores/UserStore";
-
-// Setup
-const userStore = useUserStore();
-</script>
-
 <template>
     <header>
         <nav>
@@ -22,10 +15,7 @@ const userStore = useUserStore();
                     <NuxtLink class="nav-link" to="/developer">api</NuxtLink>
                 </menu>
             </section>
-            <NuxtLink class="gradient-button sign-up-button" :title="userStore.user.username ? 'account' : 'login'"
-                :to="userStore.user.username ? '/account' : '/login'">{{ userStore.user.username
-                    ? "account" : "login" }}
-            </NuxtLink>
+            <NuxtLink class="gradient-button sign-up-button" title="Login" to="/">Login</NuxtLink>
         </nav>
     </header>
 </template>

@@ -41,18 +41,14 @@ export type DocumentationFile = {
     "fileContents": string,
     "size": number,
     "viewCount": number,
-    "accessTime": string,
-    "modificationTime": string,
-    "creationTime": string,
+    "voteCount": number,
+    "accessTime": Date,
+    "modificationTime": Date,
+    "creationTime": Date,
     "chapters": Array<string>,
     "description": string,
     "products": Array<DocumentationProduct>,
     "related": Array<RelatedItem>
-}
-
-// Raw File Index/TOC Item Response
-export type DocumentationIndexResponse = {
-    "index": Array<DocumentationIndexItem>
 }
 
 // Single Index/TOC Item
@@ -60,22 +56,6 @@ export type DocumentationIndexItem = {
     "categoryIcon": string
     "category": string,
     "children": Array<string>
-}
-
-//  Raw Page Categories Response
-export type DocumentationCategoriesResponse = {
-    "categories": Array<FolderItem>
-}
-
-// Single Folder Only
-export type FolderItem = {
-    "categoryIcon": string,
-    "category": string
-}
-
-// Raw Featured Item Response
-export type DocumentationFeaturedItemsResponse = {
-    "featuredItems": Array<FeaturedItem>
 }
 
 // Documentation Homepage Featured

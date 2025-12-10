@@ -1,5 +1,5 @@
 import { defineStore } from "pinia";
-import { IndexPlaceholder, FeaturedPlaceholder, ToastTypes, type DocumentationIndexItem, type DocumentationIndexResponse, type DocumentationFeaturedItemsResponse, type DocumentationRefreshResponse, type FeaturedItem, type ToastItem } from "@/assets/customTypes";
+import { IndexPlaceholder, FeaturedPlaceholder, ToastTypes, type DocumentationIndexItem, type DocumentationRefreshResponse, type FeaturedItem, type ToastItem } from "@/assets/customTypes";
 import { themeData, themeMeta } from "@/assets/config/theme";
 import { createTicket } from "@svkruik/sk-platform-formatters";
 import { useFetchDocumentationRefresh } from "@/utils/fetch/documentation/useFetchDocumentationRefresh";
@@ -100,11 +100,11 @@ export const useDocumentationStore = defineStore("documentationStore", {
                 if (type === "Guide") convertedType = "guideIndex";
 
                 if (this[convertedType].length === 0 || force) {
-                    const data: DocumentationIndexResponse = await useFetchDocumentationIndex(this.version, this.language, type);
+                    const data: Array<DocumentationIndexItem> = await useFetchDocumentationIndex(this.version, this.language, type);
 
-                    if (data.index.length === 0) {
+                    if (data.length === 0) {
                         return this[convertedType] = IndexPlaceholder;
-                    } else return this[convertedType] = data.index;
+                    } else return this[convertedType] = data;
                 } else return this[convertedType];
             } catch (error: any) {
                 const { $event } = useNuxtApp();
@@ -130,11 +130,11 @@ export const useDocumentationStore = defineStore("documentationStore", {
                 if (type === "Guide") convertedType = "featuredGuideItems";
 
                 if (this[convertedType].length === 0 || force) {
-                    const data: DocumentationFeaturedItemsResponse = await useFetchDocumentationFeaturedItems(this.language, type);
+                    const data: Array<FeaturedItem> = await useFetchDocumentationFeaturedItems(this.language, type);
 
-                    if (data.featuredItems.length === 0) {
+                    if (data.length === 0) {
                         return this[convertedType] = FeaturedPlaceholder;
-                    } else return this[convertedType] = data.featuredItems;
+                    } else return this[convertedType] = data;
                 } else return this[convertedType];
             } catch (error: any) {
                 const { $event } = useNuxtApp();
