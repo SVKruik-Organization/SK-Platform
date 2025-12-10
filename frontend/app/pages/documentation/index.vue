@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { DocumentationTypes, DropdownStates, ToastTypes, type DocumentationIndexItem, type RecommendedItem, type ToastItem } from "@/assets/customTypes";
+import { DocumentationTypes, DropdownStates, ToastTypes, type DocumentationIndexItem, type FeaturedItem, type ToastItem } from "@/assets/customTypes";
 import { useDocumentationStore } from "@/stores/DocumentationStore";
 import { createTicket } from "@svkruik/sk-platform-formatters";
 
@@ -10,7 +10,7 @@ const { $event } = useNuxtApp();
 // Reactive Data
 const docIndexItems: Ref<Array<DocumentationIndexItem>> = ref([]);
 const guideIndexItems: Ref<Array<DocumentationIndexItem>> = ref([]);
-const recommendedItems: Ref<Array<RecommendedItem>> = ref([]);
+const featuredItems: Ref<Array<FeaturedItem>> = ref([]);
 
 // Props
 defineProps<{
@@ -30,8 +30,8 @@ onMounted(async () => {
         docIndexItems.value = state.docIndex;
         guideIndexItems.value = state.guideIndex;
 
-        const newRecommendedItems: Array<RecommendedItem> = state.recommendedDocItems.concat(state.recommendedGuideItems);
-        recommendedItems.value = newRecommendedItems;
+        const newFeaturedItems: Array<FeaturedItem> = state.featuredDocItems.concat(state.featuredGuideItems);
+        featuredItems.value = newFeaturedItems;
     });
 
     // Initial Load - Indices
@@ -52,22 +52,22 @@ onMounted(async () => {
     } as ToastItem);
     guideIndexItems.value = rawGuideIndexItems;
 
-    // Initial Load - Recommended
-    const rawDocRecommendedItems: string | Array<RecommendedItem> = await documentationStore.getRecommendedItems(false, "Doc");
-    if (typeof rawDocRecommendedItems === "string") return $event("emit-toast", {
+    // Initial Load - Featured
+    const rawDocFeaturedItems: string | Array<FeaturedItem> = await documentationStore.getFeaturedItems(false, "Doc");
+    if (typeof rawDocFeaturedItems === "string") return $event("emit-toast", {
         "id": createTicket(),
         "type": ToastTypes.danger,
-        "message": rawDocRecommendedItems,
+        "message": rawDocFeaturedItems,
         "duration": 3
     } as ToastItem);
-    const rawGuideRecommendedItems: string | Array<RecommendedItem> = await documentationStore.getRecommendedItems(false, "Guide");
-    if (typeof rawGuideRecommendedItems === "string") return $event("emit-toast", {
+    const rawGuideFeaturedItems: string | Array<FeaturedItem> = await documentationStore.getFeaturedItems(false, "Guide");
+    if (typeof rawGuideFeaturedItems === "string") return $event("emit-toast", {
         "id": createTicket(),
         "type": ToastTypes.danger,
-        "message": rawGuideRecommendedItems,
+        "message": rawGuideFeaturedItems,
         "duration": 3
     } as ToastItem);
-    recommendedItems.value = rawDocRecommendedItems.concat(rawGuideRecommendedItems);
+    featuredItems.value = rawDocFeaturedItems.concat(rawGuideFeaturedItems);
 });
 
 // Emitters
@@ -113,21 +113,21 @@ function handleDropdownState(name: DropdownStates, newValue: boolean): void {
         </div>
     </section>
     <section class="content-container">
-        <div class="content-item recommended-parent">
-            <h3 class="banner-content content-splitter-header">Recommended pages</h3>
-            <div class="banner-content recommended-item-container flex">
-                <DocumentationRecommendedItem
-                    v-if="recommendedItems.length > 0 && recommendedItems[0]?.page !== 'None_Available'"
-                    v-for="recommendedItem of recommendedItems" :key="recommendedItem.id" :data="recommendedItem">
-                </DocumentationRecommendedItem>
-                <article v-else-if="recommendedItems.length > 0 && recommendedItems[0]?.page === 'None_Available'"
+        <div class="content-item featured-parent">
+            <h3 class="banner-content content-splitter-header">Featured pages</h3>
+            <div class="banner-content featured-item-container flex">
+                <DocumentationFeaturedItem
+                    v-if="featuredItems.length > 0 && featuredItems[0]?.page !== 'None_Available'"
+                    v-for="featuredItem of featuredItems" :key="featuredItem.id" :data="featuredItem">
+                </DocumentationFeaturedItem>
+                <article v-else-if="featuredItems.length > 0 && featuredItems[0]?.page === 'None_Available'"
                     class="flex-col error-message">
-                    <p>Looks like there aren't any recommended items available in your language and version at this
+                    <p>Looks like there aren't any featured items available in your language and version at this
                         time.</p>
                     <p>I am working hard on versioning and localization. In the meantime, please revert any
                         changes to their default settings.</p>
                 </article>
-                <div class="error-message" v-else>Something went wrong while retrieving the recommended items. Please
+                <div class="error-message" v-else>Something went wrong while retrieving the featured items. Please
                     try again later.
                 </div>
             </div>
@@ -290,11 +290,11 @@ h1 {
     user-select: none;
 }
 
-.recommended-parent {
+.featured-parent {
     margin-bottom: 40px;
 }
 
-.recommended-item-container {
+.featured-item-container {
     flex-wrap: wrap;
     gap: 20px;
 }
@@ -343,7 +343,7 @@ h1 {
         justify-content: center;
     }
 
-    .recommended-item-container {
+    .featured-item-container {
         justify-content: center;
         width: 90%;
     }

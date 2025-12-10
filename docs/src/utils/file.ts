@@ -1,5 +1,5 @@
 import { Dirent, readdirSync, readFileSync, Stats, statSync } from "fs";
-import { DocumentationFile, DocumentationProduct, IndexItem, RawRelatedItem, RecommendedItem, RelatedItem } from "../customTypes";
+import { DocumentationFile, DocumentationProduct, IndexItem, RawRelatedItem, FeaturedItem, RelatedItem } from "../customTypes";
 import { parse } from "node-html-parser";
 import { Pool, database } from "@svkruik/sk-platform-db-conn";
 
@@ -20,7 +20,7 @@ export async function getFile(folder: string, name: string, version: string, lan
     if (rawFolders.length === 0) throw new Error("Category folder not found.", { cause: { statusCode: 1404 } });
 
     // Retrieve Correct File
-    const rawFile: Array<Dirent> = readdirSync(`${__dirname}/../../data/html/${version}/${language}/${type}/${rawFolders[0].name}`, { withFileTypes: true })
+    const rawFile: Array<Dirent> = readdirSync(`${__dirname}/../../data/pages/${version}/${language}/${type}/${rawFolders[0].name}`, { withFileTypes: true })
         .filter(entity => entity.isFile() && entity.name.slice(3, -5) === name);
     if (rawFile.length === 0) throw new Error("File not found.", { cause: { statusCode: 1404 } });
     const fileContents: string = readFileSync(`${rawFile[0].parentPath}/${rawFile[0].name}`, "utf8");
@@ -70,7 +70,7 @@ export async function getFile(folder: string, name: string, version: string, lan
  */
 export function getIndex(version: string, language: string, type: string): Array<IndexItem> {
     // Retrieve Folder Names
-    const rawFolders: Array<string> = readdirSync(`${__dirname}/../../data/html/${version}/${language}/${type}`, { withFileTypes: true })
+    const rawFolders: Array<string> = readdirSync(`${__dirname}/../../data/pages/${version}/${language}/${type}`, { withFileTypes: true })
         .filter(entity => entity.isDirectory())
         .map(directory => directory.name);
     if (rawFolders.length === 0) throw new Error("No categories found.", { cause: { statusCode: 1404 } });
@@ -78,7 +78,7 @@ export function getIndex(version: string, language: string, type: string): Array
     // Retrieve & Format Files
     const index: Array<IndexItem> = [];
     for (const rawFolderName of rawFolders) {
-        const folderPath = `${__dirname}/../../data/html/${version}/${language}/${type}/${rawFolderName}`;
+        const folderPath = `${__dirname}/../../data/pages/${version}/${language}/${type}/${rawFolderName}`;
         const indexItem: IndexItem = {
             "categoryIcon": getFolderIcon(rawFolderName.slice(3)),
             "category": rawFolderName.slice(3),
@@ -99,7 +99,7 @@ export function getIndex(version: string, language: string, type: string): Array
  * @returns The folders in Dirent format.
  */
 function readDirectory(folder: string, version: string, language: string, type: string): Array<Dirent> {
-    return readdirSync(`${__dirname}/../../data/html/${version}/${language}/${type}`, { withFileTypes: true })
+    return readdirSync(`${__dirname}/../../data/pages/${version}/${language}/${type}`, { withFileTypes: true })
         .filter(entity => entity.isDirectory() && entity.name.slice(3) === folder);
 }
 
@@ -152,18 +152,18 @@ export function getFolderIcon(name: string): string {
 }
 
 /**
- * Retrieve recommended items from the JSON file.
+ * Retrieve featured items from the JSON file.
  * 
  * @param language The language of the documentation. Examples: en-US, nl-NL
  * @param type Documentation (Doc) or Guides (Guide)
- * @returns The current recommended items.
+ * @returns The current featured items.
  */
-export function getRecommendedItems(language: string, type: string): Array<RecommendedItem> {
-    return JSON.parse(readFileSync(`${__dirname}/../../data/json/${language}/${type}.json`, "utf8"));
+export function getFeaturedItems(language: string, type: string): Array<FeaturedItem> {
+    return JSON.parse(readFileSync(`${__dirname}/../../data/featured/${language}/${type}.json`, "utf8"));
 }
 
 /**
- * Convert the API response to a RecommendedItem typed object.
+ * Convert the API response to a FeaturedItem typed object.
  * 
  * @param rawRelatedItems Raw related items from the database.
  * @param rawProducts Raw products from the database.

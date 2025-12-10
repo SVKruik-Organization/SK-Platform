@@ -75,7 +75,7 @@ function toggleThemeMenu(event: Event): void {
 }
 
 /**
- * Cosmetically disable the refresh button and refetch the documentation index & recommended items.
+ * Cosmetically disable the refresh button and refetch the documentation index & featured items.
  * Enforced by backend rate limit.
  */
 async function reloadDocumentation(): Promise<void> {

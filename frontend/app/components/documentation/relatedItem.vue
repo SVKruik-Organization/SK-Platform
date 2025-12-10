@@ -20,7 +20,7 @@ defineProps<{
                     class="related-sub-item">
                     {{ data.type }}
                 </NuxtLink>
-                <NuxtImg class="icon icon-light recommended-sub-item" width="10" height="10"
+                <NuxtImg class="icon icon-light featured-sub-item" width="10" height="10"
                     src="/svg/circle-small-regular.svg" loading="lazy" alt="Icon" />
                 <NuxtLink :to="`/documentation/read/${data.type}/${data.category}`" class="related-sub-item">
                     {{ data.category.replace(/_/g, " ") }}

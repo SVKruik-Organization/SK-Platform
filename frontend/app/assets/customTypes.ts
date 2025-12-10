@@ -73,13 +73,13 @@ export type FolderItem = {
     "category": string
 }
 
-// Raw Recommended Item Response
-export type DocumentationRecommendedItemsResponse = {
-    "recommendedItems": Array<RecommendedItem>
+// Raw Featured Item Response
+export type DocumentationFeaturedItemsResponse = {
+    "featuredItems": Array<FeaturedItem>
 }
 
-// Documentation Homepage Recommended
-export type RecommendedItem = {
+// Documentation Homepage Featured
+export type FeaturedItem = {
     "id": number,
     "category": string,
     "page": string,
@@ -103,8 +103,8 @@ export type RelatedItem = {
 export type DocumentationRefreshResponse = {
     "docIndex": Array<DocumentationIndexItem>,
     "guideIndex": Array<DocumentationIndexItem>,
-    "recommendedDocItems": Array<RecommendedItem>,
-    "recommendedGuideItems": Array<RecommendedItem>
+    "featuredDocItems": Array<FeaturedItem>,
+    "featuredGuideItems": Array<FeaturedItem>
 }
 
 // Raw Search Response
@@ -157,7 +157,7 @@ export const IndexPlaceholder: Array<DocumentationIndexItem> = [{
 }];
 
 // Documentation Folder Placeholder
-export const RecommendedPlaceholder: Array<RecommendedItem> = [{
+export const FeaturedPlaceholder: Array<FeaturedItem> = [{
     "id": 1,
     "anchor": null,
     "category": "None_Available",

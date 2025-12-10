@@ -9,9 +9,9 @@ import { rateLimit } from "express-rate-limit";
 import { apiRequest } from "./utils/middleware";
 import { SearchRoutes } from "./routes/searchRoutes";
 import { VoteRoutes } from "./routes/voteRoutes";
-import { DocumentationFile, FileRequest, IndexItem, RecommendedItem, UrlParams } from "./customTypes";
+import { DocumentationFile, FileRequest, IndexItem, FeaturedItem, UrlParams } from "./customTypes";
 import { formatApiError } from "./utils/format";
-import { getFile, getIndex, getRecommendedItems } from "./utils/file";
+import { getFile, getIndex, getFeaturedItems } from "./utils/file";
 
 configEnv();
 configDb({
@@ -89,15 +89,15 @@ app.get("/refresh/:version/:language", refreshLimit, async (req: Request, res: R
         const docIndex: Array<IndexItem> = getIndex(params.version, params.language, "Doc");
         const guideIndex: Array<IndexItem> = getIndex(params.version, params.language, "Guide");
 
-        // Recommended Items
-        const recommendedDocItems: Array<RecommendedItem> = getRecommendedItems(params.language, "Doc");
-        const recommendedGuideItems: Array<RecommendedItem> = getRecommendedItems(params.language, "Guide");
+        // Featured Items
+        const featuredDocItems: Array<FeaturedItem> = getFeaturedItems(params.language, "Doc");
+        const featuredGuideItems: Array<FeaturedItem> = getFeaturedItems(params.language, "Guide");
 
         return res.json({
             "docIndex": docIndex,
             "guideIndex": guideIndex,
-            "recommendedDocItems": recommendedDocItems,
-            "recommendedGuideItems": recommendedGuideItems
+            "featuredDocItems": featuredDocItems,
+            "featuredGuideItems": featuredGuideItems
         });
     } catch (error: any) {
         next(error);
@@ -131,14 +131,14 @@ app.get("/getIndex/:version/:language/:type", async (req: Request, res: Response
     }
 });
 
-// Get Recommended Items
-app.get("/getRecommendedItems/:language/:type", async (req: Request, res: Response, next: NextFunction) => {
+// Get Featured Items
+app.get("/getFeaturedItems/:language/:type", async (req: Request, res: Response, next: NextFunction) => {
     try {
         const params: UrlParams | false = validateUrlParams(undefined, req.params.language, req.params.type);
         if (!params) return res.sendStatus(400);
 
-        const data: Array<RecommendedItem> = getRecommendedItems(params.language, params.type);
-        return res.json({ "recommendedItems": data });
+        const data: Array<FeaturedItem> = getFeaturedItems(params.language, params.type);
+        return res.json({ "featuredItems": data });
     } catch (error: any) {
         next(error);
     }

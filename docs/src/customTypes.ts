@@ -80,8 +80,8 @@ export type FolderItem = {
     "category": string
 }
 
-// Documentation Homepage Recommended
-export type RecommendedItem = {
+// Documentation Homepage Featured
+export type FeaturedItem = {
     "id": number,
     "category": string,
     "page": string,

@@ -1,9 +1,9 @@
 import { defineStore } from "pinia";
-import { IndexPlaceholder, RecommendedPlaceholder, ToastTypes, type DocumentationIndexItem, type DocumentationIndexResponse, type DocumentationRecommendedItemsResponse, type DocumentationRefreshResponse, type RecommendedItem, type ToastItem } from "@/assets/customTypes";
+import { IndexPlaceholder, FeaturedPlaceholder, ToastTypes, type DocumentationIndexItem, type DocumentationIndexResponse, type DocumentationFeaturedItemsResponse, type DocumentationRefreshResponse, type FeaturedItem, type ToastItem } from "@/assets/customTypes";
 import { themeData, themeMeta } from "@/assets/config/theme";
 import { createTicket } from "@svkruik/sk-platform-formatters";
 import { useFetchDocumentationRefresh } from "@/utils/fetch/documentation/useFetchDocumentationRefresh";
-import { useFetchDocumentationRecommendedItems } from "@/utils/fetch/documentation/useFetchDocumentationRecommendedItems";
+import { useFetchDocumentationFeaturedItems } from "~/utils/fetch/documentation/useFetchDocumentationFeaturedItems";
 import { useFetchDocumentationIndex } from "@/utils/fetch/documentation/useFetchDocumentationIndex";
 
 const defaultVersion: string = "v1";
@@ -15,8 +15,8 @@ export const useDocumentationStore = defineStore("documentationStore", {
         return {
             docIndex: [] as Array<DocumentationIndexItem>,
             guideIndex: [] as Array<DocumentationIndexItem>,
-            recommendedDocItems: [] as Array<RecommendedItem>,
-            recommendedGuideItems: [] as Array<RecommendedItem>,
+            featuredDocItems: [] as Array<FeaturedItem>,
+            featuredGuideItems: [] as Array<FeaturedItem>,
             version: defaultVersion,
             language: defaultLanguage,
             theme: defaultTheme,
@@ -118,23 +118,23 @@ export const useDocumentationStore = defineStore("documentationStore", {
             }
         },
         /**
-         * Retrieve the current recommended items.
+         * Retrieve the current featured items.
          * @param force Overwrite exiting local storage.
          * @param type Documentation (Doc) or Guides (Guide)
-         * @returns The new or the existing recommended items.
+         * @returns The new or the existing featured items.
          */
-        async getRecommendedItems(force: boolean, type: string): Promise<Array<RecommendedItem>> {
+        async getFeaturedItems(force: boolean, type: string): Promise<Array<FeaturedItem>> {
             try {
                 // Convert input type to Store State Key
-                let convertedType: "recommendedDocItems" | "recommendedGuideItems" = "recommendedDocItems";
-                if (type === "Guide") convertedType = "recommendedGuideItems";
+                let convertedType: "featuredDocItems" | "featuredGuideItems" = "featuredDocItems";
+                if (type === "Guide") convertedType = "featuredGuideItems";
 
                 if (this[convertedType].length === 0 || force) {
-                    const data: DocumentationRecommendedItemsResponse = await useFetchDocumentationRecommendedItems(this.language, type);
+                    const data: DocumentationFeaturedItemsResponse = await useFetchDocumentationFeaturedItems(this.language, type);
 
-                    if (data.recommendedItems.length === 0) {
-                        return this[convertedType] = RecommendedPlaceholder;
-                    } else return this[convertedType] = data.recommendedItems;
+                    if (data.featuredItems.length === 0) {
+                        return this[convertedType] = FeaturedPlaceholder;
+                    } else return this[convertedType] = data.featuredItems;
                 } else return this[convertedType];
             } catch (error: any) {
                 const { $event } = useNuxtApp();
@@ -178,7 +178,7 @@ export const useDocumentationStore = defineStore("documentationStore", {
                     $event("emit-toast", {
                         "id": createTicket(),
                         "type": ToastTypes.success,
-                        "message": "Refreshed indices and recommended pages.",
+                        "message": "Refreshed indices and featured pages.",
                         "duration": 3
                     } as ToastItem);
                 }
@@ -190,12 +190,12 @@ export const useDocumentationStore = defineStore("documentationStore", {
                     this.guideIndex = IndexPlaceholder;
                 } else this.guideIndex = data.guideIndex;
 
-                if (data.recommendedDocItems.length === 0) {
-                    this.recommendedDocItems = RecommendedPlaceholder;
-                } else this.recommendedDocItems = data.recommendedDocItems;
-                if (data.recommendedGuideItems.length === 0) {
-                    this.recommendedGuideItems = RecommendedPlaceholder;
-                } else this.recommendedGuideItems = data.recommendedGuideItems;
+                if (data.featuredDocItems.length === 0) {
+                    this.featuredDocItems = FeaturedPlaceholder;
+                } else this.featuredDocItems = data.featuredDocItems;
+                if (data.featuredGuideItems.length === 0) {
+                    this.featuredGuideItems = FeaturedPlaceholder;
+                } else this.featuredGuideItems = data.featuredGuideItems;
             } catch (error: any) {
                 $event("emit-toast", {
                     "id": createTicket(),
