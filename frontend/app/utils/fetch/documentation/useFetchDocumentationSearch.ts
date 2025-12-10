@@ -3,9 +3,11 @@ import { formatError } from "@/utils/format";
 
 export const useFetchDocumentationSearch = async (version: string, language: string, query: string, limit: number, offset: number, scope: string): Promise<DocumentationSearchResponse> => {
     try {
-        const runtimeConfig = useRuntimeConfig();
-        return await $fetch(`${runtimeConfig.public.docsApiBase}/search/all/${version}/${language}?query=${query}&limit=${limit}&offset=${offset}&scope=${scope}`, {
-            method: "GET"
+        return await $fetch("/api/docs_proxy", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            query: { query, limit, offset, scope },
+            body: { endpoint: `/search/${version}/${language}` }
         });
     } catch (error: any) {
         throw formatError(error);

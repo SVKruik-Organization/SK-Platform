@@ -28,8 +28,10 @@ export function formatError(error: any): Error {
             "statusCode": 500,
             "message": "Something went wrong. Please try again later.",
         });
-    } else return createError({
-        "statusCode": error.statusCode,
-        "message": error?.data?.message || error?.message || "Something went wrong. Please try again later.",
-    });
+    } else {
+        return createError({
+            "statusCode": error.statusCode,
+            "message": error?.data?.message || error?.message || "Something went wrong. Please try again later.",
+        });
+    }
 };

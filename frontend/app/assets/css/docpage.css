@@ -9,13 +9,6 @@
     margin: 15px 0;
 }
 
-.anchored-chapter {
-    background: linear-gradient(to right, #fcd967 0%, #f68585 39%, #cb79e8 100%);
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-    background-clip: text;
-}
-
 .chapter .icon {
     opacity: 0;
     transition: opacity 0.3s;

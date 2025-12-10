@@ -1,8 +1,8 @@
 import { Dirent, readdirSync, readFileSync, Stats, statSync } from "fs";
-import { DocumentationFile, DocumentationProduct, IndexItem, RawRelatedItem, FeaturedItem, RelatedItem } from "../customTypes";
+import { DocumentationFile, DocumentationProduct, IndexItem, RawRelatedItem, FeaturedItem, RelatedItem, DocumentationTypes } from "../customTypes";
 import { parse } from "node-html-parser";
 import { Pool, database } from "@svkruik/sk-platform-db-conn";
-import { formatDate } from "@svkruik/sk-platform-formatters";
+import { getCachedIndex } from "./cache";
 
 /**
  * Fetch a specific Documentation page from the file system.
@@ -15,7 +15,7 @@ import { formatDate } from "@svkruik/sk-platform-formatters";
  * @param newFetch Whether to update the view count in the database.
  * @returns HTML data as string or status code on error.
  */
-export async function getFile(folder: string, name: string, version: string, language: string, type: string, newFetch: boolean): Promise<DocumentationFile> {
+export async function getFile(folder: string, name: string, version: string, language: string, type: DocumentationTypes, newFetch: boolean): Promise<DocumentationFile> {
     // Retrieve Correct Folder
     const rawFolders: Array<Dirent> = readDirectory(folder, version, language, type);
     if (rawFolders.length === 0) throw new Error("Category folder not found.", { cause: { statusCode: 1404 } });
@@ -70,7 +70,7 @@ export async function getFile(folder: string, name: string, version: string, lan
  * @param type Documentation (Doc) or Guides (Guide)
  * @returns Data or status code on error.
  */
-export function getIndex(version: string, language: string, type: string): Array<IndexItem> {
+export function getIndex(version: string, language: string, type: DocumentationTypes): Array<IndexItem> {
     // Retrieve Folder Names
     const rawFolders: Array<string> = readdirSync(`${__dirname}/../../data/pages/${version}/${language}/${type}`, { withFileTypes: true })
         .filter(entity => entity.isDirectory())
@@ -100,7 +100,7 @@ export function getIndex(version: string, language: string, type: string): Array
  * @param type Documentation (Doc) or Guides (Guide)
  * @returns The folders in Dirent format.
  */
-function readDirectory(folder: string, version: string, language: string, type: string): Array<Dirent> {
+function readDirectory(folder: string, version: string, language: string, type: DocumentationTypes): Array<Dirent> {
     return readdirSync(`${__dirname}/../../data/pages/${version}/${language}/${type}`, { withFileTypes: true })
         .filter(entity => entity.isDirectory() && entity.name.slice(3) === folder);
 }
@@ -160,7 +160,7 @@ export function getFolderIcon(name: string): string {
  * @param type Documentation (Doc) or Guides (Guide)
  * @returns The current featured items.
  */
-export function getFeaturedItems(language: string, type: string): Array<FeaturedItem> {
+export function getFeaturedItems(language: string, type: DocumentationTypes): Array<FeaturedItem> {
     return JSON.parse(readFileSync(`${__dirname}/../../data/featured/${language}/${type}.json`, "utf8"));
 }
 
@@ -207,7 +207,7 @@ function parseDocumentationProducts(input: string, version: string, language: st
     const rawProducts: Array<string> = input.split(",");
     if (rawProducts.length === 0) return [];
     const parsedProducts: Array<DocumentationProduct> = [];
-    const index = getIndex(version, language, "Doc");
+    const index = getCachedIndex(version, language, DocumentationTypes.DOC);
 
     // Valid Products
     const validBots: Array<string> = ["Apricaria", "Stelleri", "Ispidina", "Interpres"];

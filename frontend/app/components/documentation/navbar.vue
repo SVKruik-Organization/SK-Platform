@@ -379,6 +379,14 @@ function searchInputChecks(force: boolean, newOffset: number): boolean {
                                     <label class="disabled-text">Nederlands</label>
                                     <span class="fi fi-nl"></span>
                                 </button>
+                                <button type="button" class="menu-item flex"
+                                    @click="documentationStore.setLanguage('ko-KR')">
+                                    <NuxtImg class="icon" width="15" height="15"
+                                        :class="{ 'visible': documentationStore.language === 'ko-KR' }"
+                                        src="/svg/check-regular.svg" loading="lazy" alt="Icon" />
+                                    <label class="disabled-text">한국어</label>
+                                    <span class="fi fi-kr"></span>
+                                </button>
                             </menu>
                         </ClientOnly>
                     </button>

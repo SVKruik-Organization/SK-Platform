@@ -6,12 +6,13 @@ import cors from "cors";
 import { logData } from "@svkruik/sk-platform-formatters";
 import { mountUplink } from "@svkruik/sk-uplink-connector";
 import { rateLimit } from "express-rate-limit";
-import { apiRequest } from "./utils/middleware";
+import { apiRequest, protectedApiRequest } from "./utils/middleware";
 import { SearchRoutes } from "./routes/searchRoutes";
 import { VoteRoutes } from "./routes/voteRoutes";
-import { DocumentationFile, FileRequest, IndexItem, FeaturedItem, UrlParams } from "./customTypes";
+import { DocumentationFile, FileRequest, IndexItem, FeaturedItem, UrlParams, ValidCacheTypes, DocumentationTypes } from "./customTypes";
 import { formatApiError } from "./utils/format";
-import { getFile, getIndex, getFeaturedItems } from "./utils/file";
+import { getFeaturedItems } from "./utils/file";
+import { clearCache, getCachedFile, getCacheDetails, getCachedIndex } from "./utils/cache";
 
 configEnv();
 configDb({
@@ -52,10 +53,10 @@ app.get("/api/status/badge", (_req: Request, res: Response) => {
 // Valid Url Params
 const validVersions: Array<string> = ["v1"];
 const validLanguages: Array<string> = ["en-US"];
-const validTypes: Array<string> = ["Doc", "Guide"];
 
 /**
  * Validate url params.
+ * 
  * @param version The version to check, if any.
  * @param language The language to check, if any.
  * @param type The type to check, if any.
@@ -64,14 +65,28 @@ const validTypes: Array<string> = ["Doc", "Guide"];
 function validateUrlParams(version?: string, language?: string, type?: string): UrlParams | false {
     if (version && !validVersions.includes(version)) return false;
     if (language && !validLanguages.includes(language)) return false;
-    if (type && !validTypes.includes(type)) return false;
+    if (type && !(type.toUpperCase() in DocumentationTypes)) return false;
 
     return {
-        "version": version ? version.replace("..", "") : "",
-        "language": language ? language.replace("..", "") : "",
-        "type": type ? type.replace("..", "") : ""
+        "version": version || "",
+        "language": language || "",
+        "type": type as DocumentationTypes || DocumentationTypes.DOC
     };
 }
+
+/** 
+ * Validate cache url params.
+ *
+ * @param type The type to check, if any.
+ * @returns False if invalid and the checked type if valid.
+ */
+function validateCacheUrlParams(type: string | null): ValidCacheTypes | false {
+    if (!type || !(type.toUpperCase() in ValidCacheTypes)) return false;
+    return ValidCacheTypes[type.toUpperCase() as keyof typeof ValidCacheTypes];
+}
+
+// From here it is protected
+app.use(protectedApiRequest);
 
 // Refresh
 const refreshLimit = rateLimit({
@@ -83,15 +98,15 @@ const refreshLimit = rateLimit({
 app.get("/refresh/:version/:language", refreshLimit, async (req: Request, res: Response, next: NextFunction) => {
     try {
         const params: UrlParams | false = validateUrlParams(req.params.version, req.params.language);
-        if (!params) return res.sendStatus(400);
+        if (!params) throw new Error("Invalid / missing URL params.", { cause: { statusCode: 1400 } });
 
         // Indices
-        const docIndex: Array<IndexItem> = getIndex(params.version, params.language, "Doc");
-        const guideIndex: Array<IndexItem> = getIndex(params.version, params.language, "Guide");
+        const docIndex: Array<IndexItem> = getCachedIndex(params.version, params.language, DocumentationTypes.DOC);
+        const guideIndex: Array<IndexItem> = getCachedIndex(params.version, params.language, DocumentationTypes.GUIDE);
 
         // Featured Items
-        const featuredDocItems: Array<FeaturedItem> = getFeaturedItems(params.language, "Doc");
-        const featuredGuideItems: Array<FeaturedItem> = getFeaturedItems(params.language, "Guide");
+        const featuredDocItems: Array<FeaturedItem> = getFeaturedItems(params.language, DocumentationTypes.DOC);
+        const featuredGuideItems: Array<FeaturedItem> = getFeaturedItems(params.language, DocumentationTypes.GUIDE);
 
         return res.json({
             "docIndex": docIndex,
@@ -109,10 +124,16 @@ app.get("/getFile/:version/:language/:type", async (req: Request, res: Response,
     try {
         const searchQuery: FileRequest = req.query as FileRequest;
         const params: UrlParams | false = validateUrlParams(req.params.version, req.params.language, req.params.type);
-        if (!params) return res.sendStatus(400);
+        if (!params) throw new Error("Invalid / missing URL params.", { cause: { statusCode: 1400 } });
 
-        const updateViewCount: boolean = false; // TODO: Refresh should not update view count
-        const file: DocumentationFile = await getFile(searchQuery.folder, searchQuery.name, params.version, params.language, params.type, updateViewCount);
+        // TODO: Refresh should not update view count
+        const file: DocumentationFile = await getCachedFile({
+            "folder": searchQuery.folder,
+            "name": searchQuery.name,
+            "version": params.version,
+            "language": params.language,
+            "type": params.type
+        });
         return res.json(file);
     } catch (error: any) {
         next(error);
@@ -123,9 +144,9 @@ app.get("/getFile/:version/:language/:type", async (req: Request, res: Response,
 app.get("/getIndex/:version/:language/:type", async (req: Request, res: Response, next: NextFunction) => {
     try {
         const params: UrlParams | false = validateUrlParams(req.params.version, req.params.language, req.params.type);
-        if (!params) return res.sendStatus(400);
+        if (!params) throw new Error("Invalid / missing URL params.", { cause: { statusCode: 1400 } });
 
-        const index: Array<IndexItem> = getIndex(params.version, params.language, params.type);
+        const index: Array<IndexItem> = getCachedIndex(params.version, params.language, params.type);
         return res.json(index);
     } catch (error: any) {
         next(error);
@@ -136,7 +157,7 @@ app.get("/getIndex/:version/:language/:type", async (req: Request, res: Response
 app.get("/getFeaturedItems/:language/:type", async (req: Request, res: Response, next: NextFunction) => {
     try {
         const params: UrlParams | false = validateUrlParams(undefined, req.params.language, req.params.type);
-        if (!params) return res.sendStatus(400);
+        if (!params) throw new Error("Invalid / missing URL params.", { cause: { statusCode: 1400 } });
 
         const data: Array<FeaturedItem> = getFeaturedItems(params.language, params.type);
         return res.json(data);
@@ -145,10 +166,35 @@ app.get("/getFeaturedItems/:language/:type", async (req: Request, res: Response,
     }
 });
 
+// Documentation Page Cache Details
+app.get("/cache/:type", (req: Request, res: Response, next: NextFunction) => {
+    try {
+        const type: ValidCacheTypes | false = validateCacheUrlParams(req.params.type || null);
+        if (!type) throw new Error("Invalid / missing URL params.", { cause: { statusCode: 1400 } });
+
+        return res.json(getCacheDetails(type));
+    } catch (error: any) {
+        next(error);
+    }
+});
+
+// Clear Documentation Page Cache
+app.delete("/cache/:type", (req: Request, res: Response, next: NextFunction) => {
+    try {
+        const type: ValidCacheTypes | false = validateCacheUrlParams(req.params.type || null);
+        if (!type) throw new Error("Invalid / missing URL params.", { cause: { statusCode: 1400 } });
+
+        clearCache(type);
+        return res.sendStatus(200);
+    } catch (error: any) {
+        next(error);
+    }
+});
+
 // Error Handler
 app.use((err: any, _req: Request, res: Response, _next: NextFunction) => {
     const { statusCode, message } = formatApiError(err);
-    res.status(statusCode).json(message);
+    res.status(statusCode).json({ message });
 });
 
 // Start

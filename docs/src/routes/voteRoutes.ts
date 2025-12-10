@@ -31,10 +31,9 @@ router.post("/new/:version/:language", async (req: Request, res: Response) => {
 router.put("/comment", async (req: Request, res: Response) => {
     try {
         // Setup
-        const commentParams = req.query as { ticket: string };
-        if (!commentParams.ticket || !req.body.comment) return res.sendStatus(400);
+        if (!req.body.ticket || !req.body.comment) return res.sendStatus(400);
         const commentRequest: CommentRequest = {
-            "ticket": commentParams.ticket,
+            "ticket": req.body.ticket,
             "commment": req.body.comment
         };
 

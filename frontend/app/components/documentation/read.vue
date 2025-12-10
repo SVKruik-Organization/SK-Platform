@@ -61,14 +61,14 @@ watchEffect(() => {
 });
 
 if (fileError.value) {
-    const err: any = fileError.value;
-    if (err.statusCode === 404) {
+    const error: any = fileError.value;
+    if (error.statusCode === 404) {
         await navigateTo(`/documentation/notfound?type=${props.type}&category=${props.category}&page=${currentPage.value}`);
     } else {
         $event("emit-toast", {
             id: createTicket(4),
             type: ToastTypes.danger,
-            message: err.message || "Something went wrong while retrieving this page. Please try again later.",
+            message: error.message || "Something went wrong while retrieving this page. Please try again later.",
             duration: 3,
         } as ToastItem);
     }

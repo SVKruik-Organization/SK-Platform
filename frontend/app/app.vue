@@ -8,6 +8,7 @@ import { useDocumentationStore } from "./stores/DocumentationStore";
 // Setup
 const route = useRoute();
 const documentationStore = useDocumentationStore();
+const loadingIndicatorColor: string = "linear-gradient(to right, #fcd967 0%, #f68585 39%, #cb79e8 100%)";
 
 // SEO
 const metaItems = [
@@ -121,6 +122,7 @@ function metaUpdater(newRoute: string): void {
 </script>
 
 <template>
+    <NuxtLoadingIndicator :color="loadingIndicatorColor" />
     <Toast />
     <NuxtPage />
 </template>

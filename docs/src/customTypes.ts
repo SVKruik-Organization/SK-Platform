@@ -123,5 +123,28 @@ export type SitemapFile = {
 export type UrlParams = {
     "version": string,
     "language": string,
-    "type": string
+    "type": DocumentationTypes
+}
+
+// Documentation Cache Entry
+export type DocumentationPageCacheEntry = {
+    "file": DocumentationFile,
+    "timestamp": number
+}
+
+export type DocumentationIndexCacheEntry = {
+    "index": Array<IndexItem>,
+    "timestamp": number
+}
+
+
+export enum ValidCacheTypes {
+    PAGES = "Pages",
+    INDICES = "Indices",
+    ALL = "All"
+}
+
+export enum DocumentationTypes {
+    DOC = "Doc",
+    GUIDE = "Guide"
 }

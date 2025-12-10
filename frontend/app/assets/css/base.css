@@ -30,6 +30,14 @@ body {
     text-shadow: 0 4px 4px rgba(0, 0, 0, 0.1);
 }
 
+.anchored-chapter,
+.text-gradient {
+    background: linear-gradient(to right, #fcd967 0%, #f68585 39%, #cb79e8 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+}
+
 .glass {
     -webkit-backdrop-filter: blur(16px) saturate(180%);
     backdrop-filter: blur(16px) saturate(180%);

@@ -3,9 +3,10 @@ import { formatError } from "@/utils/format";
 
 export const useFetchDocumentationFeaturedItems = async (language: string, type: string): Promise<Array<FeaturedItem>> => {
     try {
-        const runtimeConfig = useRuntimeConfig();
-        return await $fetch(`${runtimeConfig.public.docsApiBase}/getFeaturedItems/${language}/${type}`, {
-            method: "GET"
+        return await $fetch("/api/docs_proxy", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: { endpoint: `/getFeaturedItems/${language}/${type}` }
         });
     } catch (error: any) {
         throw formatError(error);

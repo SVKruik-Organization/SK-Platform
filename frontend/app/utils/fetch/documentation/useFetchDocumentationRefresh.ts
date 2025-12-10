@@ -3,9 +3,10 @@ import { formatError } from "@/utils/format";
 
 export const useFetchDocumentationRefresh = async (version: string, language: string): Promise<DocumentationRefreshResponse> => {
     try {
-        const runtimeConfig = useRuntimeConfig();
-        return await $fetch(`${runtimeConfig.public.docsApiBase}/refresh/${version}/${language}`, {
-            method: "GET"
+        return await $fetch("/api/docs_proxy", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: { endpoint: `/refresh/${version}/${language}` }
         });
     } catch (error: any) {
         throw formatError(error);

@@ -21,10 +21,11 @@ export default defineNuxtConfig({
         storesDirs: ["./app/stores/**"],
     },
     runtimeConfig: {
-        public: {
-            authApiBase: "",
-            docsApiBase: ""
-        },
+        authApiBase: "",
+        authApiKey: "",
+        docsApiBase: "",
+        docsApiKey: "",
+
         uplinkHost: "",
         uplinkPort: "",
         uplinkUsername: "",
@@ -48,6 +49,9 @@ export default defineNuxtConfig({
                 { property: "og:image:width", content: "1280" },
                 { property: "og:image:height", content: "640" },
                 { property: "twitter:card", content: "summary_large_image" },
+            ],
+            link: [
+                { rel: 'stylesheet', href: 'https://cdn.jsdelivr.net/gh/lipis/flag-icons@7.5.0/css/flag-icons.min.css' }
             ]
         }
     },
