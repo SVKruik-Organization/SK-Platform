@@ -57,7 +57,9 @@ const { data: asyncFileData, error: fileError } = await useAsyncData(
 );
 
 watchEffect(() => {
-    fileData.value = asyncFileData.value ?? null;
+    if (!asyncFileData.value) return;
+    fileData.value = asyncFileData.value;
+    buildChapterData();
 });
 
 if (fileError.value) {
@@ -99,6 +101,10 @@ onMounted(async () => {
     hasNextPage.value = await documentationStore.hasNextPage(props.type, props.category, props.page);
     categoryList.value = await documentationStore.getCategoryList(props.type, props.category);
     seoCategory.value = await documentationStore.getCategory(props.type, props.category);
+
+    nextTick(() => {
+        setupChapterObserver();
+    });
 });
 onUnmounted(() => disconnectChapterObserver());
 
@@ -375,7 +381,7 @@ useHead({
 </script>
 
 <template>
-    <div class="content-wrapper flex" v-if="fileData != null">
+    <div class="content-wrapper flex">
         <nav class="flex scrollbar" :class="{ 'navigation-expand': navigationDropdownVisible }">
             <section class="navigation scrollbar flex-col" :class="{ 'disable-close': navigationDropdownVisible }">
                 <div class="flex category-title" :class="{ 'disable-close': navigationDropdownVisible }">
@@ -384,12 +390,9 @@ useHead({
                             <NuxtImg class="icon" width="20" height="20" src="/svg/arrow-left-regular.svg"
                                 loading="lazy" alt="Icon" />
                         </NuxtLink>
-                        <ClientOnly>
-                            <NuxtLink :to="`/documentation/Read/${type}/${category}`"
-                                title="Go to the category home page.">
-                                {{ category.replace(/_/g, " ") }}
-                            </NuxtLink>
-                        </ClientOnly>
+                        <NuxtLink :to="`/documentation/Read/${type}/${category}`" title="Go to the category home page.">
+                            {{ category.replace(/_/g, " ") }}
+                        </NuxtLink>
                     </div>
                     <button type="button" class="navigation-button navigation-close navbar-pill"
                         title="Close the navigation bar.">
@@ -397,47 +400,44 @@ useHead({
                             alt="Icon" />
                     </button>
                 </div>
-                <ClientOnly>
-                    <NuxtLink :to="`/documentation/read/${type}/${category}/${link}`" class="navigation-link"
-                        :class="{ 'active-navigation-link': link === page }" v-for="link in categoryList" :key="link">
-                        {{ link.replace(/_/g, " ") }}
-                    </NuxtLink>
-                </ClientOnly>
+                <NuxtLink :to="`/documentation/read/${type}/${category}/${link}`" class="navigation-link"
+                    :class="{ 'active-navigation-link': link === page }" v-for="link in categoryList" :key="link">
+                    {{ link.replace(/_/g, " ") }}
+                </NuxtLink>
                 <section class="flex-col responsive-nav" :class="{ 'disable-close': navigationDropdownVisible }"
-                    v-if="typeof fileData === 'object' && (chapterData.length || fileData.products.length)">
-                    <span class="splitter"></span>
-                    <div v-if="chapterData.length" class="flex-col responsive-nav-item"
-                        :class="{ 'disable-close': navigationDropdownVisible }">
-                        <strong :class="{ 'disable-close': navigationDropdownVisible }">On This Page</strong>
-                        <ClientOnly>
-                            <a v-for="chapter in chapterData" :key="chapter.title" :href="`#${chapter.title}`"
+                    v-if="chapterData.length || fileData?.products.length">
+                    <template v-if="chapterData.length">
+                        <span class="splitter"></span>
+                        <div class="flex-col responsive-nav-item"
+                            :class="{ 'disable-close': navigationDropdownVisible }">
+                            <strong :class="{ 'disable-close': navigationDropdownVisible }">On This Page</strong>
+                            <NuxtLink v-for="chapter in chapterData" :key="chapter.title" :to="`#${chapter.title}`"
                                 :id="`${chapter.title}_aside`" class="responsive-nav-item-link"
                                 :class="{ 'active-chapter': chapter.active, 'anchored-chapter': isAnchored(chapter.title) }"
                                 @click.prevent="goToChapter(chapter.title)">
                                 {{ chapter.title.replace(/_/g, ' ') }}
-                            </a>
-                        </ClientOnly>
-                    </div>
-                    <span v-if="chapterData.length" class="splitter"></span>
-                    <div class="flex-col responsive-nav-item" v-if="fileData.products.length"
-                        :class="{ 'disable-close': navigationDropdownVisible }">
+                            </NuxtLink>
+                        </div>
+                        <span class="splitter"></span>
+                    </template>
+                    <div class="flex-col responsive-nav-item" :class="{ 'disable-close': navigationDropdownVisible }"
+                        v-if="fileData?.products.length">
                         <div class="flex featured-product-title-container"
                             :class="{ 'disable-close': navigationDropdownVisible }">
-                            <strong :class="{ 'disable-close': navigationDropdownVisible }">Featured Products</strong>
+                            <strong :class="{ 'disable-close': navigationDropdownVisible }">Featured
+                                Products</strong>
                             <NuxtImg class="icon" width="15" height="15" src="/svg/circle-info-regular.svg"
                                 :class="{ 'disable-close': navigationDropdownVisible }" loading="lazy" alt="Icon" />
-                            <span :class="{ 'disable-close': navigationDropdownVisible }">Products that have been used
-                                in this {{ type }}.</span>
+                            <span :class="{ 'disable-close': navigationDropdownVisible }">Products that have been
+                                used in this {{ type }}.</span>
                         </div>
-                        <ClientOnly>
-                            <NuxtLink class="flex featured-product-item" v-for="product of fileData.products"
-                                :to="product.url">
-                                <NuxtImg height="30" width="30" loading="lazy"
-                                    :src="`https://files.stefankruik.com/Products/100/${product.name}.png`"
-                                    @error="handleFallbackImage($event, 'icon')" alt="Product Icon" />
-                                <p>{{ product.name.replace(/_/g, " ") }}</p>
-                            </NuxtLink>
-                        </ClientOnly>
+                        <NuxtLink class="flex featured-product-item" v-for="product of fileData?.products"
+                            :to="product.url">
+                            <NuxtImg height="30" width="30" loading="lazy"
+                                :src="`https://files.stefankruik.com/Products/100/${product.name}.png`"
+                                @error="handleFallbackImage($event, 'icon')" alt="Product Icon" />
+                            <p>{{ product.name.replace(/_/g, " ") }}</p>
+                        </NuxtLink>
                     </div>
                 </section>
             </section>
@@ -448,23 +448,21 @@ useHead({
                 <strong class="responsive-nav-title"
                     :class="{ 'disable-close': navigationDropdownVisible }">Options</strong>
                 <div class="flex-col">
-                    <ClientOnly>
-                        <button title="Go to the previous page." class="flex navbar-pill control-pill" type="button"
-                            :class="{ 'disabled-button': !hasPreviousPage }" @click="previousPage()">
-                            <p>Previous</p>
-                            <NuxtImg class="icon icon-light" width="15" height="15"
-                                src="/svg/diagram-previous-regular.svg" loading="lazy" alt="Icon" />
-                        </button>
-                    </ClientOnly>
+                    <button title="Go to the previous page." class="flex navbar-pill control-pill" type="button"
+                        :class="{ 'disabled-button': !hasPreviousPage }" @click="previousPage()">
+                        <p>Previous</p>
+                        <NuxtImg class="icon icon-light" width="15" height="15" src="/svg/diagram-previous-regular.svg"
+                            loading="lazy" alt="Icon" />
+                    </button>
                     <button title="Share this article." class="flex navbar-pill control-pill" type="button"
                         :class="{ 'disable-close': navigationDropdownVisible }" @click="share()">
-                        <p :class="{ 'disable-close': navigationDropdownVisible }" ref="shareButtonContents">Share</p>
+                        <p :class="{ 'disable-close': navigationDropdownVisible }" ref="shareButtonContents">Share
+                        </p>
                         <NuxtImg class="icon icon-light" width="15" height="15" src="/svg/share-regular.svg"
                             :class="{ 'disable-close': navigationDropdownVisible }" loading="lazy" alt="Icon" />
                     </button>
-                    <button hide title="View page information." type="button" v-if="typeof fileData === 'object'"
+                    <button hide title="View page information." type="button" @click="toggleInformationMenu($event)"
                         class="flex dropdown-container justify-center navbar-pill disable-close"
-                        @click="toggleInformationMenu($event)"
                         :class="{ 'navbar-pill-expand': informationDropdownVisible, 'disable-close': navigationDropdownVisible }">
                         <p class="disable-close" :class="{ 'navbar-pill-text-expand': informationDropdownVisible }">
                             Information</p>
@@ -504,14 +502,12 @@ useHead({
                             </div>
                         </menu>
                     </button>
-                    <ClientOnly>
-                        <button title="Go to the next page." class="flex navbar-pill control-pill" type="button"
-                            :class="{ 'disabled-button': !hasNextPage }" @click="nextPage()">
-                            <p>Next</p>
-                            <NuxtImg class="icon icon-light" width="15" height="15" src="/svg/diagram-next-regular.svg"
-                                loading="lazy" alt="Icon" />
-                        </button>
-                    </ClientOnly>
+                    <button title="Go to the next page." class="flex navbar-pill control-pill" type="button"
+                        :class="{ 'disabled-button': !hasNextPage }" @click="nextPage()">
+                        <p>Next</p>
+                        <NuxtImg class="icon icon-light" width="15" height="15" src="/svg/diagram-next-regular.svg"
+                            loading="lazy" alt="Icon" />
+                    </button>
                 </div>
             </section>
         </nav>
@@ -523,47 +519,34 @@ useHead({
                         <NuxtImg class="icon icon-light disable-close" width="15" height="15"
                             src="/svg/arrow-right-from-line-regular.svg" loading="lazy" alt="Icon" />
                     </button>
-                    <ClientOnly>
-                        <NuxtLink :to="`/documentation${type === 'Doc' ? '#Information' : '/#Guides'}`"
+                    <NuxtLink :to="`/documentation${type === 'Doc' ? '#Information' : '/#Guides'}`"
+                        class="breadcrumb-item breadcrumb-link">
+                        {{ type === 'Doc' ? 'Documentation' : 'Guides' }}
+                    </NuxtLink>
+                    <p class="breadcrumb-item">/</p>
+                    <template v-if="isPage">
+                        <NuxtLink :to="`/documentation/read/${type}/${category}`"
                             class="breadcrumb-item breadcrumb-link">
-                            {{ type === 'Doc' ? 'Documentation' : 'Guides' }}
+                            {{ category.replace(/_/g, " ") }}
                         </NuxtLink>
                         <p class="breadcrumb-item">/</p>
-                        <template v-if="isPage">
-                            <NuxtLink :to="`/documentation/read/${type}/${category}`"
-                                class="breadcrumb-item breadcrumb-link">
-                                {{ category.replace(/_/g, " ") }}
-                            </NuxtLink>
-                            <p class="breadcrumb-item">/</p>
-                        </template>
-                    </ClientOnly>
+                    </template>
                 </div>
                 <section class="flex documentation-content-container">
-                    <div class="documentation-content-child" v-if="typeof fileData === 'object'"
-                        v-html="fileData.fileContents" @click="handleDocumentContentClick">
+                    <div class="documentation-content-child" v-html="fileData?.fileContents"
+                        @click="handleDocumentContentClick">
                     </div>
-                    <div class="documentation-content-child"
-                        v-else-if="typeof fileData === 'boolean' && fileData === true">
-                        <p class="error-message">Looks like this page is not available in this language and/or version.
-                            Please change them to their defaults and try again.
-                        </p>
-                    </div>
-                    <div class="documentation-content-child" v-else>
-                        <p class="error-message">Something went wrong while retrieving this page. Please try again
-                            later.</p>
-                    </div>
-                    <aside class="flex-col"
-                        v-if="typeof fileData === 'object' && (chapterData.length || fileData.products.length)">
-                        <div class="flex-col" v-if="chapterData.length">
+                    <aside class="flex-col">
+                        <div class="flex-col">
                             <strong>On This Page</strong>
-                            <a v-for="chapter in chapterData" :key="chapter.title" :href="`#${chapter.title}`"
+                            <NuxtLink v-for="chapter in chapterData" :key="chapter.title" :to="`#${chapter.title}`"
                                 :id="`${chapter.title}_aside`"
                                 :class="{ 'active-chapter': chapter.active, 'anchored-chapter': isAnchored(chapter.title) }"
                                 @click.prevent="goToChapter(chapter.title)">
                                 {{ chapter.title.replace(/_/g, ' ') }}
-                            </a>
+                            </NuxtLink>
                         </div>
-                        <div class="flex-col" v-if="fileData.products.length">
+                        <div class="flex-col">
                             <div class="flex featured-product-title-container">
                                 <strong>Featured Products</strong>
                                 <NuxtImg class="icon" width="15" height="15" src="/svg/circle-info-regular.svg"
@@ -573,40 +556,34 @@ useHead({
                                     <p>and/or mentioned in this {{ type }}.</p>
                                 </span>
                             </div>
-                            <ClientOnly>
-                                <NuxtLink class="flex featured-product-item" v-for="product of fileData.products"
-                                    :to="product.url">
-                                    <NuxtImg height="30" width="30" loading="lazy"
-                                        :src="`https://files.stefankruik.com/Products/100/${product.name}.png`"
-                                        @error="handleFallbackImage($event, 'icon')" alt="Product Icon" />
-                                    <p>{{ product.name.replace(/_/g, " ") }}</p>
-                                </NuxtLink>
-                            </ClientOnly>
+                            <NuxtLink class="flex featured-product-item" v-for="product of fileData?.products"
+                                :to="product.url">
+                                <NuxtImg height="30" width="30" loading="lazy"
+                                    :src="`https://files.stefankruik.com/Products/100/${product.name}.png`"
+                                    @error="handleFallbackImage($event, 'icon')" alt="Product Icon" />
+                                <p>{{ product.name.replace(/_/g, " ") }}</p>
+                            </NuxtLink>
                         </div>
                     </aside>
                 </section>
             </div>
-            <section v-if="fileData.related?.length" class="flex-col related-container">
+            <section class="flex-col related-container">
                 <div class="flex-col section-title-container">
                     <h3>Also Read</h3>
                     <p class="light-text">Related pages that you might find useful as well.</p>
                 </div>
                 <div class="flex related-item-container">
-                    <ClientOnly>
-                        <DocumentationRelatedItem v-for="item of fileData.related" :key="item.id" :data="item">
-                        </DocumentationRelatedItem>
-                    </ClientOnly>
+                    <DocumentationRelatedItem v-for="item of fileData?.related" :key="item.id" :data="item" />
                 </div>
             </section>
             <section class="flex-col footer-container">
                 <div class="flex-col section-title-container">
                     <h3>More</h3>
-                    <p class="light-text">Leave feedback if you'd like and find links to further assistence.</p>
+                    <p class="light-text">Leave feedback if you'd like and find links to further assistance.</p>
                 </div>
                 <DocumentationFooter @dropdownState="handleDropdownState"
                     :comment-overlay-visible="commentOverlayVisible" :type="props.type" :category="props.category"
-                    :page="props.page" styles="read-footer">
-                </DocumentationFooter>
+                    :page="props.page" styles="read-footer" />
             </section>
         </div>
     </div>

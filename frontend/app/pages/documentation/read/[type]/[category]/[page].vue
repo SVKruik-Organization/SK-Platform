@@ -25,10 +25,7 @@ function handleDropdownState(name: DropdownStates, newValue: boolean): void {
 </script>
 
 <template>
-    <div>
-        <DocumentationRead @dropdown-state="handleDropdownState" :type="type" :category="category" :page="page"
-            :information-dropdown-visible="informationDropdownVisible"
-            :product-dropdown-visible="productDropdownVisible" :navigation-dropdown-visible="navigationDropdownVisible"
-            :comment-overlay-visible="commentOverlayVisible" />
-    </div>
+    <DocumentationRead @dropdown-state="handleDropdownState" :type="type" :category="category" :page="page"
+        :information-dropdown-visible="informationDropdownVisible" :product-dropdown-visible="productDropdownVisible"
+        :navigation-dropdown-visible="navigationDropdownVisible" :comment-overlay-visible="commentOverlayVisible" />
 </template>

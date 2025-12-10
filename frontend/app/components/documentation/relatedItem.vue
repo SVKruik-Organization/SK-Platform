@@ -8,12 +8,17 @@ defineProps<{
 </script>
 
 <template>
-    <NuxtLink :to="`/documentation/read/${data.type}/${data.category}/${data.page}`" class="related-item flex">
+    <article class="related-item flex">
+        <!-- Full-card overlay link (makes the whole card clickable without nesting anchors) -->
+        <NuxtLink class="related-item-overlay" :to="`/documentation/read/${data.type}/${data.category}/${data.page}`"
+            aria-label="Open related page" />
+
         <section class="related-item-left flex">
             <NuxtImg class="icon" width="15" height="15" :src="`/svg/tailor/${data.icon}-regular.svg`" loading="lazy"
                 alt="Icon" />
         </section>
-        <article class="related-item-right flex-col">
+
+        <section class="related-item-right flex-col">
             <strong>{{ data.page.replace(/_/g, " ") }}</strong>
             <div class="related-sub flex">
                 <NuxtLink :to="data.type === 'Doc' ? '/documentation#Information' : '/documentation#Guides'"
@@ -26,20 +31,28 @@ defineProps<{
                     {{ data.category.replace(/_/g, " ") }}
                 </NuxtLink>
             </div>
-            <NuxtImg v-if="data.imageUrl" height="500" width="500" class="product-image" :src="data.imageUrl"
-                alt="Related Product Image" loading="lazy" />
-        </article>
-    </NuxtLink>
+            <NuxtImg height="500" width="500" class="product-image" :src="data.imageUrl" alt="Related Product Image"
+                loading="lazy" />
+        </section>
+    </article>
 </template>
 
 <style scoped>
 .related-item {
+    position: relative;
     border-radius: var(--border-radius-low);
     border: 1px solid var(--border);
     background-color: var(--fill);
     width: 49%;
     height: 80px;
     gap: 0;
+    overflow: hidden;
+}
+
+.related-item-overlay {
+    position: absolute;
+    inset: 0;
+    z-index: 0;
 }
 
 .related-description {
@@ -48,6 +61,8 @@ defineProps<{
 }
 
 .related-item-left {
+    position: relative;
+    z-index: 1;
     height: 100%;
     width: 40px;
     justify-content: center;
@@ -58,6 +73,7 @@ defineProps<{
 
 .related-item-right {
     position: relative;
+    z-index: 1;
     height: 100%;
     justify-content: center;
     flex: 1;
@@ -65,7 +81,6 @@ defineProps<{
     border-top-right-radius: var(--border-radius-low);
     border-bottom-right-radius: var(--border-radius-low);
     overflow: hidden;
-    z-index: 1;
 }
 
 .related-item-right > strong,

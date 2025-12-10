@@ -21,7 +21,7 @@ const humanLanguage: string = validFullLanguages[validLanguages.indexOf(language
 
 // Root Folder
 logData(`Search indexing export in version ${version} in ${humanLanguage}@${language}.`, "info");
-const rootFolders: Array<Dirent> = readdirSync(`${__dirname}/../data/html/${version}/${language}`, {
+const rootFolders: Array<Dirent> = readdirSync(`${__dirname}/../data/pages/${version}/${language}`, {
     withFileTypes: true
 }).filter(entity => entity.isDirectory());
 
@@ -30,7 +30,7 @@ const rootFolders: Array<Dirent> = readdirSync(`${__dirname}/../data/html/${vers
 const seedItems: Array<SeedItem> = [];
 for (const rootFolder of rootFolders) {
     logData(`Reading ${rootFolder.name} sub-folder.`, "info");
-    const subRoots: Array<Dirent> = readdirSync(`${__dirname}/../data/html/${version}/${language}/${rootFolder.name}`, {
+    const subRoots: Array<Dirent> = readdirSync(`${__dirname}/../data/pages/${version}/${language}/${rootFolder.name}`, {
         withFileTypes: true
     }).filter(entity => entity.isDirectory());
 
@@ -41,7 +41,7 @@ for (const rootFolder of rootFolders) {
             "category": subRoot.name,
 
             // Individual HTML Files
-            "children": readdirSync(`${__dirname}/../data/html/${version}/${language}/${rootFolder.name}/${subRoot.name}`, {
+            "children": readdirSync(`${__dirname}/../data/pages/${version}/${language}/${rootFolder.name}/${subRoot.name}`, {
                 withFileTypes: true
             }).filter(entity => entity.isFile() && entity.name.endsWith(".html")).map(file => file.name)
         });
@@ -61,7 +61,7 @@ for (let i = 0; i < seedItems.length; i++) {
             "type": seedItem.type,
             "category": seedItem.category.slice(3).replace(/_/g, " "),
             "page": file.slice(3, -5).replace(/_/g, " "),
-            "content": readFileSync(`${__dirname}/../data/html/${version}/${language}/${seedItem.type}/${seedItem.category}/${file}`, "utf-8")
+            "content": readFileSync(`${__dirname}/../data/pages/${version}/${language}/${seedItem.type}/${seedItem.category}/${file}`, "utf-8")
                 .replace(/(<([^>]+)>)/ig, "") // HTML
                 .replace(/\\./ig, "").trim() // Escape Characters
         });

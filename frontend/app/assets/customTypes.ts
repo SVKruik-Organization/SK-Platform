@@ -76,7 +76,7 @@ export type RelatedItem = {
     "page": string,
     "icon": string,
     "type": string,
-    "imageUrl": string | null
+    "imageUrl": string
 }
 
 // Raw Full Refresh Response

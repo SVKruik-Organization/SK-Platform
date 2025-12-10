@@ -1,0 +1,1234 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/lipis/flag-icons@7.5.0/css/flag-icons.min.css">
+    <link rel="stylesheet" href="/_nuxt/assets/css/base.css" crossorigin>
+    <link rel="stylesheet" href="/_nuxt/assets/css/interaction.css" crossorigin>
+    <link rel="stylesheet" href="/_nuxt/assets/css/documentation.css" crossorigin>
+    <link rel="stylesheet" href="/_nuxt/assets/css/docpage.css" crossorigin>
+    <link rel="stylesheet" href="/_nuxt/components/toast.vue?vue&type=style&index=0&scoped=c319bb4c&lang.css"
+        crossorigin>
+    <link rel="stylesheet" href="/_nuxt/error.vue?vue&type=style&index=0&scoped=f249f6ff&lang.css" crossorigin>
+    <link rel="stylesheet"
+        href="/_nuxt/components/documentation/navbar.vue?vue&type=style&index=0&scoped=e1e26d80&lang.css" crossorigin>
+    <link rel="stylesheet"
+        href="/_nuxt/components/documentation/read.vue?vue&type=style&index=0&scoped=fcdd5ca3&lang.css" crossorigin>
+    <link rel="stylesheet"
+        href="/_nuxt/components/documentation/footer.vue?vue&type=style&index=0&scoped=59db9bad&lang.css" crossorigin>
+    <link rel="stylesheet"
+        href="/_nuxt/components/documentation/relatedItem.vue?vue&type=style&index=0&scoped=5e08f86b&lang.css"
+        crossorigin>
+    <link rel="stylesheet" href="/_nuxt/pages/documentation/index.vue?vue&type=style&index=0&scoped=273ea3f8&lang.css"
+        crossorigin>
+    <link rel="stylesheet"
+        href="/_nuxt/components/documentation/featuredItem.vue?vue&type=style&index=0&scoped=732fde75&lang.css"
+        crossorigin>
+    <link rel="stylesheet"
+        href="/_nuxt/components/documentation/categoryItem.vue?vue&type=style&index=0&scoped=104d0731&lang.css"
+        crossorigin>
+    <link rel="modulepreload" as="script" crossorigin
+        href="/_nuxt/Users/svkruik/Documents/GitHub/SK-Platform/frontend/node_modules/nuxt/dist/app/entry.async.js">
+    <link rel="preload" as="fetch" fetchpriority="low" crossorigin="anonymous" href="/_nuxt/builds/meta/dev.json">
+    <meta name="keywords"
+        content="SK Platform Documentation, SK Documentation, SK Docs, SK Docs Home, Stefan Kruik, stefankruik, Bots, SK Bots, Docs">
+    <meta name="author" content="Stefan Kruik, platform@stefankruik.com">
+    <meta name="owner" content="Stefan Kruik">
+    <meta property="og:site_name" content="SK Platform">
+    <meta property="og:locale" content="en_US">
+    <meta property="og:locale:alternate" content="nl_NL">
+    <meta property="og:determiner" content="the">
+    <meta property="og:image:type" content="image/png">
+    <meta property="og:image:width" content="1280">
+    <meta property="og:image:height" content="640">
+    <meta property="twitter:card" content="summary_large_image">
+    <meta name="description"
+        content="The documentation for the SK Platform. Learn how to use the platform, its products, and services.">
+    <meta property="og:title"
+        content="SK Docs - The documentation for the SK Platform. Learn how to use the platform, its products, and services.">
+    <meta property="og:description"
+        content="The documentation for the SK Platform. Learn how to use the platform, its products, and services.">
+    <meta property="og:image" content="https://files.stefankruik.com/Products/1280/Docs.png">
+    <meta property="og:image:alt" content="The SK Docs logo.">
+    <meta property="twitter:image" content="https://files.stefankruik.com/Products/1280/Docs.png">
+    <meta property="twitter:title"
+        content="SK Docs - The documentation for the SK Platform. Learn how to use the platform, its products, and services.">
+    <meta property="twitter:description"
+        content="The documentation for the SK Platform. Learn how to use the platform, its products, and services.">
+    <meta property="og:type" content="article">
+    <meta property="article:author" content="https://github.com/SVKruik">
+    <link rel="index" href="https://platform.stefankruik.com/documentation">
+    <link rel="self" href="https://platform.stefankruik.com/documentation/read/Doc/More/Template">
+    <meta property="article:section" content="Documentation">
+    <meta property="article:published_time" content="2024-07-11">
+    <meta property="article:modified_time" content="2024-11-24">
+    <meta property="article:tag" content="More">
+    <meta property="article:tag" content="Template">
+    <script type="application/ld+json">
+            {
+                "@context": "https://schema.org",
+                "@type": "BreadcrumbList",
+                "name": "SK Platform | Documentation",
+                "itemListElement": [
+                    {
+                        "@type": "ListItem",
+                        "position": 1,
+                        "name": "Documentation",
+                        "item": "https://platform.stefankruik.com/documentation"
+                    },
+                    {
+                        "@type": "ListItem",
+                        "position": 2,
+                        "name": "More",
+                        "item": "https://platform.stefankruik.com/documentation/read/Doc/More"
+                    },
+                    {
+                        "@type": "ListItem",
+                        "position": 3,
+                        "name": "Template",
+                        "item": "https://platform.stefankruik.com/documentation/read/Doc/More/Template"
+                    }
+                ]
+            }</script>
+    <script type="module" src="/_nuxt/@vite/client" crossorigin></script>
+    <script type="module"
+        src="/_nuxt/Users/svkruik/Documents/GitHub/SK-Platform/frontend/node_modules/nuxt/dist/app/entry.async.js"
+        crossorigin></script>
+</head>
+
+<body>
+    <div id="__nuxt">
+        <!--[-->
+        <div class="nuxt-loading-indicator"
+            style="position:fixed;top:0;right:0;left:0;pointer-events:none;width:auto;height:3px;opacity:0;background:linear-gradient(to right, #fcd967 0%, #f68585 39%, #cb79e8 100%);background-size:0% auto;transform:scaleX(0%);transform-origin:left;transition:transform 0.1s, height 0.4s, opacity 0.4s;z-index:999999;">
+        </div>
+        <div class="flex-col toast-container" data-v-c319bb4c>
+            <!--[-->
+            <!--]-->
+        </div>
+        <div>
+            <header data-v-e1e26d80>
+                <nav class="flex glass" data-v-e1e26d80>
+                    <section class="left-nav flex" data-v-e1e26d80>
+                        <a href="/documentation" class="router-link-active" data-v-e1e26d80>
+                            <h2 data-v-e1e26d80>SK Docs</h2>
+                        </a>
+                    </section>
+                    <section class="right-nav flex" data-v-e1e26d80>
+                        <div class="flex middle-nav" data-v-e1e26d80>
+                            <button title="Search through the documentation." type="button"
+                                class="input-container flex navbar-pill disable-nav-close" data-v-e1e26d80>
+                                <img onerror="this.setAttribute(&#39;data-error&#39;, 1)" width="15" height="15"
+                                    alt="Icon" loading="lazy" data-nuxt-img
+                                    srcset="/_ipx/s_15x15/svg/magnifying-glass-regular.svg 1x, /_ipx/s_30x30/svg/magnifying-glass-regular.svg 2x"
+                                    class="icon icon-light disable-nav-close"
+                                    src="/_ipx/s_15x15/svg/magnifying-glass-regular.svg" data-v-e1e26d80>
+                                <input class="disable-nav-close" type="text" maxlength="60"
+                                    placeholder="Search through everything" data-v-e1e26d80>
+                                <menu class="flex-col input-results-container disable-nav-close" data-v-e1e26d80>
+                                    <div class="flex-col full-width disable-nav-close" data-v-e1e26d80>
+                                        <small class="light-text disable-nav-close" data-v-e1e26d80>Search Mode</small>
+                                        <div class="flex search-mode-container disable-nav-close" data-v-e1e26d80>
+                                            <button class="active-search-mode flex disable-nav-close"
+                                                title="Search for page titles and content." type="button"
+                                                data-v-e1e26d80>
+                                                <img onerror="this.setAttribute(&#39;data-error&#39;, 1)" width="15"
+                                                    height="15" alt="Icon" loading="lazy" data-nuxt-img
+                                                    srcset="/_ipx/s_15x15/svg/earth-americas-regular.svg 1x, /_ipx/s_30x30/svg/earth-americas-regular.svg 2x"
+                                                    class="icon icon-light disable-nav-close"
+                                                    src="/_ipx/s_15x15/svg/earth-americas-regular.svg" data-v-e1e26d80>
+                                                <p class="disable-nav-close" data-v-e1e26d80>Globally</p>
+                                            </button>
+                                            <button class="flex disable-nav-close" title="Search for page titles."
+                                                type="button" data-v-e1e26d80>
+                                                <img onerror="this.setAttribute(&#39;data-error&#39;, 1)" width="15"
+                                                    height="15" alt="Icon" loading="lazy" data-nuxt-img
+                                                    srcset="/_ipx/s_15x15/svg/font-regular.svg 1x, /_ipx/s_30x30/svg/font-regular.svg 2x"
+                                                    class="icon icon-light disable-nav-close"
+                                                    src="/_ipx/s_15x15/svg/font-regular.svg" data-v-e1e26d80>
+                                                <p class="disable-nav-close" data-v-e1e26d80>Pages</p>
+                                            </button>
+                                        </div>
+                                    </div>
+                                    <div class="flex-col full-width disable-nav-close" data-v-e1e26d80>
+                                        <div class="flex disable-nav-close result-header" data-v-e1e26d80>
+                                            <small class="light-text disable-nav-close" data-v-e1e26d80>Results</small>
+                                            <img class="icon icon-light disable-nav-close loading-indicator" width="15"
+                                                height="15" src="/svg/circle-notch-regular.svg" alt="Icon"
+                                                data-v-e1e26d80>
+                                        </div>
+                                        <section class="results full-width flex-col disable-nav-close" data-v-e1e26d80>
+                                            <p class="disable-nav-close" data-v-e1e26d80>Type in the search bar above,
+                                                and results will appear here.</p>
+                                        </section>
+                                        <!---->
+                                        <!---->
+                                    </div>
+                                </menu>
+                            </button>
+                            <button title="Change the version of the documentation." type="button"
+                                class="flex dropdown-container justify-center navbar-pill disable-close"
+                                data-v-e1e26d80>
+                                <p class="disable-close" data-v-e1e26d80>Version</p>
+                                <img onerror="this.setAttribute(&#39;data-error&#39;, 1)" width="15" height="15"
+                                    alt="Icon" loading="lazy" data-nuxt-img
+                                    srcset="/_ipx/s_15x15/svg/code-branch-regular.svg 1x, /_ipx/s_30x30/svg/code-branch-regular.svg 2x"
+                                    class="icon icon-light disable-close"
+                                    src="/_ipx/s_15x15/svg/code-branch-regular.svg" data-v-e1e26d80>
+                                <menu class="dropdown-menu dropdown-menu-left flex-col disable-close" data-v-e1e26d80>
+                                    <button type="button" class="menu-item flex" data-v-e1e26d80>
+                                        <img onerror="this.setAttribute(&#39;data-error&#39;, 1)" width="15" height="15"
+                                            alt="Icon" loading="lazy" data-nuxt-img
+                                            srcset="/_ipx/s_15x15/svg/check-regular.svg 1x, /_ipx/s_30x30/svg/check-regular.svg 2x"
+                                            class="icon visible" src="/_ipx/s_15x15/svg/check-regular.svg"
+                                            data-v-e1e26d80>
+                                        <label data-v-e1e26d80>v1 Stable</label>
+                                    </button>
+                                    <button type="button" class="menu-item flex" data-v-e1e26d80>
+                                        <img onerror="this.setAttribute(&#39;data-error&#39;, 1)" width="15" height="15"
+                                            alt="Icon" loading="lazy" data-nuxt-img
+                                            srcset="/_ipx/s_15x15/svg/check-regular.svg 1x, /_ipx/s_30x30/svg/check-regular.svg 2x"
+                                            class="icon" src="/_ipx/s_15x15/svg/check-regular.svg" data-v-e1e26d80>
+                                        <label class="disabled-text" data-v-e1e26d80>v2 Beta</label>
+                                    </button>
+                                </menu>
+                            </button>
+                        </div>
+                        <div class="right-nav-buttons flex" data-v-e1e26d80>
+                            <a href="/" class="flex navbar-pill gradient-button"
+                                title="Go back to the SK Platform homepage." data-v-e1e26d80>
+                                <p data-v-e1e26d80>Platform</p>
+                                <img onerror="this.setAttribute(&#39;data-error&#39;, 1)" width="15" height="15"
+                                    alt="Icon" loading="lazy" data-nuxt-img
+                                    srcset="/_ipx/s_15x15/svg/house-regular.svg 1x, /_ipx/s_30x30/svg/house-regular.svg 2x"
+                                    class="icon" src="/_ipx/s_15x15/svg/house-regular.svg" data-v-e1e26d80>
+                            </a>
+                            <a href="/documentation" class="router-link-active flex navbar-pill"
+                                title="Read the release notes." data-v-e1e26d80>
+                                <p data-v-e1e26d80>News</p>
+                                <img onerror="this.setAttribute(&#39;data-error&#39;, 1)" width="15" height="15"
+                                    alt="Icon" loading="lazy" data-nuxt-img
+                                    srcset="/_ipx/s_15x15/svg/newspaper-regular.svg 1x, /_ipx/s_30x30/svg/newspaper-regular.svg 2x"
+                                    class="icon icon-light" src="/_ipx/s_15x15/svg/newspaper-regular.svg"
+                                    data-v-e1e26d80>
+                            </a>
+                            <button title="Re-fetch the documentation." type="button"
+                                class="flex justify-center navbar-pill" data-v-e1e26d80>
+                                <p class="" data-v-e1e26d80>Refresh</p>
+                                <img onerror="this.setAttribute(&#39;data-error&#39;, 1)" width="15" height="15"
+                                    alt="Icon" loading="lazy" data-nuxt-img
+                                    srcset="/_ipx/s_15x15/svg/rotate-regular.svg 1x, /_ipx/s_30x30/svg/rotate-regular.svg 2x"
+                                    class="icon icon-light" src="/_ipx/s_15x15/svg/rotate-regular.svg" data-v-e1e26d80>
+                            </button>
+                            <button title="Change the language of the documentation." type="button"
+                                class="flex dropdown-container justify-center navbar-pill disable-close"
+                                data-v-e1e26d80>
+                                <p class="disable-close" data-v-e1e26d80>Language</p>
+                                <img onerror="this.setAttribute(&#39;data-error&#39;, 1)" width="15" height="15"
+                                    alt="Icon" loading="lazy" data-nuxt-img
+                                    srcset="/_ipx/s_15x15/svg/globe-regular.svg 1x, /_ipx/s_30x30/svg/globe-regular.svg 2x"
+                                    class="icon icon-light disable-close" src="/_ipx/s_15x15/svg/globe-regular.svg"
+                                    data-v-e1e26d80>
+                                <menu class="dropdown-menu dropdown-menu-left flex-col disable-close" data-v-e1e26d80>
+                                    <button type="button" class="menu-item flex" data-v-e1e26d80>
+                                        <img onerror="this.setAttribute(&#39;data-error&#39;, 1)" width="15" height="15"
+                                            alt="Icon" loading="lazy" data-nuxt-img
+                                            srcset="/_ipx/s_15x15/svg/check-regular.svg 1x, /_ipx/s_30x30/svg/check-regular.svg 2x"
+                                            class="icon visible" src="/_ipx/s_15x15/svg/check-regular.svg"
+                                            data-v-e1e26d80>
+                                        <label data-v-e1e26d80>English</label>
+                                        <span class="fi fi-us" data-v-e1e26d80></span>
+                                    </button>
+                                    <button type="button" class="menu-item flex" data-v-e1e26d80>
+                                        <img onerror="this.setAttribute(&#39;data-error&#39;, 1)" width="15" height="15"
+                                            alt="Icon" loading="lazy" data-nuxt-img
+                                            srcset="/_ipx/s_15x15/svg/check-regular.svg 1x, /_ipx/s_30x30/svg/check-regular.svg 2x"
+                                            class="icon" src="/_ipx/s_15x15/svg/check-regular.svg" data-v-e1e26d80>
+                                        <label class="disabled-text" data-v-e1e26d80>Nederlands</label>
+                                        <span class="fi fi-nl" data-v-e1e26d80></span>
+                                    </button>
+                                    <button type="button" class="menu-item flex" data-v-e1e26d80>
+                                        <img onerror="this.setAttribute(&#39;data-error&#39;, 1)" width="15" height="15"
+                                            alt="Icon" loading="lazy" data-nuxt-img
+                                            srcset="/_ipx/s_15x15/svg/check-regular.svg 1x, /_ipx/s_30x30/svg/check-regular.svg 2x"
+                                            class="icon" src="/_ipx/s_15x15/svg/check-regular.svg" data-v-e1e26d80>
+                                        <label class="disabled-text" data-v-e1e26d80>한국어</label>
+                                        <span class="fi fi-kr" data-v-e1e26d80></span>
+                                    </button>
+                                </menu>
+                            </button>
+                            <button title="Change the theme of the documentation." type="button"
+                                class="flex dropdown-container justify-center navbar-pill disable-close"
+                                data-v-e1e26d80>
+                                <p class="disable-close" data-v-e1e26d80>Theme</p>
+                                <img onerror="this.setAttribute(&#39;data-error&#39;, 1)" width="15" height="15"
+                                    alt="Icon" loading="lazy" data-nuxt-img
+                                    srcset="/_ipx/s_15x15/svg/palette-regular.svg 1x, /_ipx/s_30x30/svg/palette-regular.svg 2x"
+                                    class="icon icon-light disable-close" src="/_ipx/s_15x15/svg/palette-regular.svg"
+                                    data-v-e1e26d80>
+                                <menu class="dropdown-menu dropdown-menu-left flex-col disable-close" data-v-e1e26d80>
+                                    <button type="button" class="menu-item flex" data-v-e1e26d80>
+                                        <img onerror="this.setAttribute(&#39;data-error&#39;, 1)" width="15" height="15"
+                                            alt="Icon" loading="lazy" data-nuxt-img
+                                            srcset="/_ipx/s_15x15/svg/check-regular.svg 1x, /_ipx/s_30x30/svg/check-regular.svg 2x"
+                                            class="icon visible" src="/_ipx/s_15x15/svg/check-regular.svg"
+                                            data-v-e1e26d80>
+                                        <label data-v-e1e26d80>Cobalt</label>
+                                        <span class="theme-preview-item theme-preview-item-cobalt"
+                                            data-v-e1e26d80></span>
+                                    </button>
+                                    <button type="button" class="menu-item flex" data-v-e1e26d80>
+                                        <img onerror="this.setAttribute(&#39;data-error&#39;, 1)" width="15" height="15"
+                                            alt="Icon" loading="lazy" data-nuxt-img
+                                            srcset="/_ipx/s_15x15/svg/check-regular.svg 1x, /_ipx/s_30x30/svg/check-regular.svg 2x"
+                                            class="icon" src="/_ipx/s_15x15/svg/check-regular.svg" data-v-e1e26d80>
+                                        <label data-v-e1e26d80>Slate</label>
+                                        <span class="theme-preview-item theme-preview-item-slate"
+                                            data-v-e1e26d80></span>
+                                    </button>
+                                    <button type="button" class="menu-item flex" data-v-e1e26d80>
+                                        <img onerror="this.setAttribute(&#39;data-error&#39;, 1)" width="15" height="15"
+                                            alt="Icon" loading="lazy" data-nuxt-img
+                                            srcset="/_ipx/s_15x15/svg/check-regular.svg 1x, /_ipx/s_30x30/svg/check-regular.svg 2x"
+                                            class="icon" src="/_ipx/s_15x15/svg/check-regular.svg" data-v-e1e26d80>
+                                        <label data-v-e1e26d80>North</label>
+                                        <span class="theme-preview-item theme-preview-item-north"
+                                            data-v-e1e26d80></span>
+                                    </button>
+                                    <button type="button" class="menu-item flex" data-v-e1e26d80>
+                                        <img onerror="this.setAttribute(&#39;data-error&#39;, 1)" width="15" height="15"
+                                            alt="Icon" loading="lazy" data-nuxt-img
+                                            srcset="/_ipx/s_15x15/svg/check-regular.svg 1x, /_ipx/s_30x30/svg/check-regular.svg 2x"
+                                            class="icon" src="/_ipx/s_15x15/svg/check-regular.svg" data-v-e1e26d80>
+                                        <label data-v-e1e26d80>Mokka</label>
+                                        <span class="theme-preview-item theme-preview-item-mokka"
+                                            data-v-e1e26d80></span>
+                                    </button>
+                                </menu>
+                            </button>
+                        </div>
+                    </section>
+                </nav>
+            </header>
+            <main>
+                <div class="content-wrapper flex" data-v-fcdd5ca3>
+                    <nav class="flex scrollbar" data-v-fcdd5ca3>
+                        <section class="navigation scrollbar flex-col" data-v-fcdd5ca3>
+                            <div class="flex category-title" data-v-fcdd5ca3>
+                                <div class="flex" data-v-fcdd5ca3>
+                                    <a href="/documentation" class="router-link-active"
+                                        title="Go back to the documentation home page." data-v-fcdd5ca3>
+                                        <img onerror="this.setAttribute(&#39;data-error&#39;, 1)" width="20" height="20"
+                                            alt="Icon" loading="lazy" data-nuxt-img
+                                            srcset="/_ipx/s_20x20/svg/arrow-left-regular.svg 1x, /_ipx/s_40x40/svg/arrow-left-regular.svg 2x"
+                                            class="icon" src="/_ipx/s_20x20/svg/arrow-left-regular.svg" data-v-fcdd5ca3>
+                                    </a>
+                                    <a href="/documentation/Read/Doc/More" class=""
+                                        title="Go to the category home page." data-v-fcdd5ca3>More</a>
+                                </div>
+                                <button type="button" class="navigation-button navigation-close navbar-pill"
+                                    title="Close the navigation bar." data-v-fcdd5ca3>
+                                    <img onerror="this.setAttribute(&#39;data-error&#39;, 1)" width="20" height="20"
+                                        alt="Icon" loading="lazy" data-nuxt-img
+                                        srcset="/_ipx/s_20x20/svg/xmark-regular.svg 1x, /_ipx/s_40x40/svg/xmark-regular.svg 2x"
+                                        class="icon" src="/_ipx/s_20x20/svg/xmark-regular.svg" data-v-fcdd5ca3>
+                                </button>
+                            </div>
+                            <!--[-->
+                            <!--]-->
+                            <section class="flex-col responsive-nav" data-v-fcdd5ca3>
+                                <!--[-->
+                                <span class="splitter" data-v-fcdd5ca3></span>
+                                <div class="flex-col responsive-nav-item" data-v-fcdd5ca3>
+                                    <strong class="" data-v-fcdd5ca3>On This Page</strong>
+                                    <!--[-->
+                                    <a href="#Basic_Paragraphs" id="Basic_Paragraphs_aside"
+                                        class="responsive-nav-item-link" data-v-fcdd5ca3>Basic Paragraphs</a>
+                                    <a href="#Note" id="Note_aside" class="responsive-nav-item-link"
+                                        data-v-fcdd5ca3>Note</a>
+                                    <a href="#Large_Articles" id="Large_Articles_aside" class="responsive-nav-item-link"
+                                        data-v-fcdd5ca3>Large Articles</a>
+                                    <a href="#Lists" id="Lists_aside" class="responsive-nav-item-link"
+                                        data-v-fcdd5ca3>Lists</a>
+                                    <a href="#Tables" id="Tables_aside" class="responsive-nav-item-link"
+                                        data-v-fcdd5ca3>Tables</a>
+                                    <a href="#Code" id="Code_aside" class="responsive-nav-item-link"
+                                        data-v-fcdd5ca3>Code</a>
+                                    <a href="#Blockquote" id="Blockquote_aside" class="responsive-nav-item-link"
+                                        data-v-fcdd5ca3>Blockquote</a>
+                                    <!--]-->
+                                </div>
+                                <span class="splitter" data-v-fcdd5ca3></span>
+                                <!--]-->
+                                <div class="flex-col responsive-nav-item" data-v-fcdd5ca3>
+                                    <div class="flex featured-product-title-container" data-v-fcdd5ca3>
+                                        <strong class="" data-v-fcdd5ca3>Featured Products</strong>
+                                        <img onerror="this.setAttribute(&#39;data-error&#39;, 1)" width="15" height="15"
+                                            alt="Icon" loading="lazy" data-nuxt-img
+                                            srcset="/_ipx/s_15x15/svg/circle-info-regular.svg 1x, /_ipx/s_30x30/svg/circle-info-regular.svg 2x"
+                                            class="icon" src="/_ipx/s_15x15/svg/circle-info-regular.svg"
+                                            data-v-fcdd5ca3>
+                                        <span class="" data-v-fcdd5ca3>Products that have been used in this Doc.</span>
+                                    </div>
+                                    <!--[-->
+                                    <a href="/documentation/read/Doc/Products/Platform"
+                                        class="flex featured-product-item" data-v-fcdd5ca3>
+                                        <img onerror="this.setAttribute(&#39;data-error&#39;, 1)" width="30" height="30"
+                                            alt="Product Icon" loading="lazy" data-nuxt-img
+                                            srcset="https://files.stefankruik.com/Products/100/Platform.png 1x, https://files.stefankruik.com/Products/100/Platform.png 2x"
+                                            src="https://files.stefankruik.com/Products/100/Platform.png"
+                                            data-v-fcdd5ca3>
+                                        <p data-v-fcdd5ca3>Platform</p>
+                                    </a>
+                                    <a href="/documentation/read/Doc/Services/Uplink" class="flex featured-product-item"
+                                        data-v-fcdd5ca3>
+                                        <img onerror="this.setAttribute(&#39;data-error&#39;, 1)" width="30" height="30"
+                                            alt="Product Icon" loading="lazy" data-nuxt-img
+                                            srcset="https://files.stefankruik.com/Products/100/Uplink.png 1x, https://files.stefankruik.com/Products/100/Uplink.png 2x"
+                                            src="https://files.stefankruik.com/Products/100/Uplink.png" data-v-fcdd5ca3>
+                                        <p data-v-fcdd5ca3>Uplink</p>
+                                    </a>
+                                    <a href="/documentation/read/Doc/Services/Monitor"
+                                        class="flex featured-product-item" data-v-fcdd5ca3>
+                                        <img onerror="this.setAttribute(&#39;data-error&#39;, 1)" width="30" height="30"
+                                            alt="Product Icon" loading="lazy" data-nuxt-img
+                                            srcset="https://files.stefankruik.com/Products/100/Monitor.png 1x, https://files.stefankruik.com/Products/100/Monitor.png 2x"
+                                            src="https://files.stefankruik.com/Products/100/Monitor.png"
+                                            data-v-fcdd5ca3>
+                                        <p data-v-fcdd5ca3>Monitor</p>
+                                    </a>
+                                    <a href="/documentation/read/Doc/Products/Commander"
+                                        class="flex featured-product-item" data-v-fcdd5ca3>
+                                        <img onerror="this.setAttribute(&#39;data-error&#39;, 1)" width="30" height="30"
+                                            alt="Product Icon" loading="lazy" data-nuxt-img
+                                            srcset="https://files.stefankruik.com/Products/100/Commander.png 1x, https://files.stefankruik.com/Products/100/Commander.png 2x"
+                                            src="https://files.stefankruik.com/Products/100/Commander.png"
+                                            data-v-fcdd5ca3>
+                                        <p data-v-fcdd5ca3>Commander</p>
+                                    </a>
+                                    <a href="/documentation/read/Doc/Products/Administrator"
+                                        class="flex featured-product-item" data-v-fcdd5ca3>
+                                        <img onerror="this.setAttribute(&#39;data-error&#39;, 1)" width="30" height="30"
+                                            alt="Product Icon" loading="lazy" data-nuxt-img
+                                            srcset="https://files.stefankruik.com/Products/100/Administrator.png 1x, https://files.stefankruik.com/Products/100/Administrator.png 2x"
+                                            src="https://files.stefankruik.com/Products/100/Administrator.png"
+                                            data-v-fcdd5ca3>
+                                        <p data-v-fcdd5ca3>Administrator</p>
+                                    </a>
+                                    <!--]-->
+                                </div>
+                            </section>
+                        </section>
+                        <div class="splitter-container" data-v-fcdd5ca3>
+                            <span class="splitter responsive-nav-splitter" data-v-fcdd5ca3></span>
+                        </div>
+                        <section class="controls flex" data-v-fcdd5ca3>
+                            <strong class="responsive-nav-title" data-v-fcdd5ca3>Options</strong>
+                            <div class="flex-col" data-v-fcdd5ca3>
+                                <button title="Go to the previous page." type="button"
+                                    class="disabled-button flex navbar-pill control-pill" data-v-fcdd5ca3>
+                                    <p data-v-fcdd5ca3>Previous</p>
+                                    <img onerror="this.setAttribute(&#39;data-error&#39;, 1)" width="15" height="15"
+                                        alt="Icon" loading="lazy" data-nuxt-img
+                                        srcset="/_ipx/s_15x15/svg/diagram-previous-regular.svg 1x, /_ipx/s_30x30/svg/diagram-previous-regular.svg 2x"
+                                        class="icon icon-light" src="/_ipx/s_15x15/svg/diagram-previous-regular.svg"
+                                        data-v-fcdd5ca3>
+                                </button>
+                                <button title="Share this article." type="button" class="flex navbar-pill control-pill"
+                                    data-v-fcdd5ca3>
+                                    <p class="" data-v-fcdd5ca3>Share </p>
+                                    <img onerror="this.setAttribute(&#39;data-error&#39;, 1)" width="15" height="15"
+                                        alt="Icon" loading="lazy" data-nuxt-img
+                                        srcset="/_ipx/s_15x15/svg/share-regular.svg 1x, /_ipx/s_30x30/svg/share-regular.svg 2x"
+                                        class="icon icon-light" src="/_ipx/s_15x15/svg/share-regular.svg"
+                                        data-v-fcdd5ca3>
+                                </button>
+                                <button hide title="View page information." type="button"
+                                    class="flex dropdown-container justify-center navbar-pill disable-close"
+                                    data-v-fcdd5ca3>
+                                    <p class="disable-close" data-v-fcdd5ca3>Information</p>
+                                    <img onerror="this.setAttribute(&#39;data-error&#39;, 1)" width="15" height="15"
+                                        alt="Icon" loading="lazy" data-nuxt-img
+                                        srcset="/_ipx/s_15x15/svg/circle-info-regular.svg 1x, /_ipx/s_30x30/svg/circle-info-regular.svg 2x"
+                                        class="icon icon-light disable-close"
+                                        src="/_ipx/s_15x15/svg/circle-info-regular.svg" data-v-fcdd5ca3>
+                                    <menu
+                                        class="dropdown-menu dropdown-menu-right information-dropdown-menu flex-col disable-close"
+                                        data-v-fcdd5ca3>
+                                        <div class="menu-item flex disable-close" data-v-fcdd5ca3>
+                                            <label class="light-text disable-close" data-v-fcdd5ca3>Name</label>
+                                            <label data-v-fcdd5ca3>03_Template.html</label>
+                                        </div>
+                                        <div class="menu-item flex disable-close" data-v-fcdd5ca3>
+                                            <label class="light-text disable-close" data-v-fcdd5ca3>Size</label>
+                                            <label data-v-fcdd5ca3>10 kB</label>
+                                        </div>
+                                        <div class="menu-item flex disable-close" data-v-fcdd5ca3>
+                                            <label class="light-text disable-close" data-v-fcdd5ca3>Last Read</label>
+                                            <label data-v-fcdd5ca3>09:50 10-12-2025</label>
+                                        </div>
+                                        <div class="menu-item flex disable-close" data-v-fcdd5ca3>
+                                            <label class="light-text disable-close" data-v-fcdd5ca3>Last
+                                                Modification</label>
+                                            <label data-v-fcdd5ca3>07:39 24-11-2024</label>
+                                        </div>
+                                        <div class="menu-item flex disable-close" data-v-fcdd5ca3>
+                                            <label class="light-text disable-close" data-v-fcdd5ca3>Created On</label>
+                                            <label data-v-fcdd5ca3>19:55 11-07-2024</label>
+                                        </div>
+                                        <div class="menu-item flex disable-close" data-v-fcdd5ca3>
+                                            <label class="light-text disable-close" data-v-fcdd5ca3>View Count</label>
+                                            <label data-v-fcdd5ca3>8</label>
+                                        </div>
+                                        <div class="menu-item flex disable-close" data-v-fcdd5ca3>
+                                            <label class="light-text disable-close" data-v-fcdd5ca3>Vote Count</label>
+                                            <label data-v-fcdd5ca3>0</label>
+                                        </div>
+                                    </menu>
+                                </button>
+                                <button title="Go to the next page." type="button"
+                                    class="disabled-button flex navbar-pill control-pill" data-v-fcdd5ca3>
+                                    <p data-v-fcdd5ca3>Next</p>
+                                    <img onerror="this.setAttribute(&#39;data-error&#39;, 1)" width="15" height="15"
+                                        alt="Icon" loading="lazy" data-nuxt-img
+                                        srcset="/_ipx/s_15x15/svg/diagram-next-regular.svg 1x, /_ipx/s_30x30/svg/diagram-next-regular.svg 2x"
+                                        class="icon icon-light" src="/_ipx/s_15x15/svg/diagram-next-regular.svg"
+                                        data-v-fcdd5ca3>
+                                </button>
+                            </div>
+                        </section>
+                    </nav>
+                    <div class="flex-col documentation-content-parent" data-v-fcdd5ca3>
+                        <div class="flex-col documentation-content" data-v-fcdd5ca3>
+                            <div class="breadcrumbs-container flex" data-v-fcdd5ca3>
+                                <button type="button" class="navigation-button navbar-pill disable-close"
+                                    title="Open the navigation bar." data-v-fcdd5ca3>
+                                    <img onerror="this.setAttribute(&#39;data-error&#39;, 1)" width="15" height="15"
+                                        alt="Icon" loading="lazy" data-nuxt-img
+                                        srcset="/_ipx/s_15x15/svg/arrow-right-from-line-regular.svg 1x, /_ipx/s_30x30/svg/arrow-right-from-line-regular.svg 2x"
+                                        class="icon icon-light disable-close"
+                                        src="/_ipx/s_15x15/svg/arrow-right-from-line-regular.svg" data-v-fcdd5ca3>
+                                </button>
+                                <a href="/documentation#Information"
+                                    class="router-link-active breadcrumb-item breadcrumb-link"
+                                    data-v-fcdd5ca3>Documentation</a>
+                                <p class="breadcrumb-item" data-v-fcdd5ca3>/</p>
+                                <!--[-->
+                                <a href="/documentation/read/Doc/More" class="breadcrumb-item breadcrumb-link"
+                                    data-v-fcdd5ca3>More</a>
+                                <p class="breadcrumb-item" data-v-fcdd5ca3>/</p>
+                                <!--]-->
+                            </div>
+                            <section class="flex documentation-content-container" data-v-fcdd5ca3>
+                                <div class="documentation-content-child" data-v-fcdd5ca3>
+                                    <article class="documentation-page-parent flex-col">
+                                        <h2 class="page-title">Template</h2>
+                                        <h3 class="page-description light-text">This is a template page used for
+                                            developers to quickly access different
+                                            components.</h3>
+                                        <a href="#Basic_Paragraphs" id="Basic_Paragraphs" class="chapter flex">
+                                            <img src="/svg/link-regular.svg" alt="Icon" width="20" height="20"
+                                                class="icon">
+                                            <h3>Basic Paragraphs</h3>
+                                        </a>
+                                        <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Neque eum aperiam
+                                            ipsum libero optio magnam minima
+                                            quaerat quia unde fuga mollitia itaque aut, fugiat quibusdam velit?
+                                            Veritatis deserunt consectetur rerum!</p>
+                                        <h4 class="paragraph">Paragraph 1</h4>
+                                        <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Neque eum aperiam
+                                            ipsum libero optio magnam minima
+                                            quaerat quia unde fuga mollitia itaque aut, fugiat quibusdam velit?
+                                            Veritatis deserunt consectetur rerum! Lorem
+                                            ipsum dolor sit amet consectetur adipisicing elit. Consequatur ipsum harum
+                                            id facere saepe modi sapiente
+                                            recusandae. Ratione illo quo, natus architecto repudiandae iste inventore
+                                            sint cumque, eligendi fugit eum!</p>
+                                        <a href="#Note" id="Note" class="chapter flex">
+                                            <img src="/svg/link-regular.svg" alt="Icon" width="20" height="20"
+                                                class="icon">
+                                            <h3>Notes</h3>
+                                        </a>
+                                        <div class="flex note-container note-container-info">
+                                            <img src="/svg/circle-info-regular.svg" alt="Icon" width="20" height="20"
+                                                class="icon">
+                                            <p>This is the content of a information note.</p>
+                                        </div>
+                                        <div class="flex note-container note-container-warning">
+                                            <img src="/svg/circle-exclamation-regular.svg" alt="Icon" width="20"
+                                                height="20" class="icon">
+                                            <p>This is the content of a warning note.</p>
+                                        </div>
+                                        <div class="flex note-container note-container-success">
+                                            <img src="/svg/circle-check-regular.svg" alt="Icon" width="20" height="20"
+                                                class="icon">
+                                            <p>This is the content of a success note.</p>
+                                        </div>
+                                        <div class="flex note-container note-container-error">
+                                            <img src="/svg/circle-exclamation-regular.svg" alt="Icon" width="20"
+                                                height="20" class="icon">
+                                            <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Quas voluptatem
+                                                atque explicabo ad placeat! Eius
+                                                asperiores at expedita, ab hic excepturi earum ipsa illo. Laborum error
+                                                eum nobis voluptatem ipsum.</p>
+                                        </div>
+                                        <a href="#Large_Articles" id="Large_Articles" class="chapter flex">
+                                            <img src="/svg/link-regular.svg" alt="Icon" width="20" height="20"
+                                                class="icon">
+                                            <h3>Large Articles</h3>
+                                        </a>
+                                        <h4 class="paragraph">Paragraph 1</h4>
+                                        <p>Lorem ipsum odor amet, consectetuer adipiscing elit. Metus nam habitant
+                                            habitant faucibus eros iaculis. Senectus
+                                            conubia nam varius senectus sollicitudin phasellus proin. Fames scelerisque
+                                            efficitur ad, turpis fringilla
+                                            interdum erat mollis rutrum. Id sapien a quisque netus sit nascetur mollis.
+                                            Augue vitae erat leo morbi quam
+                                            pellentesque. Hac libero phasellus auctor himenaeos accumsan duis nec
+                                            natoque.
+                                        </p>
+                                        <p>Iaculis blandit cursus magna volutpat eros at libero. Primis aliquet
+                                            hendrerit ligula parturient congue lacus
+                                            dignissim ultricies primis. Et bibendum penatibus senectus nisl gravida
+                                            magna primis quisque? Porttitor lacinia
+                                            consequat suspendisse efficitur ut. Elit senectus nisl pharetra
+                                            sollicitudin; velit convallis consectetur.
+                                            Sociosqu vulputate lacinia non posuere ad. Neque platea proin at rutrum
+                                            facilisi ultrices curae mattis odio.
+                                            Hendrerit velit ultricies tempus libero ad amet mauris enim consequat. Diam
+                                            potenti mus nullam auctor odio
+                                            sagittis.
+                                        </p>
+                                        <p>Varius porttitor tortor vehicula finibus lectus duis. Lobortis eleifend metus
+                                            accumsan; tortor orci nostra
+                                            iaculis. Et vestibulum rhoncus ligula blandit at? Tempus vulputate gravida
+                                            neque lacus tortor metus metus. Eget
+                                            nibh efficitur metus lacinia leo facilisis penatibus. Vulputate enim odio
+                                            suspendisse aptent eu donec quam.
+                                            Fusce duis mauris urna nunc ridiculus; libero blandit condimentum.
+                                        </p>
+                                        <h4 class="paragraph">Paragraph 2</h4>
+                                        <p>Eget hendrerit sit donec cras leo taciti. Elit a donec sit congue dignissim
+                                            etiam mi nunc. Leo quam pulvinar
+                                            posuere inceptos aliquam quis duis. Senectus proin ridiculus duis sed,
+                                            efficitur consectetur ex. Venenatis
+                                            ligula euismod proin egestas convallis aptent odio mus morbi. Nibh nulla
+                                            potenti habitasse mus ex sit
+                                            consectetur rutrum. Ipsum magnis donec nisi ullamcorper quam vulputate neque
+                                            adipiscing enim. Pretium lobortis
+                                            tortor ad mauris sed montes ridiculus orci. Curae elementum at nisl mi
+                                            feugiat fermentum scelerisque mus.
+                                        </p>
+                                        <p>Non integer nibh pharetra etiam rhoncus mus ligula porta sed. Finibus natoque
+                                            purus ipsum proin per elit dui
+                                            vel. Leo nec suscipit natoque proin sem dictum ultrices. Fusce convallis
+                                            cursus facilisi urna primis venenatis.
+                                            Ut tempor et gravida dapibus fusce lacus, eget penatibus senectus? Facilisi
+                                            ullamcorper montes fames id; maximus
+                                            lacus.
+                                        </p>
+                                        <a href="#Lists" id="Lists" class="chapter flex">
+                                            <img src="/svg/link-regular.svg" alt="Icon" width="20" height="20"
+                                                class="icon">
+                                            <h3>Lists</h3>
+                                        </a>
+                                        <ul class="flex-col list">
+                                            <li class="list-item">Item 1</li>
+                                            <li class="list-item">Item 2</li>
+                                            <li class="list-item">Item 3</li>
+                                        </ul>
+                                        <ul class="flex-col list">
+                                            <li class="list-item">
+                                                Item 1
+
+                                                <ul class="flex-col list sub-list">
+                                                    <li class="list-item">Item 1.1</li>
+                                                    <li class="list-item">Item 1.2</li>
+                                                    <li class="list-item">Item 1.3</li>
+                                                </ul>
+                                            </li>
+                                            <li class="list-item">Item 2</li>
+                                            <li class="list-item">Item 3</li>
+                                        </ul>
+                                        <a href="#Tables" id="Tables" class="chapter flex">
+                                            <img src="/svg/link-regular.svg" alt="Icon" width="20" height="20"
+                                                class="icon">
+                                            <h3>Tables</h3>
+                                        </a>
+                                        <p>Basic classic table.</p>
+                                        <table class="table-type-classic" table-sortable="false">
+                                            <thead>
+                                                <tr>
+                                                    <th>Column 1</th>
+                                                    <th>Column 2</th>
+                                                    <th>Column 3</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                <tr>
+                                                    <td>Row 1, Column 1</td>
+                                                    <td>Row 1, Column 2</td>
+                                                    <td>Row 1, Column 3</td>
+                                                </tr>
+                                                <tr>
+                                                    <td>Row 2, Column 1</td>
+                                                    <td>Row 2, Column 2</td>
+                                                    <td>Row 2, Column 3</td>
+                                                </tr>
+                                                <tr>
+                                                    <td>Row 3, Column 1</td>
+                                                    <td>Row 3, Column 2</td>
+                                                    <td>Row 3, Column 3</td>
+                                                </tr>
+                                                <tr>
+                                                    <td>Row 4, Column 1</td>
+                                                    <td>Row 4, Column 2</td>
+                                                    <td>Row 4, Column 3</td>
+                                                </tr>
+                                                <tr>
+                                                    <td>Row 5, Column 1</td>
+                                                    <td>Row 5, Column 2</td>
+                                                    <td>Row 5, Column 3</td>
+                                                </tr>
+                                            </tbody>
+                                        </table>
+                                        <p>Aside table.</p>
+                                        <table class="table-type-data" table-sortable="false">
+                                            <thead>
+                                                <tr>
+                                                    <th></th>
+                                                    <th>Var 1</th>
+                                                    <th>Var 2</th>
+                                                    <th>Var 3</th>
+                                                    <th>Var 4</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                <tr>
+                                                    <td>Key A</td>
+                                                    <td>A1</td>
+                                                    <td>A2</td>
+                                                    <td>A3</td>
+                                                    <td>A4</td>
+                                                </tr>
+                                                <tr>
+                                                    <td>Key B</td>
+                                                    <td>B1</td>
+                                                    <td>B2</td>
+                                                    <td>B3</td>
+                                                    <td>B4</td>
+                                                </tr>
+                                                <tr>
+                                                    <td>Key C</td>
+                                                    <td>C1</td>
+                                                    <td>C2</td>
+                                                    <td>C3</td>
+                                                    <td>C4</td>
+                                                </tr>
+                                            </tbody>
+                                        </table>
+                                        <p>Sortable table. Click on the header cells to sort.</p>
+                                        <table class="table-type-classic" table-sort-type="string"
+                                            table-sortable="true">
+                                            <thead>
+                                                <tr>
+                                                    <th table-sortable-item>
+                                                        <div>
+                                                            <p>Click me!</p>
+                                                            <img src="/svg/sort-regular.svg" alt="Icon" width="15"
+                                                                height="15" class="icon icon-light">
+                                                            <span click-action="tableSort" table-sort-number="1"
+                                                                class="click-item"></span>
+                                                        </div>
+                                                    </th>
+                                                    <th table-sortable-item>
+                                                        <div>
+                                                            <p>Or me!</p>
+                                                            <img src="/svg/sort-regular.svg" alt="Icon" width="15"
+                                                                height="15" class="icon icon-light">
+                                                            <span click-action="tableSort" table-sort-number="2"
+                                                                class="click-item"></span>
+                                                        </div>
+                                                    </th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                <tr>
+                                                    <td>Sort A</td>
+                                                    <td>Sort D</td>
+                                                </tr>
+                                                <tr>
+                                                    <td>Sort B</td>
+                                                    <td>Sort E</td>
+                                                </tr>
+                                                <tr>
+                                                    <td>Sort C</td>
+                                                    <td>Sort F</td>
+                                                </tr>
+                                            </tbody>
+                                        </table>
+                                        <a href="#Code" id="Code" class="chapter flex">
+                                            <img src="/svg/link-regular.svg" alt="Icon" width="20" height="20"
+                                                class="icon">
+                                            <h3>Code</h3>
+                                        </a>
+                                        <p>Code blocks are work in progress.</p>
+                                        <a href="#Blockquote" id="Blockquote" class="chapter flex">
+                                            <img src="/svg/link-regular.svg" alt="Icon" width="20" height="20"
+                                                class="icon">
+                                            <h3>Blockquote</h3>
+                                        </a>
+                                        <p>Blockquotes are work in progress.</p>
+                                    </article>
+                                </div>
+                                <aside class="flex-col" data-v-fcdd5ca3>
+                                    <div class="flex-col" data-v-fcdd5ca3>
+                                        <strong data-v-fcdd5ca3>On This Page</strong>
+                                        <!--[-->
+                                        <a href="#Basic_Paragraphs" id="Basic_Paragraphs_aside" class=""
+                                            data-v-fcdd5ca3>Basic Paragraphs</a>
+                                        <a href="#Note" id="Note_aside" class="" data-v-fcdd5ca3>Note</a>
+                                        <a href="#Large_Articles" id="Large_Articles_aside" class=""
+                                            data-v-fcdd5ca3>Large Articles</a>
+                                        <a href="#Lists" id="Lists_aside" class="" data-v-fcdd5ca3>Lists</a>
+                                        <a href="#Tables" id="Tables_aside" class="" data-v-fcdd5ca3>Tables</a>
+                                        <a href="#Code" id="Code_aside" class="" data-v-fcdd5ca3>Code</a>
+                                        <a href="#Blockquote" id="Blockquote_aside" class=""
+                                            data-v-fcdd5ca3>Blockquote</a>
+                                        <!--]-->
+                                    </div>
+                                    <div class="flex-col" data-v-fcdd5ca3>
+                                        <div class="flex featured-product-title-container" data-v-fcdd5ca3>
+                                            <strong data-v-fcdd5ca3>Featured Products</strong>
+                                            <img onerror="this.setAttribute(&#39;data-error&#39;, 1)" width="15"
+                                                height="15" alt="Icon" loading="lazy" data-nuxt-img
+                                                srcset="/_ipx/s_15x15/svg/circle-info-regular.svg 1x, /_ipx/s_30x30/svg/circle-info-regular.svg 2x"
+                                                class="icon" src="/_ipx/s_15x15/svg/circle-info-regular.svg"
+                                                data-v-fcdd5ca3>
+                                            <span data-v-fcdd5ca3>
+                                                <p data-v-fcdd5ca3>Products that have been used</p>
+                                                <p data-v-fcdd5ca3>and/or mentioned in this Doc.</p>
+                                            </span>
+                                        </div>
+                                        <!--[-->
+                                        <a href="/documentation/read/Doc/Products/Platform"
+                                            class="flex featured-product-item" data-v-fcdd5ca3>
+                                            <img onerror="this.setAttribute(&#39;data-error&#39;, 1)" width="30"
+                                                height="30" alt="Product Icon" loading="lazy" data-nuxt-img
+                                                srcset="https://files.stefankruik.com/Products/100/Platform.png 1x, https://files.stefankruik.com/Products/100/Platform.png 2x"
+                                                src="https://files.stefankruik.com/Products/100/Platform.png"
+                                                data-v-fcdd5ca3>
+                                            <p data-v-fcdd5ca3>Platform</p>
+                                        </a>
+                                        <a href="/documentation/read/Doc/Services/Uplink"
+                                            class="flex featured-product-item" data-v-fcdd5ca3>
+                                            <img onerror="this.setAttribute(&#39;data-error&#39;, 1)" width="30"
+                                                height="30" alt="Product Icon" loading="lazy" data-nuxt-img
+                                                srcset="https://files.stefankruik.com/Products/100/Uplink.png 1x, https://files.stefankruik.com/Products/100/Uplink.png 2x"
+                                                src="https://files.stefankruik.com/Products/100/Uplink.png"
+                                                data-v-fcdd5ca3>
+                                            <p data-v-fcdd5ca3>Uplink</p>
+                                        </a>
+                                        <a href="/documentation/read/Doc/Services/Monitor"
+                                            class="flex featured-product-item" data-v-fcdd5ca3>
+                                            <img onerror="this.setAttribute(&#39;data-error&#39;, 1)" width="30"
+                                                height="30" alt="Product Icon" loading="lazy" data-nuxt-img
+                                                srcset="https://files.stefankruik.com/Products/100/Monitor.png 1x, https://files.stefankruik.com/Products/100/Monitor.png 2x"
+                                                src="https://files.stefankruik.com/Products/100/Monitor.png"
+                                                data-v-fcdd5ca3>
+                                            <p data-v-fcdd5ca3>Monitor</p>
+                                        </a>
+                                        <a href="/documentation/read/Doc/Products/Commander"
+                                            class="flex featured-product-item" data-v-fcdd5ca3>
+                                            <img onerror="this.setAttribute(&#39;data-error&#39;, 1)" width="30"
+                                                height="30" alt="Product Icon" loading="lazy" data-nuxt-img
+                                                srcset="https://files.stefankruik.com/Products/100/Commander.png 1x, https://files.stefankruik.com/Products/100/Commander.png 2x"
+                                                src="https://files.stefankruik.com/Products/100/Commander.png"
+                                                data-v-fcdd5ca3>
+                                            <p data-v-fcdd5ca3>Commander</p>
+                                        </a>
+                                        <a href="/documentation/read/Doc/Products/Administrator"
+                                            class="flex featured-product-item" data-v-fcdd5ca3>
+                                            <img onerror="this.setAttribute(&#39;data-error&#39;, 1)" width="30"
+                                                height="30" alt="Product Icon" loading="lazy" data-nuxt-img
+                                                srcset="https://files.stefankruik.com/Products/100/Administrator.png 1x, https://files.stefankruik.com/Products/100/Administrator.png 2x"
+                                                src="https://files.stefankruik.com/Products/100/Administrator.png"
+                                                data-v-fcdd5ca3>
+                                            <p data-v-fcdd5ca3>Administrator</p>
+                                        </a>
+                                        <!--]-->
+                                    </div>
+                                </aside>
+                            </section>
+                        </div>
+                        <section class="flex-col related-container" data-v-fcdd5ca3>
+                            <div class="flex-col section-title-container" data-v-fcdd5ca3>
+                                <h3 data-v-fcdd5ca3>Also Read</h3>
+                                <p class="light-text" data-v-fcdd5ca3>Related pages that you might find useful as well.
+                                </p>
+                            </div>
+                            <div class="flex related-item-container" data-v-fcdd5ca3>
+                                <!--[-->
+                                <article class="related-item flex" data-v-fcdd5ca3 data-v-5e08f86b>
+                                    <!-- Full-card overlay link (makes the whole card clickable without nesting anchors) -->
+                                    <a href="/documentation/read/Doc/More/Status" class="related-item-overlay"
+                                        aria-label="Open related page" data-v-5e08f86b></a>
+                                    <section class="related-item-left flex" data-v-5e08f86b>
+                                        <img onerror="this.setAttribute(&#39;data-error&#39;, 1)" width="15" height="15"
+                                            alt="Icon" loading="lazy" data-nuxt-img
+                                            srcset="/_ipx/s_15x15/svg/tailor/signal-bars-regular.svg 1x, /_ipx/s_30x30/svg/tailor/signal-bars-regular.svg 2x"
+                                            class="icon" src="/_ipx/s_15x15/svg/tailor/signal-bars-regular.svg"
+                                            data-v-5e08f86b>
+                                    </section>
+                                    <section class="related-item-right flex-col" data-v-5e08f86b>
+                                        <strong data-v-5e08f86b>Status</strong>
+                                        <div class="related-sub flex" data-v-5e08f86b>
+                                            <a href="/documentation#Information"
+                                                class="router-link-active related-sub-item" data-v-5e08f86b>Doc</a>
+                                            <img onerror="this.setAttribute(&#39;data-error&#39;, 1)" width="10"
+                                                height="10" alt="Icon" loading="lazy" data-nuxt-img
+                                                srcset="/_ipx/s_10x10/svg/circle-small-regular.svg 1x, /_ipx/s_20x20/svg/circle-small-regular.svg 2x"
+                                                class="icon icon-light featured-sub-item"
+                                                src="/_ipx/s_10x10/svg/circle-small-regular.svg" data-v-5e08f86b>
+                                            <a href="/documentation/read/Doc/More" class="related-sub-item"
+                                                data-v-5e08f86b>More</a>
+                                        </div>
+                                        <img onerror="this.setAttribute(&#39;data-error&#39;, 1)" width="500"
+                                            height="500" alt="Related Product Image" loading="lazy" data-nuxt-img
+                                            srcset="https://files.stefankruik.com/Products/100/Monitor.png 1x, https://files.stefankruik.com/Products/100/Monitor.png 2x"
+                                            class="product-image"
+                                            src="https://files.stefankruik.com/Products/100/Monitor.png"
+                                            data-v-5e08f86b>
+                                    </section>
+                                </article>
+                                <article class="related-item flex" data-v-fcdd5ca3 data-v-5e08f86b>
+                                    <!-- Full-card overlay link (makes the whole card clickable without nesting anchors) -->
+                                    <a href="/documentation/read/Doc/More/Roadmap" class="related-item-overlay"
+                                        aria-label="Open related page" data-v-5e08f86b></a>
+                                    <section class="related-item-left flex" data-v-5e08f86b>
+                                        <img onerror="this.setAttribute(&#39;data-error&#39;, 1)" width="15" height="15"
+                                            alt="Icon" loading="lazy" data-nuxt-img
+                                            srcset="/_ipx/s_15x15/svg/tailor/timeline-arrow-regular.svg 1x, /_ipx/s_30x30/svg/tailor/timeline-arrow-regular.svg 2x"
+                                            class="icon" src="/_ipx/s_15x15/svg/tailor/timeline-arrow-regular.svg"
+                                            data-v-5e08f86b>
+                                    </section>
+                                    <section class="related-item-right flex-col" data-v-5e08f86b>
+                                        <strong data-v-5e08f86b>Roadmap</strong>
+                                        <div class="related-sub flex" data-v-5e08f86b>
+                                            <a href="/documentation#Information"
+                                                class="router-link-active related-sub-item" data-v-5e08f86b>Doc</a>
+                                            <img onerror="this.setAttribute(&#39;data-error&#39;, 1)" width="10"
+                                                height="10" alt="Icon" loading="lazy" data-nuxt-img
+                                                srcset="/_ipx/s_10x10/svg/circle-small-regular.svg 1x, /_ipx/s_20x20/svg/circle-small-regular.svg 2x"
+                                                class="icon icon-light featured-sub-item"
+                                                src="/_ipx/s_10x10/svg/circle-small-regular.svg" data-v-5e08f86b>
+                                            <a href="/documentation/read/Doc/More" class="related-sub-item"
+                                                data-v-5e08f86b>More</a>
+                                        </div>
+                                        <img onerror="this.setAttribute(&#39;data-error&#39;, 1)" width="500"
+                                            height="500" alt="Related Product Image" loading="lazy" data-nuxt-img
+                                            srcset="https://files.stefankruik.com/Products/100/Administrator.png 1x, https://files.stefankruik.com/Products/100/Administrator.png 2x"
+                                            class="product-image"
+                                            src="https://files.stefankruik.com/Products/100/Administrator.png"
+                                            data-v-5e08f86b>
+                                    </section>
+                                </article>
+                                <!--]-->
+                            </div>
+                        </section>
+                        <section class="flex-col footer-container" data-v-fcdd5ca3>
+                            <div class="flex-col section-title-container" data-v-fcdd5ca3>
+                                <h3 data-v-fcdd5ca3>More</h3>
+                                <p class="light-text" data-v-fcdd5ca3>Leave feedback if you &#39;d like and find links
+                                    to further assistance.</p>
+                            </div>
+                            <!--[-->
+                            <!---->
+                            <footer class="read-footer" data-v-59db9bad>
+                                <form class="flex-col documentation-footer-item" data-v-59db9bad>
+                                    <h4 data-v-59db9bad>Happy with SK Docs?</h4>
+                                    <p class="light-text small-text documentation-footer-item-description"
+                                        data-v-59db9bad>Leave a vote and optional comment. Feedback is always greatly
+                                        appreciated.</p>
+                                    <div class="flex" data-v-59db9bad>
+                                        <button class="flex footer-button footer-button-like" type="button"
+                                            title="Click this if you like the design and information available."
+                                            data-v-59db9bad>
+                                            <img onerror="this.setAttribute(&#39;data-error&#39;, 1)" width="18"
+                                                height="18" alt="Icon" loading="lazy" data-nuxt-img
+                                                srcset="/_ipx/s_18x18/svg/heart-regular.svg 1x, /_ipx/s_36x36/svg/heart-regular.svg 2x"
+                                                class="icon icon-light" src="/_ipx/s_18x18/svg/heart-regular.svg"
+                                                data-v-59db9bad>
+                                            <p data-v-59db9bad>Yes</p>
+                                        </button>
+                                        <button class="flex footer-button footer-button-dislike" type="button"
+                                            title="Click this if you think some things could be better."
+                                            data-v-59db9bad>
+                                            <img onerror="this.setAttribute(&#39;data-error&#39;, 1)" width="18"
+                                                height="18" alt="Icon" loading="lazy" data-nuxt-img
+                                                srcset="/_ipx/s_18x18/svg/heart-crack-regular.svg 1x, /_ipx/s_36x36/svg/heart-crack-regular.svg 2x"
+                                                class="icon icon-light" src="/_ipx/s_18x18/svg/heart-crack-regular.svg"
+                                                data-v-59db9bad>
+                                            <p data-v-59db9bad>No</p>
+                                        </button>
+                                        <!---->
+                                    </div>
+                                    <p class="confirmation-message" data-v-59db9bad>Thank you so much for voting!</p>
+                                </form>
+                                <div class="flex-col documentation-footer-item" data-v-59db9bad>
+                                    <h4 data-v-59db9bad>Contributing</h4>
+                                    <p class="light-text small-text documentation-footer-item-description"
+                                        data-v-59db9bad>Do you have simple HTML skills and want to make a difference?
+                                        Expand SK Docs.</p>
+                                    <div class="flex-col" data-v-59db9bad>
+                                        <a href="/documentation/read/Doc/Contributing/SK_Docs"
+                                            class="flex footer-button footer-button-contribute" data-v-59db9bad>
+                                            <img onerror="this.setAttribute(&#39;data-error&#39;, 1)" width="18"
+                                                height="18" alt="Icon" loading="lazy" data-nuxt-img
+                                                srcset="/_ipx/s_18x18/svg/handshake-angle-regular.svg 1x, /_ipx/s_36x36/svg/handshake-angle-regular.svg 2x"
+                                                class="icon icon-light"
+                                                src="/_ipx/s_18x18/svg/handshake-angle-regular.svg" data-v-59db9bad>
+                                            <p data-v-59db9bad>Help writing SK Docs</p>
+                                        </a>
+                                    </div>
+                                </div>
+                                <div class="flex-col documentation-footer-item" data-v-59db9bad>
+                                    <h4 data-v-59db9bad>SK Docs didn &#39;t cut it?</h4>
+                                    <p class="light-text small-text documentation-footer-item-description"
+                                        data-v-59db9bad>Seek community help or contact me personally if you need
+                                        anything. I am always happy to have a chat.</p>
+                                    <div class="flex-col" data-v-59db9bad>
+                                        <a href="/documentation/read/Doc/Community/Support" class="flex footer-link"
+                                            data-v-59db9bad>
+                                            <img onerror="this.setAttribute(&#39;data-error&#39;, 1)" width="18"
+                                                height="18" alt="Icon" loading="lazy" data-nuxt-img
+                                                srcset="/_ipx/s_18x18/svg/mailbox-flag-up-regular.svg 1x, /_ipx/s_36x36/svg/mailbox-flag-up-regular.svg 2x"
+                                                class="icon" src="/_ipx/s_18x18/svg/mailbox-flag-up-regular.svg"
+                                                data-v-59db9bad>
+                                            <p class="link-text" data-v-59db9bad>Contact support</p>
+                                        </a>
+                                        <a href="/documentation/read/Doc/Community/Links#Discord"
+                                            class="flex footer-link" data-v-59db9bad>
+                                            <img onerror="this.setAttribute(&#39;data-error&#39;, 1)" width="18"
+                                                height="18" alt="Icon" loading="lazy" data-nuxt-img
+                                                srcset="/_ipx/s_18x18/svg/discord-brands-solid.svg 1x, /_ipx/s_36x36/svg/discord-brands-solid.svg 2x"
+                                                class="icon" src="/_ipx/s_18x18/svg/discord-brands-solid.svg"
+                                                data-v-59db9bad>
+                                            <p class="link-text" data-v-59db9bad>Join the Discord</p>
+                                        </a>
+                                    </div>
+                                </div>
+                            </footer>
+                            <!--]-->
+                        </section>
+                    </div>
+                </div>
+            </main>
+        </div>
+        <!--]-->
+    </div>
+    <div id="teleports"></div>
+    <script type="application/json" data-nuxt-logs="nuxt-app">
+            [
+                [
+                ]
+            ]</script>
+    <script type="application/json" data-nuxt-data="nuxt-app" data-ssr="true" id="__NUXT_DATA__">
+            [
+                [
+                    "ShallowReactive",
+                    1
+                ],
+                {
+                    "data": 2,
+                    "state": 51,
+                    "once": 53,
+                    "_errors": 54,
+                    "serverRendered": 56,
+                    "path": 57,
+                    "pinia": 58
+                },
+                [
+                    "ShallowReactive",
+                    3
+                ],
+                {
+                    "documentation-v1-en-US-Doc-More-Template": 4
+                },
+                {
+                    "name": 5,
+                    "fileContents": 6,
+                    "size": 7,
+                    "viewCount": 8,
+                    "voteCount": 9,
+                    "accessTime": 10,
+                    "modificationTime": 11,
+                    "creationTime": 12,
+                    "chapters": 13,
+                    "description": 21,
+                    "products": 22,
+                    "related": 38
+                },
+                "03_Template.html",
+                "\u003Carticle class=\"documentation-page-parent flex-col\">\n    \u003Ch2 class=\"page-title\">Template\u003C/h2>\n    \u003Ch3 class=\"page-description light-text\">This is a template page used for developers to quickly access different\n        components.\u003C/h3>\n    \u003Ca href=\"#Basic_Paragraphs\" id=\"Basic_Paragraphs\" class=\"chapter flex\">\n        \u003Cimg src=\"/svg/link-regular.svg\" alt=\"Icon\" width=\"20\" height=\"20\" class=\"icon\">\n        \u003Ch3>Basic Paragraphs\u003C/h3>\n    \u003C/a>\n    \u003Cp>Lorem ipsum dolor sit amet consectetur adipisicing elit. Neque eum aperiam ipsum libero optio magnam minima\n        quaerat quia unde fuga mollitia itaque aut, fugiat quibusdam velit? Veritatis deserunt consectetur rerum!\u003C/p>\n    \u003Ch4 class=\"paragraph\">Paragraph 1\u003C/h4>\n    \u003Cp>Lorem ipsum dolor sit amet consectetur adipisicing elit. Neque eum aperiam ipsum libero optio magnam minima\n        quaerat quia unde fuga mollitia itaque aut, fugiat quibusdam velit? Veritatis deserunt consectetur rerum! Lorem\n        ipsum dolor sit amet consectetur adipisicing elit. Consequatur ipsum harum id facere saepe modi sapiente\n        recusandae. Ratione illo quo, natus architecto repudiandae iste inventore sint cumque, eligendi fugit eum!\u003C/p>\n    \u003Ca href=\"#Note\" id=\"Note\" class=\"chapter flex\">\n        \u003Cimg src=\"/svg/link-regular.svg\" alt=\"Icon\" width=\"20\" height=\"20\" class=\"icon\">\n        \u003Ch3>Notes\u003C/h3>\n    \u003C/a>\n    \u003Cdiv class=\"flex note-container note-container-info\">\n        \u003Cimg src=\"/svg/circle-info-regular.svg\" alt=\"Icon\" width=\"20\" height=\"20\" class=\"icon\">\n        \u003Cp>This is the content of a information note.\u003C/p>\n    \u003C/div>\n    \u003Cdiv class=\"flex note-container note-container-warning\">\n        \u003Cimg src=\"/svg/circle-exclamation-regular.svg\" alt=\"Icon\" width=\"20\" height=\"20\" class=\"icon\">\n        \u003Cp>This is the content of a warning note.\u003C/p>\n    \u003C/div>\n    \u003Cdiv class=\"flex note-container note-container-success\">\n        \u003Cimg src=\"/svg/circle-check-regular.svg\" alt=\"Icon\" width=\"20\" height=\"20\" class=\"icon\">\n        \u003Cp>This is the content of a success note.\u003C/p>\n    \u003C/div>\n    \u003Cdiv class=\"flex note-container note-container-error\">\n        \u003Cimg src=\"/svg/circle-exclamation-regular.svg\" alt=\"Icon\" width=\"20\" height=\"20\" class=\"icon\">\n        \u003Cp>Lorem ipsum dolor sit amet consectetur adipisicing elit. Quas voluptatem atque explicabo ad placeat! Eius\n            asperiores at expedita, ab hic excepturi earum ipsa illo. Laborum error eum nobis voluptatem ipsum.\u003C/p>\n    \u003C/div>\n    \u003Ca href=\"#Large_Articles\" id=\"Large_Articles\" class=\"chapter flex\">\n        \u003Cimg src=\"/svg/link-regular.svg\" alt=\"Icon\" width=\"20\" height=\"20\" class=\"icon\">\n        \u003Ch3>Large Articles\u003C/h3>\n    \u003C/a>\n    \u003Ch4 class=\"paragraph\">Paragraph 1\u003C/h4>\n    \u003Cp>\n        Lorem ipsum odor amet, consectetuer adipiscing elit. Metus nam habitant habitant faucibus eros iaculis. Senectus\n        conubia nam varius senectus sollicitudin phasellus proin. Fames scelerisque efficitur ad, turpis fringilla\n        interdum erat mollis rutrum. Id sapien a quisque netus sit nascetur mollis. Augue vitae erat leo morbi quam\n        pellentesque. Hac libero phasellus auctor himenaeos accumsan duis nec natoque.\n    \u003C/p>\n    \u003Cp>\n        Iaculis blandit cursus magna volutpat eros at libero. Primis aliquet hendrerit ligula parturient congue lacus\n        dignissim ultricies primis. Et bibendum penatibus senectus nisl gravida magna primis quisque? Porttitor lacinia\n        consequat suspendisse efficitur ut. Elit senectus nisl pharetra sollicitudin; velit convallis consectetur.\n        Sociosqu vulputate lacinia non posuere ad. Neque platea proin at rutrum facilisi ultrices curae mattis odio.\n        Hendrerit velit ultricies tempus libero ad amet mauris enim consequat. Diam potenti mus nullam auctor odio\n        sagittis.\n    \u003C/p>\n    \u003Cp>\n        Varius porttitor tortor vehicula finibus lectus duis. Lobortis eleifend metus accumsan; tortor orci nostra\n        iaculis. Et vestibulum rhoncus ligula blandit at? Tempus vulputate gravida neque lacus tortor metus metus. Eget\n        nibh efficitur metus lacinia leo facilisis penatibus. Vulputate enim odio suspendisse aptent eu donec quam.\n        Fusce duis mauris urna nunc ridiculus; libero blandit condimentum.\n    \u003C/p>\n    \u003Ch4 class=\"paragraph\">Paragraph 2\u003C/h4>\n    \u003Cp>\n        Eget hendrerit sit donec cras leo taciti. Elit a donec sit congue dignissim etiam mi nunc. Leo quam pulvinar\n        posuere inceptos aliquam quis duis. Senectus proin ridiculus duis sed, efficitur consectetur ex. Venenatis\n        ligula euismod proin egestas convallis aptent odio mus morbi. Nibh nulla potenti habitasse mus ex sit\n        consectetur rutrum. Ipsum magnis donec nisi ullamcorper quam vulputate neque adipiscing enim. Pretium lobortis\n        tortor ad mauris sed montes ridiculus orci. Curae elementum at nisl mi feugiat fermentum scelerisque mus.\n    \u003C/p>\n    \u003Cp>\n        Non integer nibh pharetra etiam rhoncus mus ligula porta sed. Finibus natoque purus ipsum proin per elit dui\n        vel. Leo nec suscipit natoque proin sem dictum ultrices. Fusce convallis cursus facilisi urna primis venenatis.\n        Ut tempor et gravida dapibus fusce lacus, eget penatibus senectus? Facilisi ullamcorper montes fames id; maximus\n        lacus.\n    \u003C/p>\n    \u003Ca href=\"#Lists\" id=\"Lists\" class=\"chapter flex\">\n        \u003Cimg src=\"/svg/link-regular.svg\" alt=\"Icon\" width=\"20\" height=\"20\" class=\"icon\">\n        \u003Ch3>Lists\u003C/h3>\n    \u003C/a>\n    \u003Cul class=\"flex-col list\">\n        \u003Cli class=\"list-item\">Item 1\u003C/li>\n        \u003Cli class=\"list-item\">Item 2\u003C/li>\n        \u003Cli class=\"list-item\">Item 3\u003C/li>\n    \u003C/ul>\n    \u003Cul class=\"flex-col list\">\n        \u003Cli class=\"list-item\">Item 1\n            \u003Cul class=\"flex-col list sub-list\">\n                \u003Cli class=\"list-item\">Item 1.1\u003C/li>\n                \u003Cli class=\"list-item\">Item 1.2\u003C/li>\n                \u003Cli class=\"list-item\">Item 1.3\u003C/li>\n            \u003C/ul>\n        \u003C/li>\n        \u003Cli class=\"list-item\">Item 2\u003C/li>\n        \u003Cli class=\"list-item\">Item 3\u003C/li>\n    \u003C/ul>\n    \u003Ca href=\"#Tables\" id=\"Tables\" class=\"chapter flex\">\n        \u003Cimg src=\"/svg/link-regular.svg\" alt=\"Icon\" width=\"20\" height=\"20\" class=\"icon\">\n        \u003Ch3>Tables\u003C/h3>\n    \u003C/a>\n    \u003Cp>Basic classic table.\u003C/p>\n    \u003Ctable class=\"table-type-classic\" table-sortable=\"false\">\n        \u003Cthead>\n            \u003Ctr>\n                \u003Cth>Column 1\u003C/th>\n                \u003Cth>Column 2\u003C/th>\n                \u003Cth>Column 3\u003C/th>\n            \u003C/tr>\n        \u003C/thead>\n        \u003Ctbody>\n            \u003Ctr>\n                \u003Ctd>Row 1, Column 1\u003C/td>\n                \u003Ctd>Row 1, Column 2\u003C/td>\n                \u003Ctd>Row 1, Column 3\u003C/td>\n            \u003C/tr>\n            \u003Ctr>\n                \u003Ctd>Row 2, Column 1\u003C/td>\n                \u003Ctd>Row 2, Column 2\u003C/td>\n                \u003Ctd>Row 2, Column 3\u003C/td>\n            \u003C/tr>\n            \u003Ctr>\n                \u003Ctd>Row 3, Column 1\u003C/td>\n                \u003Ctd>Row 3, Column 2\u003C/td>\n                \u003Ctd>Row 3, Column 3\u003C/td>\n            \u003C/tr>\n            \u003Ctr>\n                \u003Ctd>Row 4, Column 1\u003C/td>\n                \u003Ctd>Row 4, Column 2\u003C/td>\n                \u003Ctd>Row 4, Column 3\u003C/td>\n            \u003C/tr>\n            \u003Ctr>\n                \u003Ctd>Row 5, Column 1\u003C/td>\n                \u003Ctd>Row 5, Column 2\u003C/td>\n                \u003Ctd>Row 5, Column 3\u003C/td>\n            \u003C/tr>\n        \u003C/tbody>\n    \u003C/table>\n    \u003Cp>Aside table.\u003C/p>\n    \u003Ctable class=\"table-type-data\" table-sortable=\"false\">\n        \u003Cthead>\n            \u003Ctr>\n                \u003Cth>\u003C/th>\n                \u003Cth>Var 1\u003C/th>\n                \u003Cth>Var 2\u003C/th>\n                \u003Cth>Var 3\u003C/th>\n                \u003Cth>Var 4\u003C/th>\n            \u003C/tr>\n        \u003C/thead>\n        \u003Ctbody>\n            \u003Ctr>\n                \u003Ctd>Key A\u003C/td>\n                \u003Ctd>A1\u003C/td>\n                \u003Ctd>A2\u003C/td>\n                \u003Ctd>A3\u003C/td>\n                \u003Ctd>A4\u003C/td>\n            \u003C/tr>\n            \u003Ctr>\n                \u003Ctd>Key B\u003C/td>\n                \u003Ctd>B1\u003C/td>\n                \u003Ctd>B2\u003C/td>\n                \u003Ctd>B3\u003C/td>\n                \u003Ctd>B4\u003C/td>\n            \u003C/tr>\n            \u003Ctr>\n                \u003Ctd>Key C\u003C/td>\n                \u003Ctd>C1\u003C/td>\n                \u003Ctd>C2\u003C/td>\n                \u003Ctd>C3\u003C/td>\n                \u003Ctd>C4\u003C/td>\n            \u003C/tr>\n        \u003C/tbody>\n    \u003C/table>\n    \u003Cp>Sortable table. Click on the header cells to sort.\u003C/p>\n    \u003Ctable class=\"table-type-classic\" table-sort-type=\"string\" table-sortable=\"true\">\n        \u003Cthead>\n            \u003Ctr>\n                \u003Cth table-sortable-item>\n                    \u003Cdiv>\n                        \u003Cp>Click me!\u003C/p>\n                        \u003Cimg src=\"/svg/sort-regular.svg\" alt=\"Icon\" width=\"15\" height=\"15\" class=\"icon icon-light\">\n                        \u003Cspan click-action=\"tableSort\" table-sort-number=\"1\" class=\"click-item\">\u003C/span>\n                    \u003C/div>\n                \u003C/th>\n                \u003Cth table-sortable-item>\n                    \u003Cdiv>\n                        \u003Cp>Or me!\u003C/p>\n                        \u003Cimg src=\"/svg/sort-regular.svg\" alt=\"Icon\" width=\"15\" height=\"15\" class=\"icon icon-light\">\n                        \u003Cspan click-action=\"tableSort\" table-sort-number=\"2\" class=\"click-item\">\u003C/span>\n                    \u003C/div>\n                \u003C/th>\n            \u003C/tr>\n        \u003C/thead>\n        \u003Ctbody>\n            \u003Ctr>\n                \u003Ctd>Sort A\u003C/td>\n                \u003Ctd>Sort D\u003C/td>\n            \u003C/tr>\n            \u003Ctr>\n                \u003Ctd>Sort B\u003C/td>\n                \u003Ctd>Sort E\u003C/td>\n            \u003C/tr>\n            \u003Ctr>\n                \u003Ctd>Sort C\u003C/td>\n                \u003Ctd>Sort F\u003C/td>\n            \u003C/tr>\n        \u003C/tbody>\n    \u003C/table>\n    \u003Ca href=\"#Code\" id=\"Code\" class=\"chapter flex\">\n        \u003Cimg src=\"/svg/link-regular.svg\" alt=\"Icon\" width=\"20\" height=\"20\" class=\"icon\">\n        \u003Ch3>Code\u003C/h3>\n    \u003C/a>\n    \u003Cp>Code blocks are work in progress.\u003C/p>\n    \u003Ca href=\"#Blockquote\" id=\"Blockquote\" class=\"chapter flex\">\n        \u003Cimg src=\"/svg/link-regular.svg\" alt=\"Icon\" width=\"20\" height=\"20\" class=\"icon\">\n        \u003Ch3>Blockquote\u003C/h3>\n    \u003C/a>\n    \u003Cp>Blockquotes are work in progress.\u003C/p>\n\u003C/article>",
+                9900,
+                8,
+                0,
+                "2025-12-10T00:50:47.129Z",
+                "2024-11-23T22:39:05.747Z",
+                "2024-07-11T10:55:44.549Z",
+                [
+                    14,
+                    15,
+                    16,
+                    17,
+                    18,
+                    19,
+                    20
+                ],
+                "#Basic_Paragraphs",
+                "#Note",
+                "#Large_Articles",
+                "#Lists",
+                "#Tables",
+                "#Code",
+                "#Blockquote",
+                "This is a template page used for developers to quickly access different components.",
+                [
+                    23,
+                    26,
+                    29,
+                    32,
+                    35
+                ],
+                {
+                    "name": 24,
+                    "url": 25
+                },
+                "Platform",
+                "/documentation/read/Doc/Products/Platform",
+                {
+                    "name": 27,
+                    "url": 28
+                },
+                "Uplink",
+                "/documentation/read/Doc/Services/Uplink",
+                {
+                    "name": 30,
+                    "url": 31
+                },
+                "Monitor",
+                "/documentation/read/Doc/Services/Monitor",
+                {
+                    "name": 33,
+                    "url": 34
+                },
+                "Commander",
+                "/documentation/read/Doc/Products/Commander",
+                {
+                    "name": 36,
+                    "url": 37
+                },
+                "Administrator",
+                "/documentation/read/Doc/Products/Administrator",
+                [
+                    39,
+                    46
+                ],
+                {
+                    "id": 40,
+                    "category": 41,
+                    "page": 42,
+                    "icon": 43,
+                    "type": 44,
+                    "imageUrl": 45
+                },
+                1,
+                "More",
+                "Status",
+                "signal-bars",
+                "Doc",
+                "https://files.stefankruik.com/Products/100/Monitor.png",
+                {
+                    "id": 47,
+                    "category": 41,
+                    "page": 48,
+                    "icon": 49,
+                    "type": 44,
+                    "imageUrl": 50
+                },
+                5,
+                "Roadmap",
+                "timeline-arrow",
+                "https://files.stefankruik.com/Products/100/Administrator.png",
+                [
+                    "Reactive",
+                    52
+                ],
+                {
+                },
+                [
+                    "Set"
+                ],
+                [
+                    "ShallowReactive",
+                    55
+                ],
+                {
+                    "documentation-v1-en-US-Doc-More-Template": -1
+                },
+                true,
+                "/documentation/read/Doc/More/Template",
+                [
+                    "Reactive",
+                    59
+                ],
+                {
+                    "documentationStore": 60
+                },
+                {
+                    "docIndex": 61,
+                    "guideIndex": 62,
+                    "featuredDocItems": 63,
+                    "featuredGuideItems": 64,
+                    "version": 65,
+                    "language": 66,
+                    "theme": 67,
+                    "voteCast": 68,
+                    "commentCast": 68
+                },
+                [
+                ],
+                [
+                ],
+                [
+                ],
+                [
+                ],
+                "v1",
+                "en-US",
+                "Cobalt",
+                ""
+            ]</script>
+    <script>
+        window.__NUXT__ = {};
+        window.__NUXT__.config = {
+            public: {
+                piniaPluginPersistedstate: {
+                    storage: "sessionStorage",
+                    auto: true
+                }
+            },
+            app: {
+                baseURL: "/",
+                buildId: "dev",
+                buildAssetsDir: "/_nuxt/",
+                cdnURL: ""
+            }
+        }
+    </script>
+</body>
+
+</html>

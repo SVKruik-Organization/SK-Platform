@@ -138,30 +138,28 @@ const commentCastCurrentPage = computed<boolean>(() => {
             <p class="light-text small-text documentation-footer-item-description">Leave a vote and optional comment.
                 Feedback is always greatly appreciated.</p>
             <div class="flex">
-                <ClientOnly>
-                    <button @click="submitDocumentationVote(true)" class="flex footer-button footer-button-like"
-                        :class="{ 'active-button-like': pressedButton === 'like', 'disabled-button': voteCastCurrentPage }"
-                        type="button" title="Click this if you like the design and information available.">
-                        <NuxtImg class="icon icon-light" width="18" height="18" src="/svg/heart-regular.svg"
-                            loading="lazy" alt="Icon" />
-                        <p>Yes</p>
-                    </button>
-                    <button @click="submitDocumentationVote(false)" class="flex footer-button footer-button-dislike"
-                        :class="{ 'active-button-dislike': pressedButton === 'dislike', 'disabled-button': voteCastCurrentPage }"
-                        type="button" title="Click this if you think some things could be better.">
-                        <NuxtImg class="icon icon-light" width="18" height="18" src="/svg/heart-crack-regular.svg"
-                            loading="lazy" alt="Icon" />
-                        <p>No</p>
-                    </button>
-                    <button v-if="pressedButton.length || voteCastCurrentPage"
-                        class="flex footer-button footer-button-comment disable-close" type="button"
-                        :class="{ 'disabled-button': commentCastCurrentPage }" @click="commentDocumentationVote"
-                        title="Leave a comment so I can take a look at your feedback.">
-                        <NuxtImg class="icon icon-light disable-close" width="18" height="18"
-                            src="/svg/comment-regular.svg" loading="lazy" alt="Icon" />
-                        <p class="disable-close">Comment</p>
-                    </button>
-                </ClientOnly>
+                <button @click="submitDocumentationVote(true)" class="flex footer-button footer-button-like"
+                    :class="{ 'active-button-like': pressedButton === 'like', 'disabled-button': voteCastCurrentPage }"
+                    type="button" title="Click this if you like the design and information available.">
+                    <NuxtImg class="icon icon-light" width="18" height="18" src="/svg/heart-regular.svg" loading="lazy"
+                        alt="Icon" />
+                    <p>Yes</p>
+                </button>
+                <button @click="submitDocumentationVote(false)" class="flex footer-button footer-button-dislike"
+                    :class="{ 'active-button-dislike': pressedButton === 'dislike', 'disabled-button': voteCastCurrentPage }"
+                    type="button" title="Click this if you think some things could be better.">
+                    <NuxtImg class="icon icon-light" width="18" height="18" src="/svg/heart-crack-regular.svg"
+                        loading="lazy" alt="Icon" />
+                    <p>No</p>
+                </button>
+                <button v-if="pressedButton.length || voteCastCurrentPage"
+                    class="flex footer-button footer-button-comment disable-close" type="button"
+                    :class="{ 'disabled-button': commentCastCurrentPage }" @click="commentDocumentationVote"
+                    title="Leave a comment so I can take a look at your feedback.">
+                    <NuxtImg class="icon icon-light disable-close" width="18" height="18" src="/svg/comment-regular.svg"
+                        loading="lazy" alt="Icon" />
+                    <p class="disable-close">Comment</p>
+                </button>
             </div>
             <p ref="confirmationMessage" class="confirmation-message">Thank you so much for {{ submissionType }}!</p>
         </form>

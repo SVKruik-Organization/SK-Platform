@@ -175,7 +175,7 @@ function parseRelatedItems(rawRelatedItems: Array<RawRelatedItem>, rawProducts: 
     const relatedItems: Array<RelatedItem> = [];
     rawRelatedItems.forEach((item: RawRelatedItem) => {
         // Random Product Image
-        let imageUrl: string | null = null;
+        let imageUrl: string = `https://files.stefankruik.com/Products/100/Barren.png`;
         if (rawProducts !== "") {
             const parsedProducts: Array<string> = rawProducts.split(",");
             const randomProduct: string = parsedProducts[Math.floor(Math.random() * parsedProducts.length)];

@@ -1,7 +1,6 @@
-import express, { Request, Response, Router } from "express";
+import express, { NextFunction, Request, Response, Router } from "express";
 import { SearchAllRequest, SearchPageRequest } from "../customTypes";
 import rateLimit from "express-rate-limit";
-import { logError } from "@svkruik/sk-platform-formatters";
 import { getSearchEngine } from "../utils/networking";
 import { Index } from "meilisearch";
 const router: Router = express.Router();
@@ -13,17 +12,18 @@ const searchLimit = rateLimit({
     standardHeaders: true,
     legacyHeaders: false
 });
-router.get("/all/:version/:language", searchLimit, async (req: Request, res: Response) => {
+router.get("/all/:version/:language", searchLimit, async (req: Request, res: Response, next: NextFunction) => {
     try {
         // Setup
         const searchEngine = getSearchEngine();
-        if (!searchEngine) return res.sendStatus(503);
+        if (!searchEngine) throw new Error("Search engine not initialized.", { cause: { statusCode: 503 } });
         const searchParams = req.query as SearchAllRequest;
-        if (!searchParams.limit || !searchParams.offset || !searchParams.query || !searchParams.scope) return res.sendStatus(400);
+        if (!searchParams.limit || !searchParams.offset || !searchParams.query || !searchParams.scope)
+            throw new Error("Missing required query parameters.", { cause: { statusCode: 400 } });
 
         // Scope
         let validScopes: Array<string> = ["global", "titles"];
-        if (!validScopes.includes(searchParams.scope)) return res.sendStatus(400);
+        if (!validScopes.includes(searchParams.scope)) throw new Error("Invalid scope provided.", { cause: { statusCode: 1400 } });
         let scope: Array<string> = [];
         if (searchParams.scope === "global") {
             scope = ["content", "page"];
@@ -41,21 +41,19 @@ router.get("/all/:version/:language", searchLimit, async (req: Request, res: Res
         // Return
         return res.json({ "results": search.hits, "count": search.estimatedTotalHits, "durationMs": search.processingTimeMs, "query": searchParams.query, "offset": offset });
     } catch (error: any) {
-        const userErrorCodes: Array<string> = ["index_not_found", "invalid_search_limit"];
-        if (error.toString().includes("fetch failed")) return res.sendStatus(503);
-        if (!userErrorCodes.includes(error.code)) logError(error);
-        return res.sendStatus(error.httpStatus || 500);
+        return next(error);
     }
 });
 
 // Specific Page
-router.get("/page/:version/:language", async (req: Request, res: Response) => {
+router.get("/page/:version/:language", async (req: Request, res: Response, next: NextFunction) => {
     try {
         // Setup
         const searchEngine = getSearchEngine();
-        if (!searchEngine) return res.sendStatus(503);
+        if (!searchEngine) throw new Error("Search engine not initialized.", { cause: { statusCode: 503 } });
         const searchParams = req.query as SearchPageRequest;
-        if (!searchParams.query || !searchParams.type || !searchParams.category || !searchParams.page) return res.sendStatus(400);
+        if (!searchParams.query || !searchParams.type || !searchParams.category || !searchParams.page)
+            throw new Error("Missing required query parameters.", { cause: { statusCode: 400 } });
 
         // Search
         const offset: number = searchParams.offset ? parseInt(searchParams.offset) : 0;
@@ -70,10 +68,7 @@ router.get("/page/:version/:language", async (req: Request, res: Response) => {
         // Return
         return res.json({ "results": search.hits, "count": search.estimatedTotalHits, "durationMs": search.processingTimeMs, "query": searchParams.query, "offset": offset });
     } catch (error: any) {
-        const userErrorCodes: Array<string> = ["index_not_found", "invalid_search_limit"];
-        if (error.toString().includes("fetch failed")) return res.sendStatus(503);
-        if (!userErrorCodes.includes(error.code)) logError(error);
-        return res.sendStatus(error.httpStatus || 500);
+        return next(error);
     }
 });
 

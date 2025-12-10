@@ -58,7 +58,7 @@ export type RelatedItem = {
     "category": string,
     "page": string,
     "icon": string,
-    "imageUrl": string | null
+    "imageUrl": string
 }
 
 // File Index/TOC Item

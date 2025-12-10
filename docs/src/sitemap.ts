@@ -32,7 +32,7 @@ const validLanguages: Array<string> = ["en-US"];
 if (!validLanguages.includes(language)) throw new Error("Invalid language provided.");
 
 // Documenation Folders
-const documentationTypes: Array<Dirent> = readdirSync(`${__dirname}/../data/html/${version}/${language}`, {
+const documentationTypes: Array<Dirent> = readdirSync(`${__dirname}/../data/pages/${version}/${language}`, {
     withFileTypes: true
 }).filter(entity => entity.isDirectory());
 logData(`Found ${documentationTypes.length} documentation types.`, "info");
@@ -40,7 +40,7 @@ logData(`Found ${documentationTypes.length} documentation types.`, "info");
 // Categories
 let categories: Array<Dirent> = [];
 documentationTypes.forEach((folder: Dirent) => {
-    categories = categories.concat(readdirSync(`${__dirname}/../data/html/${version}/${language}/${folder.name}`, {
+    categories = categories.concat(readdirSync(`${__dirname}/../data/pages/${version}/${language}/${folder.name}`, {
         withFileTypes: true
     }).filter(entity => entity.isDirectory()));
 });
@@ -51,7 +51,7 @@ let rawPages: Array<Dirent> = [];
 categories.forEach((folder: Dirent) => {
     const split = folder.parentPath.split("/");
     const type = split[split.length - 1];
-    rawPages = rawPages.concat(readdirSync(`${__dirname}/../data/html/${version}/${language}/${type}/${folder.name}`, {
+    rawPages = rawPages.concat(readdirSync(`${__dirname}/../data/pages/${version}/${language}/${type}/${folder.name}`, {
         withFileTypes: true
     }).filter(entity => entity.isFile() && entity.name.endsWith(".html")));
 });
@@ -62,7 +62,7 @@ rawPages.forEach((page: Dirent) => {
     const split = page.parentPath.split("/");
     const type = split[split.length - 2];
     const category = split[split.length - 1];
-    const metadata: Stats = statSync(`${__dirname}/../data/html/${version}/${language}/${type}/${category}/${page.name}`);
+    const metadata: Stats = statSync(`${__dirname}/../data/pages/${version}/${language}/${type}/${category}/${page.name}`);
 
     pages.push({
         "url": `https://platform.stefankruik.com/documentation/read/${type}/${category.slice(3)}${page.name === "00_Default.html" ? "" : `/${page.name.slice(3, -5)}`}`,
