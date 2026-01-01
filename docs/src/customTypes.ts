@@ -16,7 +16,7 @@ export type VoteRequest = {
 // Add Comment
 export type CommentRequest = {
     "ticket": string,
-    "commment": string
+    "comment": string
 }
 
 // Documentation Product

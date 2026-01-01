@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { DropdownStates, type DocChapterItem, type DocumentationTypes, type DocumentationFile, type DocumentationIndexItem, type HeadLink, ToastTypes, type ToastItem } from "@/assets/customTypes";
+import { type DocChapterItem, type DocumentationTypes, type DocumentationFile, type DocumentationIndexItem, type HeadLink, ToastTypes, type ToastItem } from "@/assets/customTypes";
 import { useDocumentationStore } from "@/stores/DocumentationStore";
 import { createTicket, formatDate, formatToISO } from "@svkruik/sk-platform-formatters";
 import { useFetchDocumentationFile } from "@/utils/fetch/documentation/useFetchDocumentationFile";
@@ -16,10 +16,6 @@ const props = defineProps<{
     type: DocumentationTypes;
     category: string;
     page?: string; // Undefined for category page
-    informationDropdownVisible?: boolean;
-    productDropdownVisible?: boolean;
-    navigationDropdownVisible?: boolean;
-    commentOverlayVisible: boolean;
 }>();
 
 // Reactive Data
@@ -252,7 +248,6 @@ function tableSort(table: HTMLTableElement, headerNumber: number): void {
 function toggleInformationMenu(event: Event): void {
     const target: HTMLElement = event.target as HTMLElement;
     if (target.tagName === "MENU") return;
-    emit("dropdownState", DropdownStates.information, !props.informationDropdownVisible);
 }
 
 /**
@@ -262,7 +257,6 @@ function toggleInformationMenu(event: Event): void {
 function toggleNavigationBar(event: Event): void {
     const target: HTMLElement = event.target as HTMLElement;
     if (target.tagName === "NAV") return;
-    emit("dropdownState", DropdownStates.navigation, !props.navigationDropdownVisible);
 }
 
 /**
@@ -311,12 +305,6 @@ async function nextPage(): Promise<void> {
         router.push(`/documentation/read/${props.type}/${props.category}/${nextPageName}`);
     }
 }
-
-// Emitters
-const emit = defineEmits(["dropdownState"]);
-function handleDropdownState(name: DropdownStates, newValue: boolean): void {
-    emit("dropdownState", name, newValue);
-};
 
 // SEO
 const links: Array<HeadLink> = [
@@ -581,9 +569,8 @@ useHead({
                     <h3>More</h3>
                     <p class="light-text">Leave feedback if you'd like and find links to further assistance.</p>
                 </div>
-                <DocumentationFooter @dropdownState="handleDropdownState"
-                    :comment-overlay-visible="commentOverlayVisible" :type="props.type" :category="props.category"
-                    :page="props.page" styles="read-footer" />
+                <DocumentationFooter :type="props.type" :category="props.category" :page="props.page"
+                    styles="read-footer" />
             </section>
         </div>
     </div>

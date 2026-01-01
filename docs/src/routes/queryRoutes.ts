@@ -72,4 +72,4 @@ router.get("/page/:version/:language", async (req: Request, res: Response, next:
     }
 });
 
-export { router as SearchRoutes };
+export { router as QueryRoutes };

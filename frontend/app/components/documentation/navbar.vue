@@ -1,20 +1,12 @@
 <script setup lang="ts">
-import { DropdownStates, ToastTypes, type DocumentationSearchResponse, type ToastItem } from "@/assets/customTypes";
+import { ToastTypes, type DocumentationSearchResponse, type ToastItem } from "@/assets/customTypes";
 import { useDocumentationStore } from "@/stores/DocumentationStore";
 import { createTicket } from "@svkruik/sk-platform-formatters";
 import { useFetchDocumentationSearch } from "@/utils/fetch/documentation/useFetchDocumentationSearch";
 
 // Setup
 const documentationStore = useDocumentationStore();
-const emit = defineEmits(["dropdownState"]);
 const { $event } = useNuxtApp();
-
-// Props
-const props = defineProps<{
-    versionDropdownVisible: boolean;
-    languageDropdownVisible: boolean;
-    themeDropdownVisible: boolean;
-}>();
 
 // Reactive Data
 const refreshDisabled: Ref<boolean> = ref(false);
@@ -24,54 +16,40 @@ const searchQuery: Ref<string> = ref("");
 const searchInterval: Ref<null | NodeJS.Timeout> = ref(null);
 const searchResults: Ref<DocumentationSearchResponse | null> = ref(null);
 const emptyMessage: Ref<string> = ref("Type in the search bar above, and results will appear here.");
+const randomSubject: Ref<string> = ref("");
 const resultsPerPage: Ref<number> = ref(5);
 const offset: Ref<number> = ref(0);
 const inputFocus: Ref<boolean> = ref(false);
+const isDropdownOpen: Ref<boolean> = ref(false);
+const versionDropdownVisible: Ref<boolean> = ref(false);
+const languageDropdownVisible: Ref<boolean> = ref(false);
+const themeDropdownVisible: Ref<boolean> = ref(false);
 
 // HTML Elements
 const searchInput: Ref<null | HTMLInputElement> = ref(null);
 const loadingIndicator: Ref<null | HTMLImageElement> = ref(null);
 const refreshButton: Ref<null | HTMLButtonElement> = ref(null);
 
-// Lifecycle
-onMounted(() => {
-    document.addEventListener("click", (event) => {
-        const target: HTMLElement = event.target as HTMLElement;
-        if (target.classList.contains("disable-nav-close")) return;
-        inputFocus.value = false;
-    });
-});
 
 // Methods
 
-/**
- * Toggle the version dropdown menu.
- * @param event The click event.
- */
-function toggleVersionMenu(event: Event): void {
-    const target: HTMLElement = event.target as HTMLElement;
-    if (target.tagName === "MENU") return;
-    emit("dropdownState", DropdownStates.version, !props.versionDropdownVisible);
-}
-
-/**
- * Toggle the language dropdown menu.
- * @param event The click event.
- */
-function toggleLanguageMenu(event: Event): void {
-    const target: HTMLElement = event.target as HTMLElement;
-    if (target.tagName === "MENU") return;
-    emit("dropdownState", DropdownStates.language, !props.languageDropdownVisible);
-}
-
-/**
- * Toggle the theme dropdown menu.
- * @param event The click event.
- */
-function toggleThemeMenu(event: Event): void {
-    const target: HTMLElement = event.target as HTMLElement;
-    if (target.tagName === "MENU") return;
-    emit("dropdownState", DropdownStates.theme, !props.themeDropdownVisible);
+function toggleMenu(event: MouseEvent, menuType: string): void {
+    event.stopPropagation();
+    isDropdownOpen.value = !isDropdownOpen.value;
+    versionDropdownVisible.value = false;
+    languageDropdownVisible.value = false;
+    themeDropdownVisible.value = false;
+    switch (menuType) {
+        case "version":
+            versionDropdownVisible.value = isDropdownOpen.value;
+            break;
+        case "language":
+            languageDropdownVisible.value = isDropdownOpen.value;
+            break;
+        case "theme":
+            themeDropdownVisible.value = isDropdownOpen.value;
+            break;
+    }
 }
 
 /**
@@ -135,12 +113,33 @@ async function switchSearchMode(mode: string): Promise<void> {
 }
 
 /**
- * Get a random subject to suggest when no search results are found.
+ * Initialize a random subject for search suggestions.
+ * Used if no results are found.
  */
-function getRandomSubject(): string {
-    const randomSubjects: Array<string> = ["Operator", "Apricaria", "Stelleri", "Bots", "Support", "Help", "FAQ", "Uplink", "API", "Integrating", "Authenticating", "Introduction", "Links", "Overway", "Commander", "Administrator", "Setup", "Roles"];
-    return randomSubjects[Math.floor(Math.random() * randomSubjects.length)] as string;
+function initRandomSubject(): void {
+    const randomSubjects: Array<string> = [
+        "Operator",
+        "Apricaria",
+        "Stelleri",
+        "Bots",
+        "Support",
+        "Help",
+        "FAQ",
+        "Uplink",
+        "API",
+        "Integrating",
+        "Authenticating",
+        "Introduction",
+        "Links",
+        "Overway",
+        "Commander",
+        "Administrator",
+        "Setup",
+        "Roles"
+    ];
+    randomSubject.value = randomSubjects[Math.floor(Math.random() * randomSubjects.length)] as string;
 }
+if (!randomSubject.value) initRandomSubject();
 
 /**
  * Query the search engine.
@@ -215,121 +214,104 @@ function searchInputChecks(force: boolean, newOffset: number): boolean {
 
 <template>
     <header>
+        <span class="overlay" v-if="isDropdownOpen" @click="isDropdownOpen = false"></span>
         <nav class="flex glass">
             <section class="left-nav flex">
                 <NuxtLink to="/documentation">
                     <h2>SK Docs</h2>
                 </NuxtLink>
             </section>
+            <div class="flex middle-nav">
+                <button title="Search through the documentation." class="input-container flex navbar-pill"
+                    @click.self="searchInput?.focus()" type="button" :class="{ 'input-container-focused': inputFocus }">
+                    <NuxtImg class="icon icon-light" width="15" height="15" src="/svg/magnifying-glass-regular.svg"
+                        loading="lazy" alt="Icon" @click="searchInput?.focus()" />
+                    <input class="" ref="searchInput" @focus="searchFocusHandler" type="text" @blur="searchBlurHandler"
+                        maxlength="60" placeholder="Search through everything" @keyup="handleInput"
+                        @keydown="handleDown($event)">
+                    <menu class="flex-col input-results-container">
+                        <div class="flex-col full-width">
+                            <small class="light-text">Search Mode</small>
+                            <div class="flex search-mode-container">
+                                <button class="flex" :class="{ 'active-search-mode': searchMode === 'global' }"
+                                    title="Search for page titles and content." type="button"
+                                    @click="switchSearchMode('global')">
+                                    <NuxtImg class="icon icon-light" width="15" height="15"
+                                        src="/svg/earth-americas-regular.svg" loading="lazy" alt="Icon" />
+                                    <p>Globally</p>
+                                </button>
+                                <button class="flex" :class="{ 'active-search-mode': searchMode === 'titles' }"
+                                    title="Search for page titles." type="button" @click="switchSearchMode('titles')">
+                                    <NuxtImg class="icon icon-light" width="15" height="15" src="/svg/font-regular.svg"
+                                        loading="lazy" alt="Icon" />
+                                    <p>Pages</p>
+                                </button>
+                            </div>
+                        </div>
+                        <div class="flex-col full-width">
+                            <div class="flex result-header">
+                                <small class="light-text">Results</small>
+                                <img class="icon icon-light loading-indicator" width="15" height="15"
+                                    src="/svg/circle-notch-regular.svg" ref="loadingIndicator" alt="Icon">
+                            </div>
+                            <section class="results full-width flex-col">
+                                <NuxtLink v-if="searchResults && searchResults.count > 0"
+                                    class="flex-col search-result-item"
+                                    :title="`Visit ${searchResult.type} ${searchResult.page} in ${searchResult.category}`"
+                                    :to="`/documentation/read/${searchResult.type}/${searchResult.category.replace(/ /g, '_')}${searchResult.page === 'Default' ? '' : `/${searchResult.page.replace(/ /g, '_')}`}`"
+                                    v-for="searchResult of searchResults.results">
+                                    <strong>{{ searchResult.page }}</strong>
+                                    <div class="flex search-results-meta">
+                                        <p>{{ searchResult.type }}</p>
+                                        <NuxtImg class="icon icon-light" width="10" height="10"
+                                            src="/svg/circle-small-regular.svg" loading="lazy" alt="Icon" />
+                                        <p>{{ searchResult.category }}</p>
+                                    </div>
+                                </NuxtLink>
+                                <p v-else-if="searchResults && searchResults.count === 0">
+                                    No results found. Maybe try searching for {{ randomSubject }}?
+                                </p>
+                                <p v-else> {{ emptyMessage }} </p>
+                            </section>
+                            <div class="flex pagination-container"
+                                v-if="searchResults && searchResults.count > resultsPerPage">
+                                <button title="Visit result pagination tab."
+                                    @click="search(false, i * resultsPerPage - resultsPerPage)"
+                                    :class="{ 'active-pagination': i * resultsPerPage - resultsPerPage === offset }"
+                                    v-for="i in Math.ceil(searchResults.count / resultsPerPage)">
+                                    <p>{{ i }}</p>
+                                </button>
+                            </div>
+                            <small class="light-text" v-if="searchResults && searchResults.count">Found {{
+                                searchResults.count }} results
+                                in {{ searchResults.durationMs }} ms</small>
+                        </div>
+                    </menu>
+                </button>
+                <button title="Change the version of the documentation." type="button"
+                    class="flex dropdown-container justify-center navbar-pill"
+                    :class="{ 'navbar-pill-expand': versionDropdownVisible }" @click="toggleMenu($event, 'version')">
+                    <p :class="{ 'navbar-pill-text-expand': versionDropdownVisible }">Version</p>
+                    <NuxtImg class="icon icon-light" width="15" height="15" src="/svg/code-branch-regular.svg"
+                        loading="lazy" alt="Icon" />
+                    <menu :class="{ 'dropdown-expand version-dropdown-expand': versionDropdownVisible }"
+                        class="dropdown-menu dropdown-menu-left flex-col">
+                        <button type="button" class="menu-item flex" @click="documentationStore.setVersion('v1')">
+                            <NuxtImg class="icon" width="15" height="15"
+                                :class="{ 'visible': documentationStore.version === 'v1' }" src="/svg/check-regular.svg"
+                                loading="lazy" alt="Icon" />
+                            <label>v1 Stable</label>
+                        </button>
+                        <button type="button" class="menu-item flex" @click="documentationStore.setVersion('v2')">
+                            <NuxtImg class="icon" width="15" height="15"
+                                :class="{ 'visible': documentationStore.version === 'v2' }" src="/svg/check-regular.svg"
+                                loading="lazy" alt="Icon" />
+                            <label class="disabled-text">v2 Beta</label>
+                        </button>
+                    </menu>
+                </button>
+            </div>
             <section class="right-nav flex">
-                <ClientOnly>
-                    <div class="flex middle-nav">
-                        <button title="Search through the documentation."
-                            class="input-container flex navbar-pill disable-nav-close"
-                            @click.self="searchInput?.focus()" type="button"
-                            :class="{ 'input-container-focused': inputFocus }">
-                            <NuxtImg class="icon icon-light disable-nav-close" width="15" height="15"
-                                src="/svg/magnifying-glass-regular.svg" loading="lazy" alt="Icon"
-                                @click="searchInput?.focus()" />
-                            <input class=" disable-nav-close" ref="searchInput" @focus="searchFocusHandler" type="text"
-                                @blur="searchBlurHandler" maxlength="60" placeholder="Search through everything"
-                                @keyup="handleInput" @keydown="handleDown($event)">
-                            <menu class="flex-col input-results-container disable-nav-close">
-                                <div class="flex-col full-width disable-nav-close">
-                                    <small class="light-text disable-nav-close">Search Mode</small>
-                                    <div class="flex search-mode-container disable-nav-close">
-                                        <button class="flex disable-nav-close"
-                                            :class="{ 'active-search-mode': searchMode === 'global' }"
-                                            title="Search for page titles and content." type="button"
-                                            @click="switchSearchMode('global')">
-                                            <NuxtImg class="icon icon-light disable-nav-close" width="15" height="15"
-                                                src="/svg/earth-americas-regular.svg" loading="lazy" alt="Icon" />
-                                            <p class="disable-nav-close">Globally</p>
-                                        </button>
-                                        <button class="flex disable-nav-close"
-                                            :class="{ 'active-search-mode': searchMode === 'titles' }"
-                                            title="Search for page titles." type="button"
-                                            @click="switchSearchMode('titles')">
-                                            <NuxtImg class="icon icon-light disable-nav-close" width="15" height="15"
-                                                src="/svg/font-regular.svg" loading="lazy" alt="Icon" />
-                                            <p class="disable-nav-close">Pages</p>
-                                        </button>
-                                    </div>
-                                </div>
-                                <div class="flex-col full-width disable-nav-close">
-                                    <div class="flex disable-nav-close result-header">
-                                        <small class="light-text disable-nav-close">Results</small>
-                                        <img class="icon icon-light disable-nav-close loading-indicator" width="15"
-                                            height="15" src="/svg/circle-notch-regular.svg" ref="loadingIndicator"
-                                            alt="Icon">
-                                    </div>
-                                    <section class="results full-width flex-col disable-nav-close">
-                                        <NuxtLink v-if="searchResults && searchResults.count > 0"
-                                            class="flex-col search-result-item"
-                                            :title="`Visit ${searchResult.type} ${searchResult.page} in ${searchResult.category}`"
-                                            :to="`/documentation/read/${searchResult.type}/${searchResult.category.replace(/ /g, '_')}${searchResult.page === 'Default' ? '' : `/${searchResult.page.replace(/ /g, '_')}`}`"
-                                            v-for="searchResult of searchResults.results">
-                                            <strong>{{ searchResult.page }}</strong>
-                                            <div class="flex search-results-meta">
-                                                <p>{{ searchResult.type }}</p>
-                                                <NuxtImg class="icon icon-light" width="10" height="10"
-                                                    src="/svg/circle-small-regular.svg" loading="lazy" alt="Icon" />
-                                                <p>{{ searchResult.category }}</p>
-                                            </div>
-                                        </NuxtLink>
-                                        <p class="disable-nav-close"
-                                            v-else-if="searchResults && searchResults.count === 0">
-                                            No results found. Maybe try searching for {{ getRandomSubject() }}?
-                                        </p>
-                                        <p class="disable-nav-close" v-else> {{ emptyMessage }} </p>
-                                    </section>
-                                    <div class="flex pagination-container disable-nav-close"
-                                        v-if="searchResults && searchResults.count > resultsPerPage">
-                                        <button v-if="searchResults" title="Visit result pagination tab."
-                                            class="disable-nav-close"
-                                            @click="search(false, i * resultsPerPage - resultsPerPage)"
-                                            :class="{ 'active-pagination': i * resultsPerPage - resultsPerPage === offset }"
-                                            v-for="i in Math.ceil(searchResults.count / resultsPerPage)">
-                                            <p class="disable-nav-close">{{ i }}</p>
-                                        </button>
-                                    </div>
-                                    <small class="light-text disable-nav-close"
-                                        v-if="searchResults && searchResults.count">Found {{
-                                            searchResults.count }} results
-                                        in {{ searchResults.durationMs }} ms</small>
-                                </div>
-                            </menu>
-                        </button>
-                        <button title="Change the version of the documentation." type="button"
-                            class="flex dropdown-container justify-center navbar-pill disable-close"
-                            :class="{ 'navbar-pill-expand': versionDropdownVisible }"
-                            @click="toggleVersionMenu($event)">
-                            <p class="disable-close" :class="{ 'navbar-pill-text-expand': versionDropdownVisible }">
-                                Version</p>
-                            <NuxtImg class="icon icon-light disable-close" width="15" height="15"
-                                src="/svg/code-branch-regular.svg" loading="lazy" alt="Icon" />
-                            <ClientOnly>
-                                <menu :class="{ 'dropdown-expand version-dropdown-expand': versionDropdownVisible }"
-                                    class="dropdown-menu dropdown-menu-left flex-col disable-close">
-                                    <button type="button" class="menu-item flex"
-                                        @click="documentationStore.setVersion('v1')">
-                                        <NuxtImg class="icon" width="15" height="15"
-                                            :class="{ 'visible': documentationStore.version === 'v1' }"
-                                            src="/svg/check-regular.svg" loading="lazy" alt="Icon" />
-                                        <label>v1 Stable</label>
-                                    </button>
-                                    <button type="button" class="menu-item flex"
-                                        @click="documentationStore.setVersion('v2')">
-                                        <NuxtImg class="icon" width="15" height="15"
-                                            :class="{ 'visible': documentationStore.version === 'v2' }"
-                                            src="/svg/check-regular.svg" loading="lazy" alt="Icon" />
-                                        <label class="disabled-text">v2 Beta</label>
-                                    </button>
-                                </menu>
-                            </ClientOnly>
-                        </button>
-                    </div>
-                </ClientOnly>
                 <div class="right-nav-buttons flex">
                     <NuxtLink title="Go back to the SK Platform homepage." class="flex navbar-pill gradient-button"
                         to="/">
@@ -354,86 +336,77 @@ function searchInputChecks(force: boolean, newOffset: number): boolean {
                             loading="lazy" alt="Icon" />
                     </button>
                     <button title="Change the language of the documentation." type="button"
-                        class="flex dropdown-container justify-center navbar-pill disable-close"
-                        :class="{ 'navbar-pill-expand': languageDropdownVisible }" @click="toggleLanguageMenu($event)">
-                        <p class="disable-close" :class="{ 'navbar-pill-text-expand': languageDropdownVisible }">
-                            Language</p>
-                        <NuxtImg class="icon icon-light disable-close" width="15" height="15"
-                            src="/svg/globe-regular.svg" loading="lazy" alt="Icon" />
-                        <ClientOnly>
-                            <menu :class="{ 'dropdown-expand language-dropdown-expand': languageDropdownVisible }"
-                                class="dropdown-menu dropdown-menu-left flex-col disable-close">
-                                <button type="button" class="menu-item flex"
-                                    @click="documentationStore.setLanguage('en-US')">
-                                    <NuxtImg class="icon" width="15" height="15"
-                                        :class="{ 'visible': documentationStore.language === 'en-US' }"
-                                        src="/svg/check-regular.svg" loading="lazy" alt="Icon" />
-                                    <label>English</label>
-                                    <span class="fi fi-us"></span>
-                                </button>
-                                <button type="button" class="menu-item flex"
-                                    @click="documentationStore.setLanguage('nl-NL')">
-                                    <NuxtImg class="icon" width="15" height="15"
-                                        :class="{ 'visible': documentationStore.language === 'nl-NL' }"
-                                        src="/svg/check-regular.svg" loading="lazy" alt="Icon" />
-                                    <label class="disabled-text">Nederlands</label>
-                                    <span class="fi fi-nl"></span>
-                                </button>
-                                <button type="button" class="menu-item flex"
-                                    @click="documentationStore.setLanguage('ko-KR')">
-                                    <NuxtImg class="icon" width="15" height="15"
-                                        :class="{ 'visible': documentationStore.language === 'ko-KR' }"
-                                        src="/svg/check-regular.svg" loading="lazy" alt="Icon" />
-                                    <label class="disabled-text">한국어</label>
-                                    <span class="fi fi-kr"></span>
-                                </button>
-                            </menu>
-                        </ClientOnly>
+                        class="flex dropdown-container justify-center navbar-pill"
+                        :class="{ 'navbar-pill-expand': languageDropdownVisible }"
+                        @click="toggleMenu($event, 'language')">
+                        <p :class="{ 'navbar-pill-text-expand': languageDropdownVisible }">Language</p>
+                        <NuxtImg class="icon icon-light" width="15" height="15" src="/svg/globe-regular.svg"
+                            loading="lazy" alt="Icon" />
+                        <menu :class="{ 'dropdown-expand language-dropdown-expand': languageDropdownVisible }"
+                            class="dropdown-menu dropdown-menu-left flex-col">
+                            <button type="button" class="menu-item flex"
+                                @click="documentationStore.setLanguage('en-US')">
+                                <NuxtImg class="icon" width="15" height="15"
+                                    :class="{ 'visible': documentationStore.language === 'en-US' }"
+                                    src="/svg/check-regular.svg" loading="lazy" alt="Icon" />
+                                <label>English</label>
+                                <span class="fi fi-us"></span>
+                            </button>
+                            <button type="button" class="menu-item flex"
+                                @click="documentationStore.setLanguage('nl-NL')">
+                                <NuxtImg class="icon" width="15" height="15"
+                                    :class="{ 'visible': documentationStore.language === 'nl-NL' }"
+                                    src="/svg/check-regular.svg" loading="lazy" alt="Icon" />
+                                <label class="disabled-text">Nederlands</label>
+                                <span class="fi fi-nl"></span>
+                            </button>
+                            <button type="button" class="menu-item flex"
+                                @click="documentationStore.setLanguage('ko-KR')">
+                                <NuxtImg class="icon" width="15" height="15"
+                                    :class="{ 'visible': documentationStore.language === 'ko-KR' }"
+                                    src="/svg/check-regular.svg" loading="lazy" alt="Icon" />
+                                <label class="disabled-text">한국어</label>
+                                <span class="fi fi-kr"></span>
+                            </button>
+                        </menu>
                     </button>
                     <button title="Change the theme of the documentation." type="button"
-                        class="flex dropdown-container justify-center navbar-pill disable-close"
-                        :class="{ 'navbar-pill-expand': themeDropdownVisible }" @click="toggleThemeMenu($event)">
-                        <p class="disable-close" :class="{ 'navbar-pill-text-expand': themeDropdownVisible }">
-                            Theme</p>
-                        <NuxtImg class="icon icon-light disable-close" width="15" height="15"
-                            src="/svg/palette-regular.svg" loading="lazy" alt="Icon" />
-                        <ClientOnly>
-                            <menu :class="{ 'dropdown-expand theme-dropdown-expand': themeDropdownVisible }"
-                                class="dropdown-menu dropdown-menu-left flex-col disable-close">
-                                <button type="button" class="menu-item flex"
-                                    @click="documentationStore.setTheme('Cobalt')">
-                                    <NuxtImg class="icon" width="15" height="15"
-                                        :class="{ 'visible': documentationStore.theme === 'Cobalt' }"
-                                        src="/svg/check-regular.svg" loading="lazy" alt="Icon" />
-                                    <label>Cobalt</label>
-                                    <span class="theme-preview-item theme-preview-item-cobalt"></span>
-                                </button>
-                                <button type="button" class="menu-item flex"
-                                    @click="documentationStore.setTheme('Slate')">
-                                    <NuxtImg class="icon" width="15" height="15"
-                                        :class="{ 'visible': documentationStore.theme === 'Slate' }"
-                                        src="/svg/check-regular.svg" loading="lazy" alt="Icon" />
-                                    <label>Slate</label>
-                                    <span class="theme-preview-item theme-preview-item-slate"></span>
-                                </button>
-                                <button type="button" class="menu-item flex"
-                                    @click="documentationStore.setTheme('North')">
-                                    <NuxtImg class="icon" width="15" height="15"
-                                        :class="{ 'visible': documentationStore.theme === 'North' }"
-                                        src="/svg/check-regular.svg" loading="lazy" alt="Icon" />
-                                    <label>North</label>
-                                    <span class="theme-preview-item theme-preview-item-north"></span>
-                                </button>
-                                <button type="button" class="menu-item flex"
-                                    @click="documentationStore.setTheme('Mokka')">
-                                    <NuxtImg class="icon" width="15" height="15"
-                                        :class="{ 'visible': documentationStore.theme === 'Mokka' }"
-                                        src="/svg/check-regular.svg" loading="lazy" alt="Icon" />
-                                    <label>Mokka</label>
-                                    <span class="theme-preview-item theme-preview-item-mokka"></span>
-                                </button>
-                            </menu>
-                        </ClientOnly>
+                        class="flex dropdown-container justify-center navbar-pill"
+                        :class="{ 'navbar-pill-expand': themeDropdownVisible }" @click="toggleMenu($event, 'theme')">
+                        <p :class="{ 'navbar-pill-text-expand': themeDropdownVisible }">Theme</p>
+                        <NuxtImg class="icon icon-light" width="15" height="15" src="/svg/palette-regular.svg"
+                            loading="lazy" alt="Icon" />
+                        <menu :class="{ 'dropdown-expand theme-dropdown-expand': themeDropdownVisible }"
+                            class="dropdown-menu dropdown-menu-left flex-col">
+                            <button type="button" class="menu-item flex" @click="documentationStore.setTheme('Cobalt')">
+                                <NuxtImg class="icon" width="15" height="15"
+                                    :class="{ 'visible': documentationStore.theme === 'Cobalt' }"
+                                    src="/svg/check-regular.svg" loading="lazy" alt="Icon" />
+                                <label>Cobalt</label>
+                                <span class="theme-preview-item theme-preview-item-cobalt"></span>
+                            </button>
+                            <button type="button" class="menu-item flex" @click="documentationStore.setTheme('Slate')">
+                                <NuxtImg class="icon" width="15" height="15"
+                                    :class="{ 'visible': documentationStore.theme === 'Slate' }"
+                                    src="/svg/check-regular.svg" loading="lazy" alt="Icon" />
+                                <label>Slate</label>
+                                <span class="theme-preview-item theme-preview-item-slate"></span>
+                            </button>
+                            <button type="button" class="menu-item flex" @click="documentationStore.setTheme('North')">
+                                <NuxtImg class="icon" width="15" height="15"
+                                    :class="{ 'visible': documentationStore.theme === 'North' }"
+                                    src="/svg/check-regular.svg" loading="lazy" alt="Icon" />
+                                <label>North</label>
+                                <span class="theme-preview-item theme-preview-item-north"></span>
+                            </button>
+                            <button type="button" class="menu-item flex" @click="documentationStore.setTheme('Mokka')">
+                                <NuxtImg class="icon" width="15" height="15"
+                                    :class="{ 'visible': documentationStore.theme === 'Mokka' }"
+                                    src="/svg/check-regular.svg" loading="lazy" alt="Icon" />
+                                <label>Mokka</label>
+                                <span class="theme-preview-item theme-preview-item-mokka"></span>
+                            </button>
+                        </menu>
                     </button>
                 </div>
             </section>
@@ -446,6 +419,16 @@ header {
     top: 0;
     position: sticky;
     z-index: 3;
+}
+
+.overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5);
+    z-index: 2;
 }
 
 nav {

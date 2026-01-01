@@ -1,5 +1,6 @@
 import express, { NextFunction, Request, Response, Router } from "express";
 import { CommentRequest, VoteRequest } from "../customTypes";
+import { z } from "zod";
 import { Pool, database } from "@svkruik/sk-platform-db-conn";
 const router: Router = express.Router();
 
@@ -7,20 +8,19 @@ const router: Router = express.Router();
 router.post("/new/:version/:language", async (req: Request, res: Response, next: NextFunction) => {
     try {
         // Setup
-        const voteParams = req.query as { ticket: string, value: string, type: string, category: string, page: string };
-        if (!voteParams.ticket || !voteParams.value || !voteParams.category || !voteParams.page)
-            throw new Error("Missing required query parameters.", { cause: { statusCode: 400 } });
-
-        const voteRequest: VoteRequest = {
-            "ticket": voteParams.ticket,
-            "value": voteParams.value === "true",
-            "type": voteParams.type === "null" ? null : voteParams.type,
-            "category": voteParams.category === "null" ? null : voteParams.category,
-            "page": voteParams.page === "null" ? null : voteParams.page
-        };
+        const bodySchema = z.object({
+            ticket: z.string(),
+            value: z.string().transform((val) => val === "true"),
+            type: z.enum(["Doc", "Guide"]).optional().nullable(), // Null for landing page
+            category: z.string().optional().nullable(),
+            page: z.string().optional().nullable(), // Null for category vote
+        });
+        const parseResult = bodySchema.safeParse(req.body);
+        if (!parseResult.success) throw new Error("The form is not completed correctly. Please try again.", { cause: { statusCode: 1400 } });
+        const { ticket, value, type, category, page } = parseResult.data as VoteRequest;
 
         const connection: Pool = await database("bots");
-        await connection.query("INSERT INTO documentation_vote (ticket, value, type, category, page) VALUES (?, ?, ?, ?, ?)", [voteRequest.ticket, voteRequest.value, voteRequest.type, voteRequest.category, voteRequest.page]);
+        await connection.query("INSERT INTO documentation_vote (ticket, value, type, category, page) VALUES (?, ?, ?, ?, ?);", [ticket, value, type, category, page]);
         return res.sendStatus(200);
     } catch (error: any) {
         next(error);
@@ -31,14 +31,16 @@ router.post("/new/:version/:language", async (req: Request, res: Response, next:
 router.put("/comment", async (req: Request, res: Response, next: NextFunction) => {
     try {
         // Setup
-        if (!req.body.ticket || !req.body.comment) throw new Error("Missing required body parameters.", { cause: { statusCode: 400 } });
-        const commentRequest: CommentRequest = {
-            "ticket": req.body.ticket,
-            "commment": req.body.comment
-        };
+        const bodySchema = z.object({
+            ticket: z.string(),
+            comment: z.string(),
+        });
+        const parseResult = bodySchema.safeParse(req.body);
+        if (!parseResult.success) throw new Error("The form is not completed correctly. Please try again.", { cause: { statusCode: 1400 } });
+        const { ticket, comment } = parseResult.data as CommentRequest;
 
         const connection: Pool = await database("bots");
-        await connection.query("UPDATE documentation_vote SET comment = ? WHERE ticket = ?", [commentRequest.commment, commentRequest.ticket]);
+        await connection.query("UPDATE documentation_vote SET comment = ? WHERE ticket = ?;", [comment, ticket]);
         return res.sendStatus(200);
     } catch (error: any) {
         next(error);

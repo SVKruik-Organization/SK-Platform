@@ -6,7 +6,7 @@ export const useFetchDocumentationComment = async (ticket: string, comment: stri
             method: "POST",
             headers: { "Content-Type": "application/json" },
             query: { ticket, comment },
-            body: { endpoint: "/votes/comment" }
+            body: { endpoint: "/votes/comment", method: "PUT" }
         });
     } catch (error: any) {
         throw formatError(error);

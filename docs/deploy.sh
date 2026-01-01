@@ -14,13 +14,13 @@ source .env
 [ -d logs ] || mkdir logs
 [ -d exports ] || mkdir exports
 
-# Search Engine - search.stefankruik.com
+# Search Engine - docs.stefankruik.com/search
 npm run seed v1 en-US w
 cd exports
 
 if [ -f "v1_en-US.json" ]; then
     curl \
-        -X POST 'https://search.stefankruik.com/indexes/documentation_v1_en-US/documents?primaryKey=id' \
+        -X POST 'https://docs.stefankruik.com/search/indexes/documentation_v1_en-US/documents?primaryKey=id' \
         -H 'Content-Type: application/json' \
         -H "Authorization: Bearer $MEILISEARCH_MASTER" \
         --data-binary @v1_en-US.json

@@ -7,7 +7,7 @@ export const useFetchDocumentationSearch = async (version: string, language: str
             method: "POST",
             headers: { "Content-Type": "application/json" },
             query: { query, limit, offset, scope },
-            body: { endpoint: `/search/all/${version}/${language}` }
+            body: { endpoint: `/query/all/${version}/${language}` }
         });
     } catch (error: any) {
         throw formatError(error);

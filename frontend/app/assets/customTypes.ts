@@ -105,17 +105,6 @@ export type SearchResultItem = {
     "page": string,
 }
 
-// Vue Dropdowns Toggle State
-export enum DropdownStates {
-    version = "versionDropdownVisible",
-    language = "languageDropdownVisible",
-    information = "informationDropdownVisible",
-    product = "productDropdownVisible",
-    navigation = "navigationDropdownVisible",
-    comment = "commentOverlayVisible",
-    theme = "themeDropdownVisible",
-}
-
 // Documentation Chapter
 export type DocChapterItem = {
     "title": string,
