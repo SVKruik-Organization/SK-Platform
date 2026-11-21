@@ -191,20 +191,6 @@ app.delete("/cache/:type", (req: Request, res: Response, next: NextFunction) => 
     }
 });
 
-app.use((req, res) => {
-    console.log("UNMATCHED ROUTE:", {
-        method: req.method,
-        originalUrl: req.originalUrl,
-        path: req.path,
-        baseUrl: req.baseUrl,
-    });
-
-    res.status(404).json({
-        error: "Route not found",
-        path: req.originalUrl,
-    });
-});
-
 // Error Handler
 app.use((err: any, _req: Request, res: Response, _next: NextFunction) => {
     const { statusCode, message } = formatApiError(err);
