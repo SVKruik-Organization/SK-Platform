@@ -1,5 +1,6 @@
 #!/bin/sh
 export HOME=/home/svkruik
+set -eu
 
 # Git
 cd ..
@@ -12,12 +13,16 @@ echo "Git setup complete."
 cd site
 npm install
 npm run build
-sudo systemctl restart sk-horizon.service
 echo "SK Horizon deployment complete. Reloading server."
+sudo systemctl restart sk-horizon.service
+
+# Docs - docs.stefankruik.com
+cd ../docs
+sh deploy.sh
 
 # Platform - platform.stefankruik.com
 cd ../frontend
 npm install
 npm run build
-sudo systemctl restart sk-platform.service
 echo "SK Platform deployment complete. Reloading server."
+sudo systemctl restart sk-platform.service

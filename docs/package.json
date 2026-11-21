@@ -12,7 +12,7 @@
     },
     "homepage": "https://github.com/SVKruik-Organization/SK-Platform#readme",
     "scripts": {
-        "build": "npx tsc",
+        "build": "tsc --build",
         "start": "node dist/index.js",
         "dev": "nodemon src/index.ts",
         "search": "./meilisearch",

@@ -200,6 +200,8 @@ app.use((err: any, _req: Request, res: Response, _next: NextFunction) => {
 // Start
 const PORT: number = parseInt(process.env.PORT as string) || 3002;
 app.listen(PORT, async () => {
-    await mountUplink();
+    await mountUplink(undefined, {
+        deployTaskOptOut: true // Handled by SK Platform
+    });
     logData(`Documentation server listening on port ${PORT}`, "info");
 });

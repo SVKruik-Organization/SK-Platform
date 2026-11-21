@@ -199,12 +199,6 @@ function handleDropdownState(name: DropdownStates, newValue: boolean): void {
                     <p class="disabled-text">v2_dev_beta</p>
                 </a>
             </div>
-            <div class="flex footer-note">
-                <p class="disabled-text">Made with</p>
-                <NuxtImg class="icon icon-dark" width="10" height="10" src="/svg/heart-regular.svg" loading="lazy"
-                    alt="Icon" />
-                <p class="disabled-text">by 🇺🇦, hosted in 🇳🇱</p>
-            </div>
         </div>
     </section>
 </template>
