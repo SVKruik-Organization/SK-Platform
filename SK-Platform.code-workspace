@@ -1,0 +1,52 @@
+{
+  "folders": [
+    {
+      "path": "./",
+      "name": "Root"
+    },
+    {
+      "path": "./docs",
+      "name": "Docs"
+    },
+    {
+      "path": "./frontend",
+      "name": "Frontend"
+    },
+    {
+      "path": "./site",
+      "name": "Site"
+    }
+  ],
+  "settings": {
+    "window.titleBarStyle": "custom",
+
+    "workbench.colorCustomizations": {
+      /* Titelbalk – actief (diep cyaanblauw) */
+      "titleBar.activeBackground": "#168cbf",
+      "titleBar.activeForeground": "#ffffff",
+
+      /* Titelbalk – inactief (donkerblauw) */
+      "titleBar.inactiveBackground": "#24364e",
+      "titleBar.inactiveForeground": "#a9c5d8",
+
+      /* Command Center */
+      "commandCenter.background": "#116f9c",
+      "commandCenter.foreground": "#ffffff",
+      "commandCenter.activeBackground": "#229fce",
+
+      /* Activity Bar */
+      "activityBar.background": "#121e30",
+      "activityBar.foreground": "#ffffff",
+      "activityBar.inactiveForeground": "#8ca6bd",
+
+      /* Status Bar (warm oranje) */
+      "statusBar.background": "#d96a37",
+      "statusBar.foreground": "#ffffff",
+      "statusBar.noFolderBackground": "#121e30",
+
+      /* Notificaties */
+      "activityBarBadge.background": "#ff8748",
+      "activityBarBadge.foreground": "#121e30"
+    }
+  }
+}

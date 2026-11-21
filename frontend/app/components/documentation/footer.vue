@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ToastTypes, type DocumentationTypes, type ToastItem } from "@/assets/customTypes";
+import { DropdownStates, ToastTypes, type DocumentationTypes, type ToastItem } from "@/assets/customTypes";
 import { useDocumentationStore } from "@/stores/DocumentationStore";
 import { createTicket } from "@svkruik/sk-platform-formatters";
 import { useFetchDocumentationComment } from "@/utils/fetch/documentation/useFetchDocumentationComment";
@@ -7,10 +7,12 @@ import { useFetchDocumentationVote } from "@/utils/fetch/documentation/useFetchD
 
 // Setup
 const documentationStore = useDocumentationStore();
+const emit = defineEmits(["dropdownState"]);
 const { $event } = useNuxtApp();
 
 // Props
 const props = defineProps<{
+    commentOverlayVisible: boolean;
     type?: DocumentationTypes;
     category?: string;
     page?: string;
@@ -22,7 +24,6 @@ const pressedButton: Ref<string> = ref("");
 const commentData: Ref<string> = ref("");
 const submissionType: Ref<string> = ref("voting");
 const voteTicket: Ref<string> = ref("");
-const commentOverlayVisible: Ref<boolean> = ref(false);
 
 // HTML Elements
 const confirmationMessage: Ref<HTMLParagraphElement | null> = ref(null);
@@ -51,7 +52,7 @@ async function submitDocumentationVote(value: boolean): Promise<void> {
         } else pressedButton.value = "dislike";
 
         // Cast Vote
-        await useFetchDocumentationVote(documentationStore.version, documentationStore.language, value, voteTicket.value, props.type, props.category, props.page);
+        await useFetchDocumentationVote(documentationStore.version, documentationStore.language, value, props.type || null, props.category || null, props.page || null, voteTicket.value);
         documentationStore.voteCast = `${voteTicket.value}-${props.type}/${props.category}/${props.page}`;
 
         // Confirmation Message
@@ -103,7 +104,7 @@ async function submitDocumentationComment(): Promise<void> {
  */
 function commentDocumentationVote(): void {
     if (voteCastCurrentPage.value && commentData.value.length > 0) return;
-    commentOverlayVisible.value = true;
+    emit("dropdownState", DropdownStates.comment, true);
 }
 
 // Computed Variables
@@ -117,14 +118,14 @@ const commentCastCurrentPage = computed<boolean>(() => {
 </script>
 
 <template>
-    <div class="flex comment-overlay glass" v-if="commentOverlayVisible" @click="commentOverlayVisible = false">
-        <form class="flex-col" @click.stop>
-            <h3>Leave a vote comment</h3>
-            <p class="light-text">Leave additional information for your vote so I can process your
+    <div class="flex comment-overlay glass" v-if="commentOverlayVisible">
+        <form class="flex-col disable-close">
+            <h3 class="disable-close">Leave a vote comment</h3>
+            <p class="light-text disable-close">Leave additional information for your vote so I can process your
                 feedback. Want to leave more information? Don't hesitate to <NuxtLink
                     to="/documentation/read/Doc/Community/Support"> reach out</NuxtLink>.</p>
-            <textarea v-model="commentData" class="comment-textarea" maxlength="255"></textarea>
-            <p class="light-text small-text">{{ 255 - commentData.length }} characters left</p>
+            <textarea v-model="commentData" class="comment-textarea disable-close" maxlength="255"></textarea>
+            <p class="light-text small-text disable-close">{{ 255 - commentData.length }} characters left</p>
             <div class="flex">
                 <button class="footer-button footer-button-like" @click.prevent="submitDocumentationComment"
                     type="submit">Submit</button>
@@ -137,28 +138,30 @@ const commentCastCurrentPage = computed<boolean>(() => {
             <p class="light-text small-text documentation-footer-item-description">Leave a vote and optional comment.
                 Feedback is always greatly appreciated.</p>
             <div class="flex">
-                <button @click="submitDocumentationVote(true)" class="flex footer-button footer-button-like"
-                    :class="{ 'active-button-like': pressedButton === 'like', 'disabled-button': voteCastCurrentPage }"
-                    type="button" title="Click this if you like the design and information available.">
-                    <NuxtImg class="icon icon-light" width="18" height="18" src="/svg/heart-regular.svg" loading="lazy"
-                        alt="Icon" />
-                    <p>Yes</p>
-                </button>
-                <button @click="submitDocumentationVote(false)" class="flex footer-button footer-button-dislike"
-                    :class="{ 'active-button-dislike': pressedButton === 'dislike', 'disabled-button': voteCastCurrentPage }"
-                    type="button" title="Click this if you think some things could be better.">
-                    <NuxtImg class="icon icon-light" width="18" height="18" src="/svg/heart-crack-regular.svg"
-                        loading="lazy" alt="Icon" />
-                    <p>No</p>
-                </button>
-                <button v-if="pressedButton.length || voteCastCurrentPage"
-                    class="flex footer-button footer-button-comment" type="button"
-                    :class="{ 'disabled-button': commentCastCurrentPage }" @click="commentDocumentationVote"
-                    title="Leave a comment so I can take a look at your feedback.">
-                    <NuxtImg class="icon icon-light" width="18" height="18" src="/svg/comment-regular.svg"
-                        loading="lazy" alt="Icon" />
-                    <p>Comment</p>
-                </button>
+                <ClientOnly>
+                    <button @click="submitDocumentationVote(true)" class="flex footer-button footer-button-like"
+                        :class="{ 'active-button-like': pressedButton === 'like', 'disabled-button': voteCastCurrentPage }"
+                        type="button" title="Click this if you like the design and information available.">
+                        <NuxtImg class="icon icon-light" width="18" height="18" src="/svg/heart-regular.svg"
+                            loading="lazy" alt="Icon" />
+                        <p>Yes</p>
+                    </button>
+                    <button @click="submitDocumentationVote(false)" class="flex footer-button footer-button-dislike"
+                        :class="{ 'active-button-dislike': pressedButton === 'dislike', 'disabled-button': voteCastCurrentPage }"
+                        type="button" title="Click this if you think some things could be better.">
+                        <NuxtImg class="icon icon-light" width="18" height="18" src="/svg/heart-crack-regular.svg"
+                            loading="lazy" alt="Icon" />
+                        <p>No</p>
+                    </button>
+                    <button v-if="pressedButton.length || voteCastCurrentPage"
+                        class="flex footer-button footer-button-comment disable-close" type="button"
+                        :class="{ 'disabled-button': commentCastCurrentPage }" @click="commentDocumentationVote"
+                        title="Leave a comment so I can take a look at your feedback.">
+                        <NuxtImg class="icon icon-light disable-close" width="18" height="18"
+                            src="/svg/comment-regular.svg" loading="lazy" alt="Icon" />
+                        <p class="disable-close">Comment</p>
+                    </button>
+                </ClientOnly>
             </div>
             <p ref="confirmationMessage" class="confirmation-message">Thank you so much for {{ submissionType }}!</p>
         </form>

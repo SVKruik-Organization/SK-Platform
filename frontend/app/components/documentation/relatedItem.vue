@@ -31,7 +31,7 @@ defineProps<{
                     {{ data.category.replace(/_/g, " ") }}
                 </NuxtLink>
             </div>
-            <NuxtImg height="500" width="500" class="product-image" :src="data.imageUrl" alt="Related Product Image"
+            <NuxtImg v-if="data.imageUrl" height="500" width="500" class="product-image" :src="data.imageUrl" alt="Related Product Image"
                 loading="lazy" />
         </section>
     </article>

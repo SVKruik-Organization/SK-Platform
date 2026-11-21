@@ -3,10 +3,10 @@ export default defineNuxtConfig({
     devtools: { enabled: false },
     ssr: true,
     css: [
-        "./app/assets/css/base.css",
-        "./app/assets/css/interaction.css",
-        "./app/assets/css/documentation.css",
-        "./app/assets/css/docpage.css",
+        "~/assets/css/base.css",
+        "~/assets/css/interaction.css",
+        "~/assets/css/documentation.css",
+        "~/assets/css/docpage.css",
     ],
     modules: [
         "@pinia/nuxt",
@@ -18,7 +18,7 @@ export default defineNuxtConfig({
         auto: true,
     },
     pinia: {
-        storesDirs: ["./app/stores/**"],
+        storesDirs: ["~/stores/**"],
     },
     runtimeConfig: {
         authApiBase: "",

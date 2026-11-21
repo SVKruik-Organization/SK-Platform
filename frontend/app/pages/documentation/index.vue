@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { DocumentationTypes, ToastTypes, type DocumentationIndexItem, type FeaturedItem, type ToastItem } from "@/assets/customTypes";
+import { DocumentationTypes, DropdownStates, ToastTypes, type DocumentationIndexItem, type FeaturedItem, type ToastItem } from "@/assets/customTypes";
 import { useDocumentationStore } from "@/stores/DocumentationStore";
 import { createTicket } from "@svkruik/sk-platform-formatters";
 
@@ -17,6 +17,10 @@ defineProps<{
     type?: DocumentationTypes;
     category?: string;
     page?: string;
+    informationDropdownVisible?: boolean;
+    productDropdownVisible?: boolean;
+    navigationDropdownVisible?: boolean;
+    commentOverlayVisible: boolean;
 }>();
 
 // Lifecycle
@@ -65,6 +69,12 @@ onMounted(async () => {
     } as ToastItem);
     featuredItems.value = rawDocFeaturedItems.concat(rawGuideFeaturedItems);
 });
+
+// Emitters
+const emit = defineEmits(["dropdownState"]);
+function handleDropdownState(name: DropdownStates, newValue: boolean): void {
+    emit("dropdownState", name, newValue);
+};
 </script>
 
 <template>
@@ -176,7 +186,8 @@ onMounted(async () => {
             <h2 id="More">More</h2>
             <span class="splitter"></span>
         </div>
-        <DocumentationFooter />
+        <DocumentationFooter @dropdown-state="handleDropdownState" :comment-overlay-visible="commentOverlayVisible"
+            :type="undefined" :category="undefined" :page="undefined"></DocumentationFooter>
         <div class="banner-content last-content-container footer-wrapper flex-col">
             <div class="flex footer-note">
                 <a href="https://github.com/SVKruik">

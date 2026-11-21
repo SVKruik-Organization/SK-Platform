@@ -76,7 +76,7 @@ export type RelatedItem = {
     "page": string,
     "icon": string,
     "type": string,
-    "imageUrl": string
+    "imageUrl": string | null
 }
 
 // Raw Full Refresh Response
@@ -103,6 +103,17 @@ export type SearchResultItem = {
     "category": string,
     "content": string,
     "page": string,
+}
+
+// Vue Dropdowns Toggle State
+export enum DropdownStates {
+    version = "versionDropdownVisible",
+    language = "languageDropdownVisible",
+    information = "informationDropdownVisible",
+    product = "productDropdownVisible",
+    navigation = "navigationDropdownVisible",
+    comment = "commentOverlayVisible",
+    theme = "themeDropdownVisible",
 }
 
 // Documentation Chapter

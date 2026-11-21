@@ -97,7 +97,7 @@ const refreshLimit = rateLimit({
 });
 app.get("/refresh/:version/:language", refreshLimit, async (req: Request, res: Response, next: NextFunction) => {
     try {
-        const params: UrlParams | false = validateUrlParams(req.params.version, req.params.language);
+        const params: UrlParams | false = validateUrlParams(req.params.version as string, req.params.language as string);
         if (!params) throw new Error("Invalid / missing URL params.", { cause: { statusCode: 1400 } });
 
         // Indices
@@ -123,7 +123,7 @@ app.get("/refresh/:version/:language", refreshLimit, async (req: Request, res: R
 app.get("/getFile/:version/:language/:type", async (req: Request, res: Response, next: NextFunction) => {
     try {
         const searchQuery: FileRequest = req.query as FileRequest;
-        const params: UrlParams | false = validateUrlParams(req.params.version, req.params.language, req.params.type);
+        const params: UrlParams | false = validateUrlParams(req.params.version as string, req.params.language as string, req.params.type as string);
         if (!params) throw new Error("Invalid / missing URL params.", { cause: { statusCode: 1400 } });
 
         // TODO: Refresh should not update view count
@@ -143,7 +143,7 @@ app.get("/getFile/:version/:language/:type", async (req: Request, res: Response,
 // Get Index
 app.get("/getIndex/:version/:language/:type", async (req: Request, res: Response, next: NextFunction) => {
     try {
-        const params: UrlParams | false = validateUrlParams(req.params.version, req.params.language, req.params.type);
+        const params: UrlParams | false = validateUrlParams(req.params.version as string, req.params.language as string, req.params.type as string);
         if (!params) throw new Error("Invalid / missing URL params.", { cause: { statusCode: 1400 } });
 
         const index: Array<IndexItem> = getCachedIndex(params.version, params.language, params.type);
@@ -156,7 +156,7 @@ app.get("/getIndex/:version/:language/:type", async (req: Request, res: Response
 // Get Featured Items
 app.get("/getFeaturedItems/:language/:type", async (req: Request, res: Response, next: NextFunction) => {
     try {
-        const params: UrlParams | false = validateUrlParams(undefined, req.params.language, req.params.type);
+        const params: UrlParams | false = validateUrlParams(undefined, req.params.language as string, req.params.type as string);
         if (!params) throw new Error("Invalid / missing URL params.", { cause: { statusCode: 1400 } });
 
         const data: Array<FeaturedItem> = getFeaturedItems(params.language, params.type);
@@ -169,7 +169,7 @@ app.get("/getFeaturedItems/:language/:type", async (req: Request, res: Response,
 // Documentation Page Cache Details
 app.get("/cache/:type", (req: Request, res: Response, next: NextFunction) => {
     try {
-        const type: ValidCacheTypes | false = validateCacheUrlParams(req.params.type || null);
+        const type: ValidCacheTypes | false = validateCacheUrlParams(req.params.type as string | null);
         if (!type) throw new Error("Invalid / missing URL params.", { cause: { statusCode: 1400 } });
 
         return res.json(getCacheDetails(type));
@@ -181,7 +181,7 @@ app.get("/cache/:type", (req: Request, res: Response, next: NextFunction) => {
 // Clear Documentation Page Cache
 app.delete("/cache/:type", (req: Request, res: Response, next: NextFunction) => {
     try {
-        const type: ValidCacheTypes | false = validateCacheUrlParams(req.params.type || null);
+        const type: ValidCacheTypes | false = validateCacheUrlParams(req.params.type as string | null);
         if (!type) throw new Error("Invalid / missing URL params.", { cause: { statusCode: 1400 } });
 
         clearCache(type);
